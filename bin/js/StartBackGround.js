@@ -24,10 +24,20 @@ var StartBackGround = /** @class */ (function (_super) {
         this.bgSecond.loadImage("res/background.jpg");
         this.bgSecond.pos(-800, 0);
         this.addChild(this.bgSecond);
+        this.Play = new Laya.Button();
+        this.Play.x = 272;
+        this.Play.y = 350;
+        this.Play.width = 250;
+        this.Play.height = 100;
+        this.Play.loadImage("res/Play.png");
+        this.addChild(this.Play);
+        this.on(Laya.Event.CLICK, this, this.clickHandler);
+        this.DisplayTitle();
         Laya.timer.frameLoop(1, this, this.onLoop);
     };
     StartBackGround.prototype.onLoop = function () {
-        this.x = this.x + 1;
+        this.bgFirst.x = this.bgFirst.x + 1;
+        this.bgSecond.x = this.bgSecond.x + 1;
         if (this.bgFirst.x + this.x >= 800) {
             this.bgFirst.x = this.bgFirst.x - 800 * 2;
         }
@@ -66,6 +76,9 @@ var StartBackGround = /** @class */ (function (_super) {
             Laya.Tween.to(letterText, { y: 200, update: new Laya.Handler(this, this.updateColor, [letterText]) }, 1000, Laya.Ease.bounceIn, Laya.Handler.create(this, this.changeColor, [letterText]), 100);
         }
     };
+    StartBackGround.prototype.clickHandler = function () {
+        console.log('on click');
+    };
     StartBackGround.prototype.updateColor = function (txt) {
         var c = Math.floor(Math.random() * 3);
         switch (c) {
@@ -92,9 +105,16 @@ var StartBackGround = /** @class */ (function (_super) {
         letter.color = "#ffffff";
         letter.font = "Impact";
         letter.fontSize = 100;
-        Laya.stage.addChild(letter);
+        this.addChild(letter);
         return letter;
     };
     return StartBackGround;
+}(Laya.Sprite));
+var IngameBackground = /** @class */ (function (_super) {
+    __extends(IngameBackground, _super);
+    function IngameBackground() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return IngameBackground;
 }(Laya.Sprite));
 //# sourceMappingURL=StartBackGround.js.map
