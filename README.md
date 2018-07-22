@@ -1,1 +1,1 @@
-# wechat_game_real
+# wechat_game

@@ -1,7 +1,7 @@
 var WebGL = Laya.WebGL;
 var Game = /** @class */ (function () {
     function Game() {
-        Laya.init(800, 600, WebGL);
+        Laya.init(Laya.Browser.width, Laya.Browser.height, WebGL);
         // 初始屏幕适配
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;

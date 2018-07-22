@@ -1,7 +1,7 @@
 class StartBackGround extends Laya.Sprite{
-    private bgFirst:Laya.Sprite;
-    private bgSecond:Laya.Sprite;
-    private Play:Laya.Button;
+    bgFirst:Laya.Sprite;
+    bgSecond:Laya.Sprite;
+    Play:Laya.Button;
     constructor(){
         super();
         this.init();
@@ -24,7 +24,7 @@ class StartBackGround extends Laya.Sprite{
         this.Play.height = 100;
         this.Play.loadImage("res/Play.png");
         this.addChild(this.Play);
-        this.on(Laya.Event.CLICK,this,this.clickHandler);
+       // this.on(Laya.Event.CLICK,this,this.clickHandler);
 
         this.DisplayTitle();
 
@@ -73,10 +73,8 @@ class StartBackGround extends Laya.Sprite{
             letterText.y = 0;
            Laya.Tween.to(letterText, { y : 200, update: new Laya.Handler(this, this.updateColor,[letterText])}, 1000, Laya.Ease.bounceIn, Laya.Handler.create(this,this.changeColor,[letterText]), 100);
         }
-}
-      clickHandler():void{
-           console.log('on click');
-       }
+    }
+    
     private updateColor(txt:Laya.Text):void{
         let c:number = Math.floor(Math.random()*3);
         switch (c) {
@@ -105,10 +103,6 @@ class StartBackGround extends Laya.Sprite{
         letter.fontSize = 100;
         this.addChild(letter);
         return letter;
-    }
-    
+    }    
 }
 
-class IngameBackground extends Laya.Sprite{
-
-}
