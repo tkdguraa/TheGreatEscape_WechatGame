@@ -146,10 +146,12 @@ class IngameBackground extends Laya.Sprite{
         this.hero.pos(10,300);
         this.addChild(this.hero);
 
-        this.rocker = new Laya.Sprite();
-        this.rocker.loadImage("res/control-rocker.png");
-        this.rocker.pos(20,240);
-        this.addChild(this.rocker);
+        for(let i = 0;i < 10;i++){
+            let trap:thunder = new thunder();
+            trap.init();
+            trap.pos(Math.random()*400,Math.random()*400);
+            this.addChild(trap);
+        }
     }
     down(e){
         console.log(e.keyCode);

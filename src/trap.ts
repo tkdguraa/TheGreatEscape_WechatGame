@@ -4,6 +4,8 @@ class thunder extends Laya.Sprite{
         super();
       
     }
-    public
+    public init():void{
+         this.loadImage("res/thunder.png");
+    }
     
 }

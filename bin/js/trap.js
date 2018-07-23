@@ -13,6 +13,9 @@ var thunder = /** @class */ (function (_super) {
     function thunder() {
         return _super.call(this) || this;
     }
+    thunder.prototype.init = function () {
+        this.loadImage("res/thunder.png");
+    };
     return thunder;
 }(Laya.Sprite));
 //# sourceMappingURL=trap.js.map
