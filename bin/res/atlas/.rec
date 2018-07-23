@@ -1,6 +1,17 @@
 D .
+D burn
+P BBBD33DF burn1.png
+P E44DB0D7 burn2.png
+P 908BACA4 burn3.png
+P 93BE2768 burn4.png
+P 8186C52C burn5.png
 D res
-R 87457866 background.jpg
-P F3985900 hello.png
-P 7D23F412 Hero.png
-P 28507814 Play.png
+R E730C705 desktop.ini
+P BBBD33DF Hero.png
+P 5C877D0D Hero1.png
+P B9650093 Hero2.1.png
+P A5E81852 Hero2.3.png
+P EE1AB9E4 Hero3.png
+P 7DE8EEC5 Hero4.png
+P 4C177149 Hero5.png
+P BD635C2E Hero6.png

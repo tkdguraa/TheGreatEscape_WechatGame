@@ -107,27 +107,22 @@ var StartBackGround = /** @class */ (function (_super) {
     };
     return StartBackGround;
 }(Laya.Sprite));
-var IngameBackground = /** @class */ (function (_super) {
-    __extends(IngameBackground, _super);
-    function IngameBackground() {
+var thunderMode1 = /** @class */ (function (_super) {
+    __extends(thunderMode1, _super);
+    function thunderMode1() {
         var _this = _super.call(this) || this;
         _this.init();
         _this.stage.on(Laya.Event.KEY_DOWN, _this, _this.down);
         _this.frameLoop(1, _this, _this.Loop);
         return _this;
     }
-    IngameBackground.prototype.init = function () {
+    thunderMode1.prototype.init = function () {
         this.bg = new Laya.Sprite();
         this.stage.addChild(this.bg);
         this.bg.loadImage("res/stage.png");
-        for (var i = 0; i < 7; i++) {
-            var challenge = new tile();
-            if (i % 2 === 0)
-                challenge.makeblock('2', 2, 2, 45 * 2 + i * 90, 90 + 45 * 3);
-            else
-                challenge.makeblock('3', 2, 2, 45 * 2 + i * 90, 90 + 45 * 3);
-            this.stage.addChild(challenge);
-        }
+        var challenge = new tile();
+        challenge.makeblock('2', 15, 9, 45, 90);
+        this.stage.addChild(challenge);
         var startline = new tile();
         startline.makeblock('1', 2, 9, 0, 90);
         this.stage.addChild(startline);
@@ -140,7 +135,7 @@ var IngameBackground = /** @class */ (function (_super) {
         this.stage.addChild(this.hero);
         this.createTrap(20, 3);
     };
-    IngameBackground.prototype.Loop = function () {
+    thunderMode1.prototype.Loop = function () {
         for (var i = this.numChildren - 1; i >= 0; i--) {
             var trap = this.getChildAt(i);
             var temp = Math.random();
@@ -154,12 +149,16 @@ var IngameBackground = /** @class */ (function (_super) {
             else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
                 trap.y -= trap.speed;
             //遍历每一个闪电,使它们按一定概率移动
-            if (Math.abs(this.hero.x - trap.x) < 15 && Math.abs(this.hero.y - trap.y) < 40) //判断碰撞
+            if (Math.abs(this.hero.x - trap.x) < 13 && Math.abs(this.hero.y - trap.y) < 30 && this.hero.alive === 1) { //判断碰撞
                 console.log("failed!");
+                this.hero.body.removeSelf();
+                this.hero.burn.play(0, false);
+                this.hero.alive = 0;
+            }
         }
     }; //width:20~30,height:5~45 trap    
     //width:5~35,height:5~45 hero
-    IngameBackground.prototype.createTrap = function (num, speed) {
+    thunderMode1.prototype.createTrap = function (num, speed) {
         for (var i = 0; i < num; i++) {
             var trap = Laya.Pool.getItemByClass("thunder", thunder);
             trap.init(speed);
@@ -167,16 +166,48 @@ var IngameBackground = /** @class */ (function (_super) {
             this.addChild(trap);
         }
     };
-    IngameBackground.prototype.down = function (e) {
-        if (e.keyCode === 37)
-            this.hero.x -= 5;
-        if (e.keyCode === 38)
-            this.hero.y -= 5;
-        if (e.keyCode === 39)
-            this.hero.x += 5;
-        if (e.keyCode === 40)
-            this.hero.y += 5;
+    thunderMode1.prototype.down = function (e) {
+        if (this.hero.alive === 1) {
+            if (e.keyCode === 37)
+                this.hero.x -= 5;
+            if (e.keyCode === 38)
+                this.hero.y -= 5;
+            if (e.keyCode === 39)
+                this.hero.x += 5;
+            if (e.keyCode === 40)
+                this.hero.y += 5;
+        }
+        var cnt = 0;
+        for (var i = 1; i <= this.stage.numChildren - 3; i++) {
+            var m_tile = this.stage.getChildAt(i);
+            if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 &&
+                this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
+                break;
+            }
+            cnt++;
+        }
+        if (cnt === this.stage.numChildren - 3 && this.hero.alive === 1) {
+            console.log("die!");
+            this.hero.alive = 0;
+            this.hero.burn.removeSelf();
+            this.hero.body.play(0, false);
+            if (e.keyCode === 37)
+                this.hero.x -= 20;
+            if (e.keyCode === 38)
+                this.hero.y -= 20;
+            if (e.keyCode === 39)
+                this.hero.x += 20;
+            if (e.keyCode === 40)
+                this.hero.y += 20;
+        }
     };
-    return IngameBackground;
+    return thunderMode1;
+}(Laya.Sprite));
+var BoomMode1 = /** @class */ (function (_super) {
+    __extends(BoomMode1, _super);
+    function BoomMode1() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    return BoomMode1;
 }(Laya.Sprite));
 //# sourceMappingURL=BackGround.js.map

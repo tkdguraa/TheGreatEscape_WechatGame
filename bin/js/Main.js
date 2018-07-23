@@ -14,7 +14,7 @@ var Game = /** @class */ (function () {
     Game.prototype.clickHandler = function () {
         console.log('on click');
         this.bg.removeSelf();
-        this.bg2 = new IngameBackground;
+        this.bg2 = new thunderMode1;
         Laya.stage.addChild(this.bg2);
     };
     return Game;

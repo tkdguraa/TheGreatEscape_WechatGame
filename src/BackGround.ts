@@ -107,11 +107,12 @@ class StartBackGround extends Laya.Sprite{
     
 }
 
-class IngameBackground extends Laya.Sprite{
+class thunderMode1 extends Laya.Sprite{
     private bg:Laya.Sprite;
     private hero:Hero;
     private rocker:Laya.Sprite;
     private back:Laya.Sprite;
+    public currentblock:tile;
     constructor(){
         super();
         this.init();
@@ -123,17 +124,10 @@ class IngameBackground extends Laya.Sprite{
         this.stage.addChild(this.bg);
         this.bg.loadImage("res/stage.png");
 
-
-        for(let i = 0; i < 7; i++){
-            let challenge = new tile();
-            if(i % 2 === 0)
-                challenge.makeblock('2', 2, 2, 45*2 + i * 90, 90 + 45 * 3);
-            else
-                challenge.makeblock('3', 2, 2, 45*2 + i * 90, 90 + 45 * 3);
-
-            this.stage.addChild(challenge);  
-        }
-
+        let challenge = new tile();
+        challenge.makeblock('2', 15, 9, 45, 90);    
+        this.stage.addChild(challenge);
+    
         let startline:tile = new tile();
         startline.makeblock('1', 2, 9, 0, 90);
         this.stage.addChild(startline);
@@ -167,33 +161,68 @@ class IngameBackground extends Laya.Sprite{
             trap.y -= trap.speed;
             //遍历每一个闪电,使它们按一定概率移动
             
-           if(Math.abs(this.hero.x - trap.x) < 15 && Math.abs(this.hero.y - trap.y) < 40)//判断碰撞
+           if(Math.abs(this.hero.x - trap.x) < 13 && Math.abs(this.hero.y - trap.y) < 30 && this.hero.alive === 1){//判断碰撞
              console.log("failed!");
+             this.hero.body.removeSelf();
+             this.hero.burn.play(0,false);
+             this.hero.alive = 0 ;        
+           }
         } 
     }   //width:20~30,height:5~45 trap    
         //width:5~35,height:5~45 hero
     createTrap(num:number,speed:number):void{
         for(let i = 0; i < num; i++){
-            let trap: thunder = Laya.Pool.getItemByClass("thunder",thunder);
+            let trap: thunder = Laya.Pool.getItemByClass("thunder", thunder);
             trap.init(speed);
             trap.pos(Math.random() * 600 + 90, Math.random() * 600);
             this.addChild(trap);
         }
     }
     down(e){
-            if(e.keyCode === 37)
-                 this.hero.x -= 5;
+          
+          if(this.hero.alive === 1){
+                if(e.keyCode === 37)
+                    this.hero.x -= 5;
+                                    
+                if(e.keyCode === 38)
+                    this.hero.y -= 5;
+                        
+                if(e.keyCode === 39)
+                    this.hero.x += 5;         
                 
+                if(e.keyCode === 40)
+                    this.hero.y += 5;
+            }
+          let cnt:number = 0;
+            for(let i: number = 1; i <= this.stage.numChildren - 3; i++){
+                  let m_tile: tile = this.stage.getChildAt(i) as tile;
+                                 
+                  if((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && 
+                      this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)){
+                      break;
+                  }
+                    cnt++;
+            }
+            if(cnt === this.stage.numChildren - 3 && this.hero.alive === 1){
+                console.log("die!");
+                this.hero.alive = 0;
+                this.hero.burn.removeSelf();
+                this.hero.body.play(0, false);
+                 if(e.keyCode === 37)
+                    this.hero.x -= 20;
+                                    
+                if(e.keyCode === 38)
+                    this.hero.y -= 20;
+                        
+                if(e.keyCode === 39)
+                    this.hero.x += 20;         
                 
-             if(e.keyCode === 38)
-                 this.hero.y -= 5;
-                    
-                  
-             if(e.keyCode === 39)
-                 this.hero.x += 5;
-                    
-
-             if(e.keyCode === 40)
-                 this.hero.y += 5;
+                if(e.keyCode === 40)
+                    this.hero.y += 20;
+            }
       }
+}
+
+class BoomMode1 extends Laya.Sprite{
+    
 }

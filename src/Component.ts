@@ -8,6 +8,12 @@ class tile extends Laya.Sprite{
     constructor(){
         super();
     }
+    public resPos():void{
+        this.posX = -1;
+        this.posY = -1;
+        this.width = -1;
+        this.height = -1;
+    }
     public init(_type:string, posX:number, posY:number):void{
         this.type = _type;
         this.loadImage("res/tile"+this.type+".png");

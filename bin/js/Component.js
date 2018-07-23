@@ -13,6 +13,12 @@ var tile = /** @class */ (function (_super) {
     function tile() {
         return _super.call(this) || this;
     }
+    tile.prototype.resPos = function () {
+        this.posX = -1;
+        this.posY = -1;
+        this.width = -1;
+        this.height = -1;
+    };
     tile.prototype.init = function (_type, posX, posY) {
         this.type = _type;
         this.loadImage("res/tile" + this.type + ".png");

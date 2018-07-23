@@ -1,7 +1,7 @@
 import WebGL = Laya.WebGL;
     class Game{
     private bg:StartBackGround;
-    private bg2:IngameBackground;
+    private bg2:thunderMode1;
     constructor()
      {
 
@@ -21,7 +21,7 @@ import WebGL = Laya.WebGL;
     clickHandler():void{
        console.log('on click');
        this.bg.removeSelf();
-       this.bg2 = new IngameBackground;
+       this.bg2 = new thunderMode1;
        Laya.stage.addChild(this.bg2);
     }
 }
