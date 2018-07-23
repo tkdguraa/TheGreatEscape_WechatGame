@@ -38,12 +38,10 @@ var StartBackGround = /** @class */ (function (_super) {
     StartBackGround.prototype.onLoop = function () {
         this.bgFirst.x = this.bgFirst.x + 1;
         this.bgSecond.x = this.bgSecond.x + 1;
-        if (this.bgFirst.x + this.x >= 800) {
+        if (this.bgFirst.x + this.x >= 800)
             this.bgFirst.x = this.bgFirst.x - 800 * 2;
-        }
-        if (this.bgSecond.x + this.x >= 800) {
+        if (this.bgSecond.x + this.x >= 800)
             this.bgSecond.x = this.bgSecond.x - 800 * 2;
-        }
     };
     StartBackGround.prototype.DisplayTitle = function () {
         //字符串总宽度
@@ -109,6 +107,7 @@ var StartBackGround = /** @class */ (function (_super) {
 }(Laya.Sprite));
 var IngameBackground = /** @class */ (function (_super) {
     __extends(IngameBackground, _super);
+    // private hero: Hero;
     function IngameBackground() {
         var _this = _super.call(this) || this;
         _this.init();
@@ -133,27 +132,43 @@ var IngameBackground = /** @class */ (function (_super) {
         var finishline = new tile();
         finishline.makeblock('1', 1, 9, 755, 90);
         this.addChild(finishline);
-        this.hero = new Hero();
-        this.hero.loadImage("res/Hero.png");
-        this.hero.pos(10, 300);
-        this.addChild(this.hero);
+        game.hero = new Hero();
+        game.hero.loadImage("res/Hero.png");
+        game.hero.pos(10, 300);
+        this.addChild(game.hero);
+        game.ctrl_rocker = new Laya.Image();
+        game.ctrl_rocker.loadImage("res/control-rocker.png");
+        game.ctrl_rocker.pos(32, 405);
+        this.addChild(game.ctrl_rocker);
+        game.ctrl_rocker_move = new Laya.Image();
+        game.ctrl_rocker_move.loadImage("res/control-rocker.png");
+        game.ctrl_rocker_move.pos(30, 425);
+        game.ctrl_rocker_move.visible = false;
+        this.addChild(game.ctrl_rocker_move);
+        game.ctrl_back = new Laya.Image();
+        game.ctrl_back.loadImage("res/control-back.png");
+        game.ctrl_back.pos(30, 400);
+        game.ctrl_back.pivot(20, 20);
+        this.addChild(game.ctrl_back);
         for (var i = 0; i < 10; i++) {
             var trap = new thunder();
             trap.init();
             trap.pos(Math.random() * 400, Math.random() * 400);
             this.addChild(trap);
         }
+        Laya.stage.on("mouseup", game, game.ctrlRockerUp);
+        Laya.stage.on("mousemove", game, game.ctrlRockerDown);
     };
     IngameBackground.prototype.down = function (e) {
         console.log(e.keyCode);
         if (e.keyCode === 37)
-            this.hero.x -= 10;
+            game.hero.x -= 10;
         if (e.keyCode === 38)
-            this.hero.y -= 10;
+            game.hero.y -= 10;
         if (e.keyCode === 39)
-            this.hero.x += 10;
+            game.hero.x += 10;
         if (e.keyCode === 40)
-            this.hero.y += 10;
+            game.hero.y += 10;
     };
     return IngameBackground;
 }(Laya.Sprite));
