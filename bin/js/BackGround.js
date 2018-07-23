@@ -133,10 +133,16 @@ var IngameBackground = /** @class */ (function (_super) {
         var finishline = new tile();
         finishline.makeblock('1', 1, 9, 755, 90);
         this.addChild(finishline);
-        // this.hero = new Hero();
-        // this.hero.loadImage("res/Hero.png");
-        // this.hero.pos(10,300);
-        // this.addChild(this.hero);
+        this.hero = new Hero();
+        this.hero.loadImage("res/Hero.png");
+        this.hero.pos(10, 300);
+        this.addChild(this.hero);
+        for (var i = 0; i < 10; i++) {
+            var trap = new thunder();
+            trap.init();
+            trap.pos(Math.random() * 400, Math.random() * 400);
+            this.addChild(trap);
+        }
     };
     IngameBackground.prototype.down = function (e) {
         console.log(e.keyCode);
@@ -151,4 +157,4 @@ var IngameBackground = /** @class */ (function (_super) {
     };
     return IngameBackground;
 }(Laya.Sprite));
-//# sourceMappingURL=StartBackGround.js.map
+//# sourceMappingURL=BackGround.js.map
