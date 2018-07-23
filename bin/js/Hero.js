@@ -16,10 +16,8 @@ var Hero = /** @class */ (function (_super) {
         return _this;
     }
     Hero.prototype.init = function () {
-        this.SpeedX = 0;
-        this.SpeedY = 0;
-        this.PosX = 0;
-        this.PosY = 0;
+        this.loadImage("res/Hero.png");
+        this.inbox = false;
     };
     return Hero;
 }(Laya.Sprite));

@@ -13,8 +13,9 @@ var thunder = /** @class */ (function (_super) {
     function thunder() {
         return _super.call(this) || this;
     }
-    thunder.prototype.init = function () {
+    thunder.prototype.init = function (_speed) {
         this.loadImage("res/thunder.png");
+        this.speed = _speed;
     };
     return thunder;
 }(Laya.Sprite));

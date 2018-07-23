@@ -21,6 +21,10 @@ var tile = /** @class */ (function (_super) {
         this.pos(this.x, this.y);
     };
     tile.prototype.makeblock = function (_type, width, height, posX, posY) {
+        this.width = width;
+        this.height = height;
+        this.posX = posX;
+        this.posY = posY;
         for (var i = 0; i < width; i++) {
             for (var j = 0; j < height; j++) {
                 var m_tile = new tile();

@@ -1,17 +1,11 @@
 class Hero extends Laya.Sprite{
-
-    public SpeedX:number;
-    public SpeedY:number;
-    public PosX:number;
-    public PosY:number;
+    public inbox:boolean;
     constructor(){
         super();
         this.init();
     }
     init():void{
-        this.SpeedX = 0;
-        this.SpeedY = 0;
-        this.PosX = 0;
-        this.PosY = 0;
+         this.loadImage("res/Hero.png");
+         this.inbox = false;
     }
 } 

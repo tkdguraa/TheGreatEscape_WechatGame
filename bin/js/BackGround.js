@@ -113,47 +113,69 @@ var IngameBackground = /** @class */ (function (_super) {
         var _this = _super.call(this) || this;
         _this.init();
         _this.stage.on(Laya.Event.KEY_DOWN, _this, _this.down);
+        _this.frameLoop(1, _this, _this.Loop);
         return _this;
     }
     IngameBackground.prototype.init = function () {
         this.bg = new Laya.Sprite();
-        this.addChild(this.bg);
+        this.stage.addChild(this.bg);
         this.bg.loadImage("res/stage.png");
-        for (var i = 0; i < 8; i++) {
+        for (var i = 0; i < 7; i++) {
             var challenge = new tile();
             if (i % 2 === 0)
-                challenge.makeblock('2', 15, 2, 45 * 2 + i * 90, 90 + 45 * 3);
+                challenge.makeblock('2', 2, 2, 45 * 2 + i * 90, 90 + 45 * 3);
             else
-                challenge.makeblock('3', 15, 2, 45 * 2 + i * 90, 90 + 45 * 3);
-            this.addChild(challenge);
+                challenge.makeblock('3', 2, 2, 45 * 2 + i * 90, 90 + 45 * 3);
+            this.stage.addChild(challenge);
         }
         var startline = new tile();
         startline.makeblock('1', 2, 9, 0, 90);
-        this.addChild(startline);
+        this.stage.addChild(startline);
         var finishline = new tile();
-        finishline.makeblock('1', 1, 9, 755, 90);
-        this.addChild(finishline);
+        finishline.makeblock('1', 2, 9, 720, 90);
+        this.stage.addChild(finishline);
         this.hero = new Hero();
-        this.hero.loadImage("res/Hero.png");
-        this.hero.pos(10, 300);
-        this.addChild(this.hero);
-        for (var i = 0; i < 10; i++) {
-            var trap = new thunder();
-            trap.init();
-            trap.pos(Math.random() * 400, Math.random() * 400);
+        this.hero.init();
+        this.hero.pos(0, 300);
+        this.stage.addChild(this.hero);
+        this.createTrap(20, 3);
+    };
+    IngameBackground.prototype.Loop = function () {
+        for (var i = this.numChildren - 1; i >= 0; i--) {
+            var trap = this.getChildAt(i);
+            var temp = Math.random();
+            if (temp > 0.7 && trap.x + 5 < 660)
+                trap.x += trap.speed;
+            else if (temp < 0.7 && temp > 0.4 && trap.x - 5 > 90)
+                trap.x -= trap.speed;
+            var temp2 = Math.random();
+            if (temp2 > 0.7 && trap.y + 55 < 600)
+                trap.y += trap.speed;
+            else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
+                trap.y -= trap.speed;
+            //遍历每一个闪电,使它们按一定概率移动
+            if (Math.abs(this.hero.x - trap.x) < 15 && Math.abs(this.hero.y - trap.y) < 40) //判断碰撞
+                console.log("failed!");
+        }
+    }; //width:20~30,height:5~45 trap    
+    //width:5~35,height:5~45 hero
+    IngameBackground.prototype.createTrap = function (num, speed) {
+        for (var i = 0; i < num; i++) {
+            var trap = Laya.Pool.getItemByClass("thunder", thunder);
+            trap.init(speed);
+            trap.pos(Math.random() * 600 + 90, Math.random() * 600);
             this.addChild(trap);
         }
     };
     IngameBackground.prototype.down = function (e) {
-        console.log(e.keyCode);
         if (e.keyCode === 37)
-            this.hero.x -= 10;
+            this.hero.x -= 5;
         if (e.keyCode === 38)
-            this.hero.y -= 10;
+            this.hero.y -= 5;
         if (e.keyCode === 39)
-            this.hero.x += 10;
+            this.hero.x += 5;
         if (e.keyCode === 40)
-            this.hero.y += 10;
+            this.hero.y += 5;
     };
     return IngameBackground;
 }(Laya.Sprite));
