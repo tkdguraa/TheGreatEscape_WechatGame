@@ -139,26 +139,9 @@ class IngameBackground extends Laya.Sprite {
         finishline.makeblock('1', 1, 9, 755, 90);
         this.addChild(finishline);
         
-        game.hero = new Hero();
-        game.hero.loadImage("res/Hero.png");
-        game.hero.pos(10, 300);
         this.addChild(game.hero);
-
-        game.ctrl_rocker = new Laya.Image();
-        game.ctrl_rocker.loadImage("res/control-rocker.png");
-        game.ctrl_rocker.pos(32, 405);
         this.addChild(game.ctrl_rocker);
-
-        game.ctrl_rocker_move = new Laya.Image();
-        game.ctrl_rocker_move.loadImage("res/control-rocker.png");
-        game.ctrl_rocker_move.pos(32, 405);
-        game.ctrl_rocker_move.visible = false;
         this.addChild(game.ctrl_rocker_move);
-        
-        game.ctrl_back = new Laya.Image();
-        game.ctrl_back.loadImage("res/control-back.png");
-        game.ctrl_back.pos(30, 400);
-        game.ctrl_back.pivot(20, 20);
         this.addChild(game.ctrl_back);
 
         for (let i = 0; i < 10; i++) {
