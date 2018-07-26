@@ -1,33 +1,42 @@
 import WebGL = Laya.WebGL;
 class Game{
     private bg:StartBackGround;
-    private bg2:IngameBackground;
-
-    stageW: number = 800;
-    stageH: number = 600;
-    ctrl_rocker_x: number = 50;
-    ctrl_rocker_y: number = 400;
+    private bg2:thunderMode1;
+    private bg3:BombMode1;
 
     hero: Hero;
     ctrl_rocker: Laya.Image;
     ctrl_rocker_move: Laya.Image;
     ctrl_back: Laya.Image;
+    
+    stageW: number = 800;
+    stageH: number = 600;
+    ctrl_rocker_x: number = 50;
+    ctrl_rocker_y: number = 400;
 
     constructor() {
-        Laya.init(800, 600, WebGL);
+      // 初始屏幕适配
+    //    Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
+    //    Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
+    //    Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
+    //    Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
+       //this.bg = new StartBackGround();
+      // this.bg3 = new BombMode1();
+     //  Laya.stage.addChild(this.bg3);
+     //  this.bg.Play.on(Laya.Event.CLICK,this,this.clickHandler);
 
+        Laya.init(800, 600, WebGL);
+        this.init_ingame_images();
+        Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
         // 初始屏幕适配
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
         Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
         Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
-
-        this.init_ingame_images();
-        
+    
         this.bg = new StartBackGround();
         Laya.stage.addChild(this.bg);
         this.bg.Play.on(Laya.Event.CLICK,this,this.clickHandler);
-
         Laya.timer.frameLoop(1, this, this.gameLoop)
     }
 
@@ -60,7 +69,7 @@ class Game{
     clickHandler(): void {
        console.log('on click');
        this.bg.removeSelf();
-       this.bg2 = new IngameBackground();
+       this.bg2 = new thunderMode1;
        Laya.stage.addChild(this.bg2);
     }
 

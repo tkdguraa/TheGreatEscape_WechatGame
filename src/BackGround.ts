@@ -53,7 +53,7 @@ class StartBackGround extends Laya.Sprite {
         let letterText: Laya.Text;
         
          //根据字符串长度创建单个字符，并对每个单独字符使用缓动动画
-         for(let i: number = 0, len: number = title1.length; i < len; ++i) {
+        for (let i: number = 0, len: number = title1.length; i < len; ++i) {
             letterText = this.createLetter(title1.charAt(i));
             letterText.x = w / len * i + offsetX;     
             letterText.y = 0;     
@@ -106,63 +106,281 @@ class StartBackGround extends Laya.Sprite {
     
 }
 
-class IngameBackground extends Laya.Sprite {
+class thunderMode1 extends Laya.Sprite{
+ 
     private bg: Laya.Sprite;
-    // private hero: Hero;
-
+    private hero: Hero;
+    public startline: Tile;
+    private challenge: Tile;
     constructor() {
         super();
         this.init();
         this.stage.on(Laya.Event.KEY_DOWN, this, this.down);
+        this.frameLoop(1, this, this.Loop);
     }
-
+    //width:20~30,height:5~45 trap    
+    //width:5~35,height:5~45 hero
     init(): void {
+
+        this.hero = game.hero;
         this.bg = new Laya.Sprite();
-        this.addChild(this.bg);
         this.bg.loadImage("res/stage.png");
+        this.stage.addChild(this.bg);
 
-        for (let i = 0 ;i < 8; i++) {
-            let challenge = new tile();
-            if (i % 2 === 0)
-                challenge.makeblock('2' ,15, 2, 45 * 2 + i * 90, 90 + 45 * 3);
+        this.challenge = new Tile();
+        for (let i = 0; i < 5; i++) {
+            if(i % 2 === 0)
+                this.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
             else
-                challenge.makeblock('3', 15, 2, 45 * 2 + i * 90, 90 + 45 * 3);
-
-            this.addChild(challenge);  
+                this.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
+            
+            this.stage.addChild(this.challenge);  
         }
-
-        let startline = new tile();
-        startline.makeblock('1', 2, 9, 0, 90);
-        this.addChild(startline);
-
-        let finishline = new tile();
-        finishline.makeblock('1', 1, 9, 755, 90);
-        this.addChild(finishline);
         
-        this.addChild(game.hero);
-        this.addChild(game.ctrl_rocker);
-        this.addChild(game.ctrl_rocker_move);
-        this.addChild(game.ctrl_back);
+        this.startline = new Tile();
+        this.startline.makeblock('5', 1, 9, 0, 90);
+        this.stage.addChild(this.startline);
 
-        for (let i = 0; i < 10; i++) {
-            let trap:thunder = new thunder();
-            trap.init();
-            trap.pos(Math.random()*400,Math.random()*400);
+        let finishline:Tile = new Tile();
+        finishline.makeblock('1', 2, 9, 720, 90);
+        this.stage.addChild(finishline);
+        
+        this.stage.addChild(game.hero);
+        this.stage.addChild(game.ctrl_rocker);
+        this.stage.addChild(game.ctrl_rocker_move);
+        this.stage.addChild(game.ctrl_back);
+        
+        this.createTrap(20, 3);
+    }
+    Loop(): void {
+        for (let i: number = this.numChildren - 1; i >= 0; i--) {
+            let trap: thunder = this.getChildAt(i) as thunder;
+            
+            let temp: number = Math.random();
+            if (temp > 0.7 && trap.x + 5 < 660 )
+                trap.x += trap.speed;
+            else if (temp < 0.7 && temp > 0.4 && trap.x - 5 > 90)
+                trap.x -= trap.speed;
+            
+            let temp2: number = Math.random();
+            if (temp2 > 0.7 && trap.y + 55 < 600)
+                trap.y += trap.speed;
+            else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
+                trap.y -= trap.speed;
+            //遍历每一个闪电,使它们按一定概率移动
+                
+            if (Math.abs(this.hero.x - trap.x) < 13 && Math.abs(this.hero.y - trap.y) < 30 && this.hero.alive === 1) {//判断碰撞
+                console.log("failed!");
+                Laya.SoundManager.playMusic("res/sound/thunder.wav",1);
+                this.hero.body.removeSelf();
+                this.hero.burn.play(0,false);
+                this.hero.alive = 0 ;        
+            }
+        } 
+    }
+    createTrap(num: number,speed: number): void {
+        for (let i = 0; i < num; i++) {
+            let trap: thunder = Laya.Pool.getItemByClass("thunder", thunder);
+            trap.init(speed);
+            trap.pos(Math.random() * 600 + 90, Math.random() * 500 + 50);
             this.addChild(trap);
         }
 
         Laya.stage.on("mouseup", game, game.ctrlRockerUp)
         Laya.stage.on("mousemove", game, game.ctrlRockerDown)
     }
-    down(e) {
-        console.log(e.keyCode);
-        if (e.keyCode === 37)
-            game.hero.x -= 10;
-        if (e.keyCode === 38)
-            game.hero.y -= 10;
-        if (e.keyCode === 39)
-            game.hero.x += 10;
-        if (e.keyCode === 40)
-            game.hero.y += 10;
+ 
+    down(e) {    
+        if (this.hero.alive === 1) {
+            if (e.keyCode === 37)
+                this.hero.x -= 8;
+                                
+            if (e.keyCode === 38)
+                this.hero.y -= 8;
+                    
+            if (e.keyCode === 39)
+                this.hero.x += 8;         
+            
+            if (e.keyCode === 40)
+                this.hero.y += 8;
+        }
+        let cnt: number = 0;
+        for (let i: number = 1; i < this.stage.numChildren - 2; i++) {
+                let m_tile: Tile = this.stage.getChildAt(i) as Tile;
+                
+            if (i === 1) {
+                for (let j: number = 0; j < this.challenge.numChildren; j++) {
+                    let _tile: Tile = this.challenge.getChildAt(j) as Tile;
+                    console.log(_tile.posX,_tile.posY,_tile.width,_tile.height);
+                    if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
+                        break;      
+                    cnt++;
+                }
+            }
+            else {
+                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && 
+                        this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+                        break;
+                    cnt++;
+            }
+        }
+        console.log(this.stage.numChildren, this.challenge.numChildren,cnt);
+        if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
+            console.log("die!");
+            Laya.SoundManager.playMusic("res/sound/fall.m4a",1);
+            this.hero.alive = 0;
+            this.hero.burn.removeSelf();
+            this.hero.body.play(0, false);
+
+            if(e.keyCode === 37)
+                this.hero.x -= 20;
+                                
+            if(e.keyCode === 38)
+                this.hero.y -= 20;
+                    
+            if(e.keyCode === 39)
+                this.hero.x += 20;         
+            
+            if(e.keyCode === 40)
+                this.hero.y += 20;
+        }
     }
 }
+
+class BombMode1 extends Laya.Sprite {
+    private bg: Laya.Sprite;
+    private hero: Hero;
+    public startline: Tile;
+    private challenge: Tile;
+    constructor() {
+        super();
+        this.init();
+        this.stage.on(Laya.Event.KEY_DOWN, this, this.down);
+        this.frameLoop(5,this,this.normal);
+        this.timer.frameLoop(100,this,this.onfire);
+        this.timer.frameLoop(1,this,this.judbomb);
+    }
+    normal(): void {
+        for (let i: number = 0; i < this.challenge.numChildren; i++) {
+            let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
+            m_tile.fire = false;
+            for (let j: number = 0; j < m_tile.numChildren; j++) {
+                let _tile: Tile = m_tile.getChildAt(j) as Tile;
+                _tile.loadImage("res/tile"+_tile.type+".png");
+            }
+        }
+    }
+    onfire(): void {
+        for (let i: number = 0; i < this.challenge.numChildren; i++) {
+            let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
+            m_tile.fire = true;
+            for (let j: number = 0; j < m_tile.numChildren; j++) {
+                let _tile: Tile = m_tile.getChildAt(j) as Tile;
+                _tile.loadImage("res/tile6.png");
+            }
+        }
+    }
+    judbomb(): void {
+        if (this.hero.alive === 1) {
+            let i:number = 0;
+            let cnt:number = 0;
+            for (i = 0; i < this.challenge.numChildren; i++) {
+            let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
+                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+                    break;
+                cnt++;
+            }
+            let _tile: Tile = this.challenge.getChildAt(i) as Tile;
+            if (cnt != this.challenge.numChildren) {
+                if (_tile.fire === true) {
+                    console.log("he");
+                    this.hero.alive = 0;
+                    this.hero.body.removeSelf();
+                    this.hero.burn.play(0,false);
+                }
+             }
+    }     }
+    init(): void {
+        this.bg = new Laya.Sprite();
+        this.stage.addChild(this.bg);
+        this.bg.loadImage("res/stage2.png");
+        this.challenge = new Tile();
+        for (let i = 0; i < 5; i++) {
+            if (i % 2 === 0)
+                this.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
+            else
+                this.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
+        
+            this.stage.addChild(this.challenge);  
+        }
+        
+        this.startline = new Tile();
+        this.startline.makeblock('5', 1, 9, 0, 90);
+        this.stage.addChild(this.startline);
+
+        let finishline:Tile = new Tile();
+        finishline.makeblock('1', 2, 9, 720, 90);
+        this.stage.addChild(finishline);
+       
+        this.hero = new Hero();
+        this.hero.init();
+        this.hero.pos(0,300);
+        this.stage.addChild(this.hero);
+    }
+
+ 
+    down(e) {    
+        if (this.hero.alive === 1) {
+            if (e.keyCode === 37)
+                this.hero.x -= 8;
+                                
+            if (e.keyCode === 38)
+                this.hero.y -= 8;
+                    
+            if (e.keyCode === 39)
+                this.hero.x += 8;         
+            
+            if (e.keyCode === 40)
+                this.hero.y += 8;
+        }
+        let cnt: number = 0;
+        for (let i: number = 1; i < this.stage.numChildren - 2; i++) {
+            let m_tile: Tile = this.stage.getChildAt(i) as Tile;
+            
+            if (i === 1) {
+                for (let j: number = 0; j < this.challenge.numChildren; j++) {
+                let _tile: Tile = this.challenge.getChildAt(j) as Tile;
+                if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
+                        break;      
+                cnt++;
+                }
+            }
+            else {
+                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && 
+                    this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+                    break;
+                cnt++;
+            }
+        }
+        console.log(this.stage.numChildren, this.challenge.numChildren,cnt);
+        if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
+            console.log("die!");
+            Laya.SoundManager.playMusic("res/sound/fall.m4a",1);
+            this.hero.alive = 0;
+            this.hero.burn.removeSelf();
+            this.hero.body.play(0, false);
+            if (e.keyCode === 37)
+            this.hero.x -= 20;
+                                
+            if (e.keyCode === 38)
+                this.hero.y -= 20;
+                    
+            if (e.keyCode === 39)
+                this.hero.x += 20;         
+            
+            if (e.keyCode === 40)
+                this.hero.y += 20;
+            }
+      }
+}
+

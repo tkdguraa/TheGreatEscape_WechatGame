@@ -1,17 +1,27 @@
 var WebGL = Laya.WebGL;
 var Game = /** @class */ (function () {
     function Game() {
+        // 初始屏幕适配
+        //    Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
+        //    Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
+        //    Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
+        //    Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
+        //this.bg = new StartBackGround();
+        // this.bg3 = new boomMode1();
+        //  Laya.stage.addChild(this.bg3);
+        //  this.bg.Play.on(Laya.Event.CLICK,this,this.clickHandler);
         this.stageW = 800;
         this.stageH = 600;
         this.ctrl_rocker_x = 50;
         this.ctrl_rocker_y = 400;
         Laya.init(800, 600, WebGL);
+        this.init_ingame_images();
+        Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
         // 初始屏幕适配
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
         Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
         Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
-        this.init_ingame_images();
         this.bg = new StartBackGround();
         Laya.stage.addChild(this.bg);
         this.bg.Play.on(Laya.Event.CLICK, this, this.clickHandler);
@@ -41,7 +51,7 @@ var Game = /** @class */ (function () {
     Game.prototype.clickHandler = function () {
         console.log('on click');
         this.bg.removeSelf();
-        this.bg2 = new IngameBackground();
+        this.bg2 = new thunderMode1;
         Laya.stage.addChild(this.bg2);
     };
     Game.prototype.ctrlRockerUp = function () {
