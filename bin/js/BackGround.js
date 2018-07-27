@@ -24,6 +24,13 @@ var StartBackGround = /** @class */ (function (_super) {
         this.bgSecond.loadImage("res/background.jpg");
         this.bgSecond.pos(-800, 0);
         this.addChild(this.bgSecond);
+        this.Help = new Laya.Button();
+        this.Help.x = 730;
+        this.Help.y = 0;
+        this.Help.width = 70;
+        this.Help.height = 70;
+        this.Help.loadImage("res/Help.png");
+        this.addChild(this.Help);
         this.Play = new Laya.Button();
         this.Play.x = 272;
         this.Play.y = 350;
@@ -31,7 +38,6 @@ var StartBackGround = /** @class */ (function (_super) {
         this.Play.height = 100;
         this.Play.loadImage("res/Play.png");
         this.addChild(this.Play);
-        // this.on(Laya.Event.CLICK,this,this.clickHandler);
         this.DisplayTitle();
         Laya.timer.frameLoop(1, this, this.onLoop);
     };
@@ -58,13 +64,6 @@ var StartBackGround = /** @class */ (function (_super) {
             letterText = this.createLetter(title1.charAt(i));
             letterText.x = w / len * i + offsetX;
             letterText.y = 0;
-            /**
-                * 对象letterText属性y从100缓动到300的位置，每一帧都通过回调方法更新颜色
-                * 用1000毫秒完成缓动效果
-                * 缓动类型采用bounceIn
-                * 单个字符的缓动效果结束后，使用changeColor回调函数将字符改变为红色
-                * 延迟间隔i*100毫秒执行
-                */
             Laya.Tween.to(letterText, { y: 100, update: new Laya.Handler(this, this.updateColor, [letterText]) }, 1000, Laya.Ease.bounceIn, Laya.Handler.create(this, this.changeColor, [letterText]), 100);
         }
         for (var i = 0, len = title2.length; i < len; ++i) {
@@ -105,33 +104,112 @@ var StartBackGround = /** @class */ (function (_super) {
     };
     return StartBackGround;
 }(Laya.Sprite));
-var thunderMode1 = /** @class */ (function (_super) {
-    __extends(thunderMode1, _super);
-    function thunderMode1() {
+var Instruction = /** @class */ (function (_super) {
+    __extends(Instruction, _super);
+    function Instruction() {
         var _this = _super.call(this) || this;
+        _this.Back = new Laya.Button();
+        _this.bg = new Laya.Sprite();
+        _this.bg.loadImage("res/instruction.png");
+        _this.Back = new Laya.Button();
+        _this.Back.x = 10;
+        _this.Back.y = 510;
+        _this.Back.width = 90;
+        _this.Back.height = 45;
+        _this.Back.loadImage("res/back.png");
+        _this.addChild(_this.bg);
+        _this.addChild(_this.Back);
+        _this.Back.on(Laya.Event.CLICK, _this, _this.backtoStart);
+        return _this;
+    }
+    Instruction.prototype.backtoStart = function () {
+        this.bg.removeSelf();
+        this.Back.removeSelf();
+        Laya.stage.addChild(game.bg);
+    };
+    return Instruction;
+}(Laya.Sprite));
+var ThunderMode1 = /** @class */ (function (_super) {
+    __extends(ThunderMode1, _super);
+    function ThunderMode1() {
+        var _this = _super.call(this) || this;
+        _this.def = 0;
         _this.init();
-        _this.stage.on(Laya.Event.KEY_DOWN, _this, _this.down);
         _this.frameLoop(1, _this, _this.Loop);
         _this.frameLoop(1, _this, _this.judstate);
         return _this;
     }
-    thunderMode1.prototype.judstate = function () {
-        var m_tile = this.finishline;
-        if (this.hero.alive === 1) {
-            if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
-                this.stage.removeSelf();
-                this.stage.on;
-                this.startline.removeSelf();
-                this.finishline.removeSelf();
-                this.hero.removeSelf();
-                this.challenge.removeSelf();
-                var bg = new BombMode1();
-                this.timer.clear(this, this.judstate);
-                Laya.stage.addChild(bg);
+    ThunderMode1.prototype.setmap = function () {
+        this.challenge = this.Tmap1.challenge;
+        this.startline = this.Tmap1.startline;
+        this.finishline = this.Tmap1.finishline;
+        this.stage.addChild(this.challenge);
+        this.stage.addChild(this.startline);
+        this.stage.addChild(this.finishline);
+        this.hero = game.hero;
+        this.hero.pos(0, 300);
+        this.stage.addChild(this.hero);
+        this.stage.addChild(game.hero);
+        this.stage.addChild(game.ctrl_rocker);
+        this.stage.addChild(game.ctrl_rocker_move);
+        this.stage.addChild(game.ctrl_back);
+        this.createTrap(20, 3);
+        this.def = 1;
+    };
+    ThunderMode1.prototype.judstate = function () {
+        if (this.def === 1) {
+            var m_tile = this.finishline;
+            if (this.hero.alive === 1) {
+                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
+                    for (var i = 0; i < this.stage.numChildren; i++) {
+                        var m_child = this.stage.getChildAt(i);
+                        m_child.removeSelf();
+                    }
+                    var bg = new BombMode1();
+                    bg.setmap();
+                    this.timer.clear(this, this.judstate);
+                    this.timer.clear(this, this.Loop);
+                    Laya.stage.addChild(bg);
+                }
+            }
+            var cnt = 0;
+            for (var i = 1; i < this.stage.numChildren - 2; i++) {
+                var m_tile_1 = this.stage.getChildAt(i);
+                if (i === 1) {
+                    for (var j = 0; j < this.challenge.numChildren; j++) {
+                        var _tile = this.challenge.getChildAt(j);
+                        if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
+                            break;
+                        cnt++;
+                    }
+                }
+                else {
+                    if ((this.hero.x + 20 >= m_tile_1.posX && this.hero.x + 20 <= m_tile_1.posX + m_tile_1.width * 45 &&
+                        this.hero.y + 23 >= m_tile_1.posY && this.hero.y + 23 <= m_tile_1.posY + 45 * m_tile_1.height))
+                        break;
+                    cnt++;
+                }
+            }
+            if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
+                console.log(cnt, this.stage.numChildren, this.challenge.numChildren);
+                Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
+                DisplayWords();
+                this.hero.alive = 0;
+                makeunvisible(this.hero);
+                this.hero.body.visible = true;
+                this.hero.body.play(0, false);
+                if (this.hero.speedX < 0)
+                    this.hero.x -= 20;
+                if (this.hero.speedY < 0)
+                    this.hero.y -= 20;
+                if (this.hero.speedX > 0)
+                    this.hero.x += 20;
+                if (this.hero.speedY > 0)
+                    this.hero.y += 20;
             }
         }
     };
-    thunderMode1.prototype.Loop = function () {
+    ThunderMode1.prototype.Loop = function () {
         for (var i = this.numChildren - 1; i >= 0; i--) {
             var trap = this.getChildAt(i);
             var temp = Math.random();
@@ -144,135 +222,80 @@ var thunderMode1 = /** @class */ (function (_super) {
                 trap.y += trap.speed;
             else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
                 trap.y -= trap.speed;
-            //遍历每一个闪电,使它们按一定概率移动
-            //    if(Math.abs(this.hero.x - trap.x) < 13 && Math.abs(this.hero.y - trap.y) < 30 && this.hero.alive === 1){//判断碰撞
-            //      console.log("failed!");
-            //      this.hero.body.removeSelf();
-            //      this.hero.burn.play(0,false);
-            //      this.hero.alive = 0 ;        
-            //    }
+            //judelectricshock(this.hero,trap);
         }
-    }; //width:20~30,height:5~45 trap    
-    //width:5~35,height:5~45 hero
-    thunderMode1.prototype.init = function () {
+    };
+    ThunderMode1.prototype.init = function () {
         this.bg = new Laya.Sprite();
         this.hero = game.hero;
         this.stage.addChild(this.bg);
         this.bg.loadImage("res/stage.png");
-        this.challenge = new Tile();
-        for (var i = 0; i < 5; i++) {
-            this.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
-            this.stage.addChild(this.challenge);
-        }
         this.startline = new Tile();
-        this.startline.makeblock('5', 1, 9, 0, 90);
-        this.stage.addChild(this.startline);
+        this.challenge = new Tile();
         this.finishline = new Tile();
-        this.finishline.makeblock('1', 2, 9, 720, 90);
-        this.stage.addChild(this.finishline);
-        this.stage.addChild(game.hero);
-        this.stage.addChild(game.ctrl_rocker);
-        this.stage.addChild(game.ctrl_rocker_move);
-        this.stage.addChild(game.ctrl_back);
-        this.createTrap(20, 3);
+        this.Tmap1 = new Map();
+        this.Tmap1.startline.makeblock('5', 1, 9, 0, 90);
+        this.Tmap1.finishline.makeblock('1', 2, 9, 720, 90);
+        this.Tmap1.challenge.makeblock('2', 15, 9, 45, 90);
     };
-    thunderMode1.prototype.createTrap = function (num, speed) {
+    ThunderMode1.prototype.createTrap = function (num, speed) {
         for (var i = 0; i < num; i++) {
-            var trap = Laya.Pool.getItemByClass("thunder", thunder);
+            var trap = Laya.Pool.getItemByClass("thunder", Thunder);
             trap.init(speed);
             trap.pos(Math.random() * 600 + 90, Math.random() * 500 + 50);
             this.addChild(trap);
         }
     };
-    thunderMode1.prototype.down = function (e) {
-        console.log(this.hero.x);
-        if (this.hero.alive === 1) {
-            if (e.keyCode === 37)
-                this.hero.x -= 8;
-            if (e.keyCode === 38)
-                this.hero.y -= 8;
-            if (e.keyCode === 39) {
-                this.hero.x += 8;
-            }
-            if (e.keyCode === 40)
-                this.hero.y += 8;
-        }
-        var cnt = 0;
-        for (var i = 1; i < this.stage.numChildren - 2; i++) {
-            var m_tile = this.stage.getChildAt(i);
-            if (i === 1) {
-                for (var j = 0; j < this.challenge.numChildren; j++) {
-                    var _tile = this.challenge.getChildAt(j);
-                    if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
-                        break;
-                    cnt++;
-                }
-            }
-            else {
-                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 &&
-                    this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
-                    break;
-                cnt++;
-            }
-        }
-        if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
-            Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
-            this.hero.alive = 0;
-            this.hero.burn.removeSelf();
-            this.hero.body.play(0, false);
-            if (e.keyCode === 37) {
-                this.hero.x -= 20;
-            }
-            if (e.keyCode === 38)
-                this.hero.y -= 20;
-            if (e.keyCode === 39)
-                this.hero.x += 20;
-            if (e.keyCode === 40)
-                this.hero.y += 20;
-        }
-    };
-    return thunderMode1;
+    return ThunderMode1;
 }(Laya.Sprite));
 var BombMode1 = /** @class */ (function (_super) {
     __extends(BombMode1, _super);
     function BombMode1() {
         var _this = _super.call(this) || this;
         _this.init();
-        _this.stage.on(Laya.Event.KEY_DOWN, _this, _this.down);
         _this.frameLoop(5, _this, _this.normal);
         _this.timer.frameLoop(100, _this, _this.onfire);
         _this.timer.frameLoop(1, _this, _this.judstate);
         return _this;
     }
-    BombMode1.prototype.DisplayWords = function () {
-        var w = 800;
-        var offsetX = Laya.stage.width - w >> 1;
-        var demoString = "GameOver";
-        var letterText;
-        for (var i = 0, len = demoString.length; i < len; ++i) {
-            letterText = this.createLetter(demoString.charAt(i));
-            letterText.x = w / len * i + offsetX;
-            letterText.y = -200;
-            Laya.Tween.to(letterText, { y: 100 }, 3000, Laya.Ease.elasticOut, null, i * 100);
-        }
+    BombMode1.prototype.setmap = function () {
+        this.startline = this.Bmap1.startline;
+        this.challenge = this.Bmap1.challenge;
+        this.finishline = this.Bmap1.finishline;
+        this.stage.addChild(this.challenge);
+        this.stage.addChild(this.startline);
+        this.stage.addChild(this.finishline);
+        this.hero = game.hero;
+        this.hero.pos(0, 300);
+        this.stage.addChild(this.hero);
+        this.stage.addChild(game.hero);
+        this.stage.addChild(game.ctrl_rocker);
+        this.stage.addChild(game.ctrl_rocker_move);
+        this.stage.addChild(game.ctrl_back);
     };
-    BombMode1.prototype.createLetter = function (char) {
-        var letter = new Laya.Text();
-        letter.text = char;
-        letter.color = "#ffffff";
-        letter.font = "Impact";
-        letter.fontSize = 180;
-        Laya.stage.addChild(letter);
-        return letter;
+    BombMode1.prototype.init = function () {
+        this.bg = new Laya.Sprite();
+        this.stage.addChild(this.bg);
+        this.bg.loadImage("res/stage2.png");
+        this.Bmap1 = new Map();
+        for (var i = 0; i < 5; i++) {
+            if (i % 2 === 0)
+                this.Bmap1.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
+            else
+                this.Bmap1.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
+        }
+        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 3, 180);
+        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 6, 180);
+        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 9, 180);
+        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 12, 180);
+        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 15, 180);
+        this.Bmap1.startline.makeblock('5', 1, 9, 0, 90);
+        this.Bmap1.finishline.makeblock('1', 2, 9, 720, 90);
     };
     BombMode1.prototype.normal = function () {
         for (var i = 0; i < this.challenge.numChildren; i++) {
             var m_tile = this.challenge.getChildAt(i);
             m_tile.fire = false;
-            // for(let j: number = 0; j < m_tile.numChildren; j++){
-            //     let _tile: Tile = m_tile.getChildAt(j) as Tile;
-            //     _tile.loadImage("res/Tile"+_tile.type+".png");
-            // }
         }
     };
     BombMode1.prototype.onfire = function () {
@@ -298,82 +321,96 @@ var BombMode1 = /** @class */ (function (_super) {
             }
             var _tile = this.challenge.getChildAt(i);
             if (cnt != this.challenge.numChildren) {
-                if (_tile.fire === true) {
-                    this.DisplayWords();
+                if (_tile.fire === true && _tile.type != "5") {
+                    DisplayWords();
                     this.hero.alive = 0;
-                    this.hero.body.removeSelf();
+                    makeunvisible(this.hero);
+                    this.hero.burn.visible = true;
                     this.hero.burn.play(0, false);
+                    Laya.SoundManager.playMusic("res/sound/gameover.wav", 1);
                 }
             }
         }
-    };
-    BombMode1.prototype.init = function () {
-        this.bg = new Laya.Sprite();
-        this.stage.addChild(this.bg);
-        this.bg.loadImage("res/stage2.png");
-        this.challenge = new Tile();
-        for (var i = 0; i < 5; i++) {
-            if (i % 2 === 0)
-                this.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
-            else
-                this.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
-            this.stage.addChild(this.challenge);
-        }
-        this.startline = new Tile();
-        this.startline.makeblock('5', 1, 9, 0, 90);
-        this.stage.addChild(this.startline);
-        var finishline = new Tile();
-        finishline.makeblock('1', 2, 9, 720, 90);
-        this.stage.addChild(finishline);
-        this.hero = new Hero();
-        this.hero.pos(0, 300);
-        this.stage.addChild(this.hero);
-    };
-    BombMode1.prototype.down = function (e) {
         if (this.hero.alive === 1) {
-            if (e.keyCode === 37)
-                this.hero.x -= 8;
-            if (e.keyCode === 38)
-                this.hero.y -= 8;
-            if (e.keyCode === 39)
-                this.hero.x += 8;
-            if (e.keyCode === 40)
-                this.hero.y += 8;
-        }
-        var cnt = 0;
-        for (var i = 1; i < this.stage.numChildren - 2; i++) {
-            var m_tile = this.stage.getChildAt(i);
-            if (i === 1) {
-                for (var j = 0; j < this.challenge.numChildren; j++) {
-                    var _tile = this.challenge.getChildAt(j);
-                    if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
+            var cnt = 0;
+            for (var i = 1; i < this.stage.numChildren - 2; i++) {
+                var m_tile = this.stage.getChildAt(i);
+                if (i === 1) {
+                    for (var j = 0; j < this.challenge.numChildren; j++) {
+                        var _tile = this.challenge.getChildAt(j);
+                        if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
+                            break;
+                        cnt++;
+                    }
+                }
+                else {
+                    if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 &&
+                        this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
                         break;
                     cnt++;
                 }
             }
-            else {
-                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 &&
-                    this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
-                    break;
-                cnt++;
+            if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
+                this.hero.alive = 0;
+                Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
+                makeunvisible(this.hero);
+                this.hero.body.visible = true;
+                this.hero.body.play(0, false);
+                DisplayWords();
+                if (this.hero.speedX < 0)
+                    this.hero.x -= 20;
+                if (this.hero.speedY < 0)
+                    this.hero.y -= 20;
+                if (this.hero.speedX > 0)
+                    this.hero.x += 20;
+                if (this.hero.speedY > 0)
+                    this.hero.y += 20;
             }
-        }
-        if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
-            this.hero.alive = 0;
-            Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
-            this.hero.burn.removeSelf();
-            this.hero.body.play(0, false);
-            this.DisplayWords();
-            if (e.keyCode === 37)
-                this.hero.x -= 20;
-            if (e.keyCode === 38)
-                this.hero.y -= 20;
-            if (e.keyCode === 39)
-                this.hero.x += 20;
-            if (e.keyCode === 40)
-                this.hero.y += 20;
         }
     };
     return BombMode1;
 }(Laya.Sprite));
+function DisplayWords() {
+    var w = 800;
+    var offsetX = Laya.stage.width - w >> 1;
+    var demoString = "GameOver";
+    var letterText;
+    for (var i = 0, len = demoString.length; i < len; ++i) {
+        letterText = this.createLetter(demoString.charAt(i));
+        letterText.x = w / len * i + offsetX;
+        letterText.y = -200;
+        Laya.Tween.to(letterText, { y: 100 }, 3000, Laya.Ease.elasticOut, null, i * 100);
+    }
+}
+function createLetter(char) {
+    var letter = new Laya.Text();
+    letter.text = char;
+    letter.color = "#ffffff";
+    letter.font = "Impact";
+    letter.fontSize = 180;
+    Laya.stage.addChild(letter);
+    return letter;
+}
+function judelectricshock(hero, trap) {
+    if (Math.abs(hero.x - trap.x) < 13 && Math.abs(hero.y - trap.y) < 30 && hero.alive === 1) { //判断碰撞
+        hero.right.visible = false;
+        hero.left.visible = false;
+        hero.up.visible = false;
+        hero.down.visible = false;
+        hero.stand.visible = false;
+        hero.burn.visible = true;
+        hero.burn.play(0, false);
+        DisplayWords();
+        Laya.SoundManager.playMusic("res/sound/thunder.wav", 1);
+        hero.alive = 0;
+    }
+}
+function makeunvisible(hero) {
+    hero.right.visible = false;
+    hero.left.visible = false;
+    hero.up.visible = false;
+    hero.down.visible = false;
+    hero.stand.visible = false;
+    hero.body.visible = false;
+}
 //# sourceMappingURL=BackGround.js.map

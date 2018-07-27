@@ -1,9 +1,9 @@
 import WebGL = Laya.WebGL;
 class Game {
-    private bg: StartBackGround;
-    private bg2: ThunderMode1;
-    private bg3: BombMode1;
-
+    public bg: StartBackGround;
+    public bg2: ThunderMode1;
+    public bg3: BombMode1;
+    public instruction: Instruction;
     hero: Hero;
     ctrl_rocker: Laya.Image;
     ctrl_rocker_move: Laya.Image;
@@ -16,15 +16,6 @@ class Game {
 
     constructor() {
       // 初始屏幕适配
-    //    Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
-    //    Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
-    //    Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
-    //    Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
-       //this.bg = new StartBackGround();
-      // this.bg3 = new BombMode1();
-     //  Laya.stage.addChild(this.bg3);
-     //  this.bg.Play.on(Laya.Event.CLICK,this,this.clickHandler);
-
         Laya.init(800, 600, WebGL);
         this.init_ingame_images();
         Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
@@ -37,6 +28,7 @@ class Game {
         this.bg = new StartBackGround();
         Laya.stage.addChild(this.bg);
         this.bg.Play.on(Laya.Event.CLICK,this,this.clickHandler);
+        this.bg.Help.on(Laya.Event.CLICK,this,this.helpHandler);
         Laya.timer.frameLoop(1, this, this.gameLoop)
     }
 
@@ -62,18 +54,39 @@ class Game {
     }
 
     gameLoop(): void {
-        this.ctrlRockerDown();
-        this.hero.x += this.hero.speedX;
-        this.hero.y += this.hero.speedY;
+       if(this.hero.alive === 1){ 
+            this.ctrlRockerDown();
+            this.hero.right.visible = false;
+            this.hero.left.visible = false;
+            this.hero.up.visible = false;
+            this.hero.down.visible = false;
+            this.hero.stand.visible = false;
+            if(this.hero.speedX === 0 && this.hero.speedY === 0)
+                this.hero.stand.visible = true;
+            else if(this.hero.speedX > 0 && (Math.abs(this.hero.speedX) > Math.abs(this.hero.speedY)))
+                this.hero.right.visible = true;
+            else if(this.hero.speedX < 0 && (Math.abs(this.hero.speedX) > Math.abs(this.hero.speedY)))
+                this.hero.left.visible = true;
+            else if(this.hero.speedY > 0 && (Math.abs(this.hero.speedY) > Math.abs(this.hero.speedX)))
+                this.hero.down.visible = true;
+            else if(this.hero.speedY < 0 && (Math.abs(this.hero.speedY) > Math.abs(this.hero.speedX)))
+                this.hero.up.visible = true;
+            
+            this.hero.x += this.hero.speedX;
+            this.hero.y += this.hero.speedY;
+        }
     }
 
     clickHandler(): void {
-       console.log('on click');
        this.bg.removeSelf();
-       this.bg2 = new ThunderMode1;
+       this.bg2 = new ThunderMode1();
+       this.bg2.setmap();
        Laya.stage.addChild(this.bg2);
     }
-
+    helpHandler():void{
+       this.instruction = new Instruction();
+       Laya.stage.addChild(this.instruction);
+    }
     ctrlRockerUp(): void {
         if (Laya.stage.mouseX <= game.stageW / 2) {
             this.ctrl_rocker.visible = true;
@@ -108,8 +121,8 @@ class Game {
 
             // move hero
             let angle = Math.atan2(Laya.stage.mouseY - game.ctrl_rocker_y, Laya.stage.mouseX - game.ctrl_rocker_x);
-            this.hero.speedX = Math.cos(angle);
-            this.hero.speedY = Math.sin(angle);
+            this.hero.speedX = 2*Math.cos(angle);
+            this.hero.speedY = 2*Math.sin(angle);
     
         } else {
             this.ctrl_rocker.visible = true;

@@ -30,12 +30,10 @@ class Tile extends Laya.Sprite{
             this.bomb.loadAtlas("res/atlas/blackhole.atlas",Laya.Handler.create(this,this.exploison));
         this.loadImage("res/tile"+this.type+".png");
         this.bomb.interval = 100;
-}
+    }
     exploison():void{
         this.addChild(this.bomb);
     }
-
-
     public makeblock(_type:string, width:number, height:number, posX:number, posY:number):void{
            this.width = width;
            this.height = height;
@@ -59,5 +57,22 @@ class Tile extends Laya.Sprite{
             }
             this.addChild(block);
             //this.stage.addChild(block);
+    }
+}
+class Map extends Laya.Sprite{
+    public startline: Tile;
+    public finishline: Tile;
+    public challenge: Tile;
+    
+    constructor(){
+        super();
+        this.startline = new Tile();
+        this.finishline = new Tile();
+        this.challenge = new Tile();
+    }
+    savemap(start: Tile, challenge:Tile, finish: Tile):void{
+        this.startline = start;
+        this.finishline = finish;
+        this.challenge = challenge;
     }
 }

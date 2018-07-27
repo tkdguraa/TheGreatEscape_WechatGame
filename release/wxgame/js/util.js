@@ -1,0 +1,1 @@
+function distance(t,n,r,a){return Math.sqrt((t-r)*(t-r)+(n-a)*(n-a))}

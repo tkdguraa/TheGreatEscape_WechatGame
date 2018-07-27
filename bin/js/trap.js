@@ -8,15 +8,15 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var thunder = /** @class */ (function (_super) {
-    __extends(thunder, _super);
-    function thunder() {
+var Thunder = /** @class */ (function (_super) {
+    __extends(Thunder, _super);
+    function Thunder() {
         return _super.call(this) || this;
     }
-    thunder.prototype.init = function (_speed) {
+    Thunder.prototype.init = function (_speed) {
         this.loadImage("res/thunder.png");
         this.speed = _speed;
     };
-    return thunder;
+    return Thunder;
 }(Laya.Sprite));
 //# sourceMappingURL=trap.js.map

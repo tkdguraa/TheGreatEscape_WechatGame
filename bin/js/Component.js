@@ -64,4 +64,20 @@ var Tile = /** @class */ (function (_super) {
     };
     return Tile;
 }(Laya.Sprite));
+var Map = /** @class */ (function (_super) {
+    __extends(Map, _super);
+    function Map() {
+        var _this = _super.call(this) || this;
+        _this.startline = new Tile();
+        _this.finishline = new Tile();
+        _this.challenge = new Tile();
+        return _this;
+    }
+    Map.prototype.savemap = function (start, challenge, finish) {
+        this.startline = start;
+        this.finishline = finish;
+        this.challenge = challenge;
+    };
+    return Map;
+}(Laya.Sprite));
 //# sourceMappingURL=Component.js.map
