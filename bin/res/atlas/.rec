@@ -1,18 +1,51 @@
 D .
+D blackhole
+P F6236880 hole1.png
+P 2E5ED7B8 hole2.png
+P 896909B8 hole3.png
+P 7916354F hole4.png
+P F6236880 hole5.png
 D boom1
-P 763FF3AF image1.png
-P 90D4EC5B image2.png
-P 763FF3AF image3.png
+P 763FF3AF exp.png
+P C64EE971 exp1.png
+P 276B1E52 exp2.png
+P 19E4468F exp3.png
+P 943F32C7 exp4.png
+P 7540DBFA exp5.png
+P 4ED81A68 exp6.png
+P C40861D6 exp7.png
+P 763FF3AF exp8.png
 D boom2
-P 8702BEF3 image1.png
-P 90D4EC5B image2.png
-P 8702BEF3 image3.png
+P 8702BEF3 exp.png
+P C64EE971 exp1.png
+P 276B1E52 exp2.png
+P 19E4468F exp3.png
+P 943F32C7 exp4.png
+P 7540DBFA exp5.png
+P 4ED81A68 exp6.png
+P C40861D6 exp7.png
+P 8702BEF3 exp8.png
 D burn
 P BBBD33DF burn1.png
 P E44DB0D7 burn2.png
 P 908BACA4 burn3.png
 P 93BE2768 burn4.png
 P 8186C52C burn5.png
+D godown
+P 35FAF442 gm_front_move1.png
+P A7809269 gm_front_move2.png
+D goleft
+P A80F1890 gm_side_move1.png
+P 85B14471 gm_side_move2.png
+D goright
+P 924486E4 gm_right_move1.png
+P F984005C gm_right_move2.png
+D goup
+P 5BD26D9C gm_back_move1.png
+P 64C589F2 gm_back_move2.png
+D normal
+P E536526C gm_front_down.png
+P 8764F2DB gm_front_up.png
 D res
 R E730C705 desktop.ini
 P BBBD33DF Hero.png

@@ -22,10 +22,20 @@ class Tile extends Laya.Sprite{
         this.y = posY;
         this.fire = false;
         this.pos(this.x,this.y);
+        if(this.type === "2")
+            this.bomb.loadAtlas("res/atlas/boom1.atlas",Laya.Handler.create(this,this.exploison));
+        else if(this.type === "3")
+            this.bomb.loadAtlas("res/atlas/boom2.atlas",Laya.Handler.create(this,this.exploison));
+        else if(this.type === "4")
+            this.bomb.loadAtlas("res/atlas/blackhole.atlas",Laya.Handler.create(this,this.exploison));
         this.loadImage("res/tile"+this.type+".png");
-
+        this.bomb.interval = 100;
 }
-  
+    exploison():void{
+        this.addChild(this.bomb);
+    }
+
+
     public makeblock(_type:string, width:number, height:number, posX:number, posY:number):void{
            this.width = width;
            this.height = height;

@@ -72,7 +72,7 @@ class StartBackGround extends Laya.Sprite {
             letterText.y = 0;
             Laya.Tween.to(letterText, { y: 200, update: new Laya.Handler(this, this.updateColor,[letterText])}, 1000, Laya.Ease.bounceIn, Laya.Handler.create(this, this.changeColor, [letterText]), 100);
         }
-}
+ }
     
     private updateColor(txt: Laya.Text): void {
         let c: number = Math.floor(Math.random() * 3);
@@ -112,207 +112,240 @@ class thunderMode1 extends Laya.Sprite{
     private hero: Hero;
     public startline: Tile;
     private challenge: Tile;
+    private finishline:Tile;
     constructor() {
         super();
         this.init();
         this.stage.on(Laya.Event.KEY_DOWN, this, this.down);
         this.frameLoop(1, this, this.Loop);
+        this.frameLoop(1, this, this.judstate);
     }
-    //width:20~30,height:5~45 trap    
-    //width:5~35,height:5~45 hero
-    init(): void {
-
-        this.hero = game.hero;
+     judstate():void{
+         let m_tile = this.finishline;
+         if(this.hero.alive === 1){
+         if((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+           {
+             this.stage.removeSelf();
+             this.stage.on
+             this.startline.removeSelf();
+             this.finishline.removeSelf();
+             this.hero.removeSelf();
+             this.challenge.removeSelf();
+             let bg = new BombMode1();
+             this.timer.clear(this,this.judstate);
+             Laya.stage.addChild(bg);
+           }    
+        } 
+    }
+    Loop():void{
+        for(let i: number = this.numChildren - 1; i >= 0; i--){
+            let trap: thunder = this.getChildAt(i) as thunder;
+            
+            let temp: number = Math.random();
+            if(temp > 0.7 && trap.x + 5 < 660 )
+                trap.x += trap.speed;
+            else if(temp < 0.7 && temp > 0.4 && trap.x - 5 > 90)
+                trap.x -= trap.speed;
+            
+            let temp2: number = Math.random();
+            if(temp2 > 0.7 && trap.y + 55 < 600)
+            trap.y += trap.speed;
+            else if(temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
+            trap.y -= trap.speed;
+            //遍历每一个闪电,使它们按一定概率移动
+            
+        //    if(Math.abs(this.hero.x - trap.x) < 13 && Math.abs(this.hero.y - trap.y) < 30 && this.hero.alive === 1){//判断碰撞
+        //      console.log("failed!");
+        //      this.hero.body.removeSelf();
+        //      this.hero.burn.play(0,false);
+        //      this.hero.alive = 0 ;        
+        //    }
+        }
+    }   //width:20~30,height:5~45 trap    
+        //width:5~35,height:5~45 hero
+    init():void{
         this.bg = new Laya.Sprite();
-        this.bg.loadImage("res/stage.png");
+        this.hero = game.hero;
         this.stage.addChild(this.bg);
+        this.bg.loadImage("res/stage.png");
 
         this.challenge = new Tile();
-        for (let i = 0; i < 5; i++) {
-            if(i % 2 === 0)
+           for(let i = 0; i < 5; i++){
                 this.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
-            else
-                this.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
-            
-            this.stage.addChild(this.challenge);  
-        }
+                this.stage.addChild(this.challenge);
+           }
         
         this.startline = new Tile();
         this.startline.makeblock('5', 1, 9, 0, 90);
         this.stage.addChild(this.startline);
 
-        let finishline:Tile = new Tile();
-        finishline.makeblock('1', 2, 9, 720, 90);
-        this.stage.addChild(finishline);
-        
+        this.finishline = new Tile();
+        this.finishline.makeblock('1', 2, 9, 720, 90);
+        this.stage.addChild(this.finishline);
+       
         this.stage.addChild(game.hero);
         this.stage.addChild(game.ctrl_rocker);
         this.stage.addChild(game.ctrl_rocker_move);
-        this.stage.addChild(game.ctrl_back);
-        
+        this.stage.addChild(game.ctrl_back);        
         this.createTrap(20, 3);
     }
-    Loop(): void {
-        for (let i: number = this.numChildren - 1; i >= 0; i--) {
-            let trap: thunder = this.getChildAt(i) as thunder;
-            
-            let temp: number = Math.random();
-            if (temp > 0.7 && trap.x + 5 < 660 )
-                trap.x += trap.speed;
-            else if (temp < 0.7 && temp > 0.4 && trap.x - 5 > 90)
-                trap.x -= trap.speed;
-            
-            let temp2: number = Math.random();
-            if (temp2 > 0.7 && trap.y + 55 < 600)
-                trap.y += trap.speed;
-            else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
-                trap.y -= trap.speed;
-            //遍历每一个闪电,使它们按一定概率移动
-                
-            if (Math.abs(this.hero.x - trap.x) < 13 && Math.abs(this.hero.y - trap.y) < 30 && this.hero.alive === 1) {//判断碰撞
-                console.log("failed!");
-                Laya.SoundManager.playMusic("res/sound/thunder.wav",1);
-                this.hero.body.removeSelf();
-                this.hero.burn.play(0,false);
-                this.hero.alive = 0 ;        
-            }
-        } 
-    }
-    createTrap(num: number,speed: number): void {
-        for (let i = 0; i < num; i++) {
+    createTrap(num:number,speed:number):void{
+        for(let i = 0; i < num; i++){
             let trap: thunder = Laya.Pool.getItemByClass("thunder", thunder);
             trap.init(speed);
             trap.pos(Math.random() * 600 + 90, Math.random() * 500 + 50);
             this.addChild(trap);
         }
-
-        Laya.stage.on("mouseup", game, game.ctrlRockerUp)
-        Laya.stage.on("mousemove", game, game.ctrlRockerDown)
     }
  
-    down(e) {    
-        if (this.hero.alive === 1) {
-            if (e.keyCode === 37)
-                this.hero.x -= 8;
-                                
-            if (e.keyCode === 38)
-                this.hero.y -= 8;
-                    
-            if (e.keyCode === 39)
-                this.hero.x += 8;         
-            
-            if (e.keyCode === 40)
-                this.hero.y += 8;
-        }
-        let cnt: number = 0;
-        for (let i: number = 1; i < this.stage.numChildren - 2; i++) {
-                let m_tile: Tile = this.stage.getChildAt(i) as Tile;
+    down(e){    
+        console.log(this.hero.x);
+          if(this.hero.alive === 1){
+                if(e.keyCode === 37)
+                    this.hero.x -= 8;
+                                    
+                if(e.keyCode === 38)
+                    this.hero.y -= 8;
+                        
+                if(e.keyCode === 39){
+                    this.hero.x += 8;
+                }         
                 
-            if (i === 1) {
-                for (let j: number = 0; j < this.challenge.numChildren; j++) {
-                    let _tile: Tile = this.challenge.getChildAt(j) as Tile;
-                    console.log(_tile.posX,_tile.posY,_tile.width,_tile.height);
-                    if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
-                        break;      
-                    cnt++;
+                if(e.keyCode === 40)
+                    this.hero.y += 8;
+            }
+          let cnt:number = 0;
+            for(let i: number = 1; i < this.stage.numChildren - 2; i++){
+                  let m_tile: Tile = this.stage.getChildAt(i) as Tile;
+                  
+                  if(i === 1){
+                     for(let j: number = 0; j < this.challenge.numChildren; j++){
+                        let _tile: Tile = this.challenge.getChildAt(j) as Tile;
+                        if((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
+                             break;      
+                        cnt++;
+                     }
+                   }
+                  else{
+                        if((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && 
+                            this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+                            break;
+                        cnt++;
+                   }
+            }
+            if(cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1){
+                Laya.SoundManager.playMusic("res/sound/fall.wav",1);
+                this.hero.alive = 0;
+                this.hero.burn.removeSelf();
+                
+                this.hero.body.play(0, false);
+                 if(e.keyCode === 37){
+                    this.hero.x -= 20;
                 }
+                                    
+                if(e.keyCode === 38)
+                    this.hero.y -= 20;
+                        
+                if(e.keyCode === 39)
+                    this.hero.x += 20;         
+                
+                if(e.keyCode === 40)
+                    this.hero.y += 20;
             }
-            else {
-                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && 
-                        this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
-                        break;
-                    cnt++;
-            }
-        }
-        console.log(this.stage.numChildren, this.challenge.numChildren,cnt);
-        if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
-            console.log("die!");
-            Laya.SoundManager.playMusic("res/sound/fall.m4a",1);
-            this.hero.alive = 0;
-            this.hero.burn.removeSelf();
-            this.hero.body.play(0, false);
-
-            if(e.keyCode === 37)
-                this.hero.x -= 20;
-                                
-            if(e.keyCode === 38)
-                this.hero.y -= 20;
-                    
-            if(e.keyCode === 39)
-                this.hero.x += 20;         
-            
-            if(e.keyCode === 40)
-                this.hero.y += 20;
-        }
-    }
+      }
+      
 }
 
-class BombMode1 extends Laya.Sprite {
-    private bg: Laya.Sprite;
-    private hero: Hero;
-    public startline: Tile;
-    private challenge: Tile;
-    constructor() {
+class BombMode1 extends Laya.Sprite{
+    private bg:Laya.Sprite;
+    private hero:Hero;
+    public startline:Tile;
+    private challenge:Tile;
+    constructor(){
         super();
         this.init();
         this.stage.on(Laya.Event.KEY_DOWN, this, this.down);
         this.frameLoop(5,this,this.normal);
         this.timer.frameLoop(100,this,this.onfire);
-        this.timer.frameLoop(1,this,this.judbomb);
+        this.timer.frameLoop(1,this,this.judstate);
     }
-    normal(): void {
-        for (let i: number = 0; i < this.challenge.numChildren; i++) {
+    private DisplayWords():void{
+        var w:number = 800;
+        var offsetX:number = Laya.stage.width - w >> 1;
+        var demoString:string = "GameOver";
+        var letterText:Laya.Text;
+        for(var i:number = 0,len:number = demoString.length;i<len;++i){
+            letterText = this.createLetter(demoString.charAt(i));
+            letterText.x = w/len*i+offsetX;
+            letterText.y = -200;
+            Laya.Tween.to(letterText,{y:100},3000,Laya.Ease.elasticOut,null,i*100);
+        }
+    }
+    private createLetter(char:string):Laya.Text{
+        var letter:Laya.Text = new Laya.Text();
+        letter.text = char;
+        letter.color = "#ffffff";
+        letter.font = "Impact";
+        letter.fontSize = 180;
+        Laya.stage.addChild(letter);
+        return letter;
+    }
+    normal():void{
+        for(let i: number = 0; i < this.challenge.numChildren; i++){
             let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
             m_tile.fire = false;
-            for (let j: number = 0; j < m_tile.numChildren; j++) {
-                let _tile: Tile = m_tile.getChildAt(j) as Tile;
-                _tile.loadImage("res/tile"+_tile.type+".png");
-            }
+            // for(let j: number = 0; j < m_tile.numChildren; j++){
+            //     let _tile: Tile = m_tile.getChildAt(j) as Tile;
+            //     _tile.loadImage("res/Tile"+_tile.type+".png");
+            // }
         }
     }
-    onfire(): void {
-        for (let i: number = 0; i < this.challenge.numChildren; i++) {
+    onfire():void{
+        for(let i: number = 0; i < this.challenge.numChildren; i++){
             let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
             m_tile.fire = true;
-            for (let j: number = 0; j < m_tile.numChildren; j++) {
+            for(let j: number = 0; j < m_tile.numChildren; j++){
                 let _tile: Tile = m_tile.getChildAt(j) as Tile;
-                _tile.loadImage("res/tile6.png");
+                _tile.bomb.play(0,false);
+                Laya.SoundManager.playSound("res/sound/bomb.wav",1);
             }
         }
     }
-    judbomb(): void {
-        if (this.hero.alive === 1) {
+    judstate():void{
+        if(this.hero.alive === 1){
             let i:number = 0;
             let cnt:number = 0;
-            for (i = 0; i < this.challenge.numChildren; i++) {
+            for(i = 0; i < this.challenge.numChildren; i++){
             let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
-                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+                if((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
                     break;
                 cnt++;
             }
             let _tile: Tile = this.challenge.getChildAt(i) as Tile;
-            if (cnt != this.challenge.numChildren) {
-                if (_tile.fire === true) {
-                    console.log("he");
+            if(cnt != this.challenge.numChildren){
+                if(_tile.fire === true){
+                    this.DisplayWords();
                     this.hero.alive = 0;
                     this.hero.body.removeSelf();
                     this.hero.burn.play(0,false);
                 }
              }
-    }     }
-    init(): void {
+        }     
+    }
+    init():void{
         this.bg = new Laya.Sprite();
         this.stage.addChild(this.bg);
         this.bg.loadImage("res/stage2.png");
         this.challenge = new Tile();
-        for (let i = 0; i < 5; i++) {
-            if (i % 2 === 0)
-                this.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
+           for(let i = 0; i < 5; i++){
+            if(i % 2 === 0)
+                 this.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
             else
-                this.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
-        
-            this.stage.addChild(this.challenge);  
-        }
+                 this.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
+
+           
+           this.stage.addChild(this.challenge);  
+           }
         
         this.startline = new Tile();
         this.startline.makeblock('5', 1, 9, 0, 90);
@@ -323,63 +356,60 @@ class BombMode1 extends Laya.Sprite {
         this.stage.addChild(finishline);
        
         this.hero = new Hero();
-        this.hero.init();
         this.hero.pos(0,300);
         this.stage.addChild(this.hero);
     }
 
- 
-    down(e) {    
-        if (this.hero.alive === 1) {
-            if (e.keyCode === 37)
-                this.hero.x -= 8;
-                                
-            if (e.keyCode === 38)
-                this.hero.y -= 8;
-                    
-            if (e.keyCode === 39)
-                this.hero.x += 8;         
-            
-            if (e.keyCode === 40)
-                this.hero.y += 8;
-        }
-        let cnt: number = 0;
-        for (let i: number = 1; i < this.stage.numChildren - 2; i++) {
-            let m_tile: Tile = this.stage.getChildAt(i) as Tile;
-            
-            if (i === 1) {
-                for (let j: number = 0; j < this.challenge.numChildren; j++) {
-                let _tile: Tile = this.challenge.getChildAt(j) as Tile;
-                if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
-                        break;      
-                cnt++;
-                }
+    down(e){    
+          if(this.hero.alive === 1){
+                if(e.keyCode === 37)
+                    this.hero.x -= 8;
+                                    
+                if(e.keyCode === 38)
+                    this.hero.y -= 8;
+                        
+                if(e.keyCode === 39)
+                    this.hero.x += 8;         
+                
+                if(e.keyCode === 40)
+                    this.hero.y += 8;
             }
-            else {
-                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && 
-                    this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
-                    break;
-                cnt++;
+          let cnt:number = 0;
+            for(let i: number = 1; i < this.stage.numChildren - 2; i++){
+                  let m_tile: Tile = this.stage.getChildAt(i) as Tile;
+                  
+                  if(i === 1){
+                     for(let j: number = 0; j < this.challenge.numChildren; j++){
+                        let _tile: Tile = this.challenge.getChildAt(j) as Tile;
+                        if((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
+                             break;      
+                        cnt++;
+                     }
+                   }
+                  else{
+                        if((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && 
+                            this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+                            break;
+                        cnt++;
+                   }
             }
-        }
-        console.log(this.stage.numChildren, this.challenge.numChildren,cnt);
-        if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
-            console.log("die!");
-            Laya.SoundManager.playMusic("res/sound/fall.m4a",1);
-            this.hero.alive = 0;
-            this.hero.burn.removeSelf();
-            this.hero.body.play(0, false);
-            if (e.keyCode === 37)
-            this.hero.x -= 20;
-                                
-            if (e.keyCode === 38)
-                this.hero.y -= 20;
-                    
-            if (e.keyCode === 39)
-                this.hero.x += 20;         
-            
-            if (e.keyCode === 40)
-                this.hero.y += 20;
+            if(cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1){
+                this.hero.alive = 0;
+                Laya.SoundManager.playMusic("res/sound/fall.wav",1);
+                this.hero.burn.removeSelf();
+                this.hero.body.play(0, false);
+                this.DisplayWords();
+                 if(e.keyCode === 37)
+                    this.hero.x -= 20;
+                                    
+                if(e.keyCode === 38)
+                    this.hero.y -= 20;
+                        
+                if(e.keyCode === 39)
+                    this.hero.x += 20;         
+                
+                if(e.keyCode === 40)
+                    this.hero.y += 20;
             }
       }
 }

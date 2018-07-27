@@ -42,7 +42,6 @@ class Game{
 
     init_ingame_images(): void {
         this.hero = new Hero();
-        this.hero.loadImage("res/Hero.png");
         this.hero.pos(10, 300);
 
         this.ctrl_back = new Laya.Image();
@@ -64,6 +63,8 @@ class Game{
 
     gameLoop(): void {
         this.ctrlRockerDown()
+        this.hero.x += this.hero.speedX;
+        this.hero.y += this.hero.speedY;
     }
 
     clickHandler(): void {
@@ -105,8 +106,9 @@ class Game{
 
             // move hero
             let angle = Math.atan2(Laya.stage.mouseY - game.ctrl_rocker_y, Laya.stage.mouseX - game.ctrl_rocker_x);
-            this.hero.x += Math.cos(angle);
-            this.hero.y += Math.sin(angle);
+            this.hero.speedX = Math.cos(angle);
+            this.hero.speedY = Math.sin(angle);
+    
         } else {
             this.ctrl_rocker.visible = true;
             this.ctrl_rocker_move.visible = false;

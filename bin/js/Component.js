@@ -20,13 +20,23 @@ var Tile = /** @class */ (function (_super) {
         this.height = -1;
     };
     Tile.prototype.init = function (_type, posX, posY) {
-        this.boom = new Laya.Animation();
+        this.bomb = new Laya.Animation();
         this.type = _type;
         this.x = posX;
         this.y = posY;
         this.fire = false;
         this.pos(this.x, this.y);
+        if (this.type === "2")
+            this.bomb.loadAtlas("res/atlas/boom1.atlas", Laya.Handler.create(this, this.exploison));
+        else if (this.type === "3")
+            this.bomb.loadAtlas("res/atlas/boom2.atlas", Laya.Handler.create(this, this.exploison));
+        else if (this.type === "4")
+            this.bomb.loadAtlas("res/atlas/blackhole.atlas", Laya.Handler.create(this, this.exploison));
         this.loadImage("res/tile" + this.type + ".png");
+        this.bomb.interval = 100;
+    };
+    Tile.prototype.exploison = function () {
+        this.addChild(this.bomb);
     };
     Tile.prototype.makeblock = function (_type, width, height, posX, posY) {
         this.width = width;
