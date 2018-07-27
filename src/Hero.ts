@@ -1,4 +1,4 @@
-class Hero extends Laya.Sprite{
+class Hero extends Laya.Sprite {
     public body: Laya.Animation;
     public burn: Laya.Animation;
     public alive: number;
@@ -19,7 +19,6 @@ class Hero extends Laya.Sprite{
         this.body.interval = 200;
         this.burn.interval = 200;
         this.alive = 1;
-        
     }
     public onLoaded(): void {
         this.addChild(this.body);

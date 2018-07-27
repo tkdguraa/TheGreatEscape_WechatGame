@@ -1,8 +1,8 @@
 import WebGL = Laya.WebGL;
-class Game{
-    private bg:StartBackGround;
-    private bg2:thunderMode1;
-    private bg3:BombMode1;
+class Game {
+    private bg: StartBackGround;
+    private bg2: ThunderMode1;
+    private bg3: BombMode1;
 
     hero: Hero;
     ctrl_rocker: Laya.Image;
@@ -62,7 +62,7 @@ class Game{
     }
 
     gameLoop(): void {
-        this.ctrlRockerDown()
+        this.ctrlRockerDown();
         this.hero.x += this.hero.speedX;
         this.hero.y += this.hero.speedY;
     }
@@ -70,7 +70,7 @@ class Game{
     clickHandler(): void {
        console.log('on click');
        this.bg.removeSelf();
-       this.bg2 = new thunderMode1;
+       this.bg2 = new ThunderMode1;
        Laya.stage.addChild(this.bg2);
     }
 
@@ -82,10 +82,12 @@ class Game{
     }
 
     ctrlRockerDown(): void {
-        // stop moving
+        // stop moving. control rocker is centered
         if (distance(Laya.stage.mouseX, Laya.stage.mouseY, this.ctrl_back.x, this.ctrl_back.y) <= 0.2 * this.ctrl_back.width) {
             this.ctrl_rocker.visible = true;
             this.ctrl_rocker_move.visible = false;
+            this.hero.speedX = 0;
+            this.hero.speedY = 0;
             return;
         }
 
