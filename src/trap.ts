@@ -1,11 +1,12 @@
-class thunder extends Laya.Sprite{
-    
-    constructor(){
-        super();
-      
+class Thunder extends Laya.Sprite {
+    public speed: number;
+
+    constructor() {
+        super();  
     }
-    public init():void{
-         this.loadImage("res/thunder.png");
+
+    public init(_speed: number): void {
+        this.loadImage("res2/thunder.png");
+        this.speed = _speed; 
     }
-    
 }
