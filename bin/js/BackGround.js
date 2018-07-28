@@ -59,7 +59,6 @@ var StartBackGround = /** @class */ (function (_super) {
         var title1 = "The GReat";
         var title2 = "Escape";
         var letterText;
-        //根据字符串长度创建单个字符，并对每个单独字符使用缓动动画
         for (var i = 0, len = title1.length; i < len; ++i) {
             letterText = this.createLetter(title1.charAt(i));
             letterText.x = w / len * i + offsetX;
@@ -133,7 +132,6 @@ var ThunderMode1 = /** @class */ (function (_super) {
     __extends(ThunderMode1, _super);
     function ThunderMode1() {
         var _this = _super.call(this) || this;
-        _this.def = 0;
         _this.init();
         _this.frameLoop(1, _this, _this.Loop);
         _this.frameLoop(1, _this, _this.judstate);
@@ -157,56 +155,55 @@ var ThunderMode1 = /** @class */ (function (_super) {
         this.def = 1;
     };
     ThunderMode1.prototype.judstate = function () {
-        if (this.def === 1) {
-            var m_tile = this.finishline;
-            if (this.hero.alive === 1) {
-                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
-                    for (var i = 0; i < this.stage.numChildren; i++) {
-                        var m_child = this.stage.getChildAt(i);
-                        m_child.removeSelf();
-                    }
-                    var bg = new BombMode1();
-                    bg.setmap();
-                    this.timer.clear(this, this.judstate);
-                    this.timer.clear(this, this.Loop);
-                    Laya.stage.addChild(bg);
+        var m_tile = this.finishline;
+        if (this.hero.alive === 1) {
+            if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
+                for (var i = 0; i < this.stage.numChildren; i++) {
+                    var m_child = this.stage.getChildAt(i);
+                    m_child.removeSelf();
                 }
+                var bg = new BombMode1();
+                bg.setmap(1);
+                bg.coursenum = 1;
+                this.timer.clear(this, this.judstate);
+                this.timer.clear(this, this.Loop);
+                Laya.stage.addChild(bg);
             }
-            var cnt = 0;
-            for (var i = 1; i < this.stage.numChildren - 2; i++) {
-                var m_tile_1 = this.stage.getChildAt(i);
-                if (i === 1) {
-                    for (var j = 0; j < this.challenge.numChildren; j++) {
-                        var _tile = this.challenge.getChildAt(j);
-                        if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
-                            break;
-                        cnt++;
-                    }
-                }
-                else {
-                    if ((this.hero.x + 20 >= m_tile_1.posX && this.hero.x + 20 <= m_tile_1.posX + m_tile_1.width * 45 &&
-                        this.hero.y + 23 >= m_tile_1.posY && this.hero.y + 23 <= m_tile_1.posY + 45 * m_tile_1.height))
+        }
+        var cnt = 0;
+        for (var i = 1; i < this.stage.numChildren - 2; i++) {
+            var m_tile_1 = this.stage.getChildAt(i);
+            if (i === 1) {
+                for (var j = 0; j < this.challenge.numChildren; j++) {
+                    var _tile = this.challenge.getChildAt(j);
+                    if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
                         break;
                     cnt++;
                 }
             }
-            if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
-                console.log(cnt, this.stage.numChildren, this.challenge.numChildren);
-                Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
-                DisplayWords();
-                this.hero.alive = 0;
-                makeunvisible(this.hero);
-                this.hero.body.visible = true;
-                this.hero.body.play(0, false);
-                if (this.hero.speedX < 0)
-                    this.hero.x -= 20;
-                if (this.hero.speedY < 0)
-                    this.hero.y -= 20;
-                if (this.hero.speedX > 0)
-                    this.hero.x += 20;
-                if (this.hero.speedY > 0)
-                    this.hero.y += 20;
+            else {
+                if ((this.hero.x + 20 >= m_tile_1.posX && this.hero.x + 20 <= m_tile_1.posX + m_tile_1.width * 45 &&
+                    this.hero.y + 23 >= m_tile_1.posY && this.hero.y + 23 <= m_tile_1.posY + 45 * m_tile_1.height))
+                    break;
+                cnt++;
             }
+        }
+        if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
+            console.log(cnt, this.stage.numChildren, this.challenge.numChildren);
+            Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
+            DisplayWords();
+            this.hero.alive = 0;
+            makeunvisible(this.hero);
+            this.hero.body.visible = true;
+            this.hero.body.play(0, false);
+            if (this.hero.speedX < 0)
+                this.hero.x -= 20;
+            if (this.hero.speedY < 0)
+                this.hero.y -= 20;
+            if (this.hero.speedX > 0)
+                this.hero.x += 20;
+            if (this.hero.speedY > 0)
+                this.hero.y += 20;
         }
     };
     ThunderMode1.prototype.Loop = function () {
@@ -222,7 +219,7 @@ var ThunderMode1 = /** @class */ (function (_super) {
                 trap.y += trap.speed;
             else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
                 trap.y -= trap.speed;
-            //judelectricshock(this.hero,trap);
+            judelectricshock(this.hero, trap);
         }
     };
     ThunderMode1.prototype.init = function () {
@@ -248,20 +245,33 @@ var ThunderMode1 = /** @class */ (function (_super) {
     };
     return ThunderMode1;
 }(Laya.Sprite));
+var mapnum = 1;
 var BombMode1 = /** @class */ (function (_super) {
     __extends(BombMode1, _super);
     function BombMode1() {
         var _this = _super.call(this) || this;
         _this.init();
         _this.frameLoop(5, _this, _this.normal);
-        _this.timer.frameLoop(100, _this, _this.onfire);
+        _this.timer.frameLoop(1, _this, _this.course);
         _this.timer.frameLoop(1, _this, _this.judstate);
         return _this;
     }
-    BombMode1.prototype.setmap = function () {
-        this.startline = this.Bmap1.startline;
-        this.challenge = this.Bmap1.challenge;
-        this.finishline = this.Bmap1.finishline;
+    BombMode1.prototype.setmap = function (n) {
+        if (n === 1) {
+            this.startline = this.Bmap1.startline;
+            this.challenge = this.Bmap1.challenge;
+            this.finishline = this.Bmap1.finishline;
+        }
+        if (n === 2) {
+            this.startline = this.Bmap2.startline;
+            this.challenge = this.Bmap2.challenge;
+            this.finishline = this.Bmap2.finishline;
+        }
+        if (n === 3) {
+            this.startline = this.Bmap3.startline;
+            this.challenge = this.Bmap3.challenge;
+            this.finishline = this.Bmap3.finishline;
+        }
         this.stage.addChild(this.challenge);
         this.stage.addChild(this.startline);
         this.stage.addChild(this.finishline);
@@ -277,20 +287,37 @@ var BombMode1 = /** @class */ (function (_super) {
         this.bg = new Laya.Sprite();
         this.stage.addChild(this.bg);
         this.bg.loadImage("res/stage2.png");
+        this.startcnt = 0;
         this.Bmap1 = new Map();
+        for (var i = 0; i < 8; i++) {
+            if (i % 2 === 0)
+                this.Bmap1.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 90);
+            else
+                this.Bmap1.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 90);
+        }
+        this.Bmap1.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap1.finishline.makeblock('1', 2, 9, 720, 90);
+        this.Bmap2 = new Map();
         for (var i = 0; i < 5; i++) {
             if (i % 2 === 0)
-                this.Bmap1.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
+                this.Bmap2.challenge.makeblock('2', 3, 4, 90 + i * 135, 90 + 45 * 3);
             else
-                this.Bmap1.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
+                this.Bmap2.challenge.makeblock('3', 3, 4, 90 + i * 135, 90 + 45 * 3);
         }
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 3, 180);
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 6, 180);
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 9, 180);
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 12, 180);
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 15, 180);
-        this.Bmap1.startline.makeblock('5', 1, 9, 0, 90);
-        this.Bmap1.finishline.makeblock('1', 2, 9, 720, 90);
+        this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 3, 180);
+        this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 6, 180);
+        this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 9, 180);
+        this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 12, 180);
+        this.Bmap2.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap2.finishline.makeblock('1', 1, 9, 765, 90);
+        this.Bmap3 = new Map();
+        for (var i = 0; i < 6; i++)
+            this.Bmap3.challenge.makeblock('2', 1, 5, 90 + i * 45, 90 + 90);
+        this.Bmap3.challenge.makeblock('3', 2, 3, 90 + 6 * 45, 90 + 135);
+        for (var i = 0; i < 6; i++)
+            this.Bmap3.challenge.makeblock('2', 1, 5, 90 + 8 * 45 + i * 45, 90 + 90);
+        this.Bmap3.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap3.finishline.makeblock('1', 2, 9, 720, 90);
     };
     BombMode1.prototype.normal = function () {
         for (var i = 0; i < this.challenge.numChildren; i++) {
@@ -298,24 +325,49 @@ var BombMode1 = /** @class */ (function (_super) {
             m_tile.fire = false;
         }
     };
-    BombMode1.prototype.onfire = function () {
-        for (var i = 0; i < this.challenge.numChildren; i++) {
-            var m_tile = this.challenge.getChildAt(i);
-            m_tile.fire = true;
-            for (var j = 0; j < m_tile.numChildren; j++) {
-                var _tile = m_tile.getChildAt(j);
-                _tile.bomb.play(0, false);
-                Laya.SoundManager.playSound("res/sound/bomb.wav", 1);
-            }
+    BombMode1.prototype.course = function () {
+        this.startcnt++;
+        if (this.coursenum === 1)
+            course1(this);
+        if (this.coursenum === 2)
+            course2(this);
+        if (this.coursenum === 3)
+            course3(this);
+    };
+    BombMode1.prototype.onfire = function (n) {
+        // for (let i: number = 0; i < this.challenge.numChildren; i++) {
+        var m_tile = this.challenge.getChildAt(n);
+        m_tile.fire = true;
+        for (var j = 0; j < m_tile.numChildren; j++) {
+            var _tile = m_tile.getChildAt(j);
+            _tile.bomb.play(0, false);
+            Laya.SoundManager.playSound("res/sound/bomb.wav", 1);
         }
+        // }
     };
     BombMode1.prototype.judstate = function () {
+        var m_tile = this.finishline;
+        if (this.hero.alive === 1) {
+            if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
+                for (var i = 0; i < this.stage.numChildren; i++) {
+                    var m_child = this.stage.getChildAt(i);
+                    m_child.removeSelf();
+                }
+                var bg = new BombMode1();
+                mapnum++;
+                bg.setmap(mapnum);
+                bg.coursenum = mapnum;
+                this.timer.clear(this, this.judstate);
+                this.timer.clear(this, this.course);
+                Laya.stage.addChild(bg);
+            }
+        }
         if (this.hero.alive === 1) {
             var i = 0;
             var cnt = 0;
             for (i = 0; i < this.challenge.numChildren; i++) {
-                var m_tile = this.challenge.getChildAt(i);
-                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+                var m_tile_2 = this.challenge.getChildAt(i);
+                if ((this.hero.x + 20 >= m_tile_2.posX && this.hero.x + 20 <= m_tile_2.posX + m_tile_2.width * 45 && this.hero.y + 23 >= m_tile_2.posY && this.hero.y + 23 <= m_tile_2.posY + 45 * m_tile_2.height))
                     break;
                 cnt++;
             }
@@ -334,7 +386,7 @@ var BombMode1 = /** @class */ (function (_super) {
         if (this.hero.alive === 1) {
             var cnt = 0;
             for (var i = 1; i < this.stage.numChildren - 2; i++) {
-                var m_tile = this.stage.getChildAt(i);
+                var m_tile_3 = this.stage.getChildAt(i);
                 if (i === 1) {
                     for (var j = 0; j < this.challenge.numChildren; j++) {
                         var _tile = this.challenge.getChildAt(j);
@@ -344,8 +396,8 @@ var BombMode1 = /** @class */ (function (_super) {
                     }
                 }
                 else {
-                    if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 &&
-                        this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
+                    if ((this.hero.x + 20 >= m_tile_3.posX && this.hero.x + 20 <= m_tile_3.posX + m_tile_3.width * 45 &&
+                        this.hero.y + 23 >= m_tile_3.posY && this.hero.y + 23 <= m_tile_3.posY + 45 * m_tile_3.height))
                         break;
                     cnt++;
                 }
@@ -404,6 +456,73 @@ function judelectricshock(hero, trap) {
         Laya.SoundManager.playMusic("res/sound/thunder.wav", 1);
         hero.alive = 0;
     }
+}
+function course1(map) {
+    if (map.startcnt / 40 === 1) {
+        map.onfire(0);
+    }
+    if (map.startcnt / 65 === 1) {
+        map.onfire(1);
+    }
+    if (map.startcnt / 90 === 1) {
+        map.onfire(2);
+    }
+    if (map.startcnt / 115 === 1) {
+        map.onfire(3);
+    }
+    if (map.startcnt / 140 === 1) {
+        map.onfire(4);
+    }
+    if (map.startcnt / 165 === 1) {
+        map.onfire(5);
+    }
+    if (map.startcnt / 190 === 1) {
+        map.onfire(6);
+    }
+    if (map.startcnt / 215 === 1)
+        map.startcnt = 0;
+}
+function course2(map) {
+    if (map.startcnt / 40 === 1) {
+        map.onfire(0);
+        map.onfire(1);
+        map.onfire(2);
+        map.onfire(3);
+        map.onfire(4);
+    }
+    if (map.startcnt / 80 === 1)
+        map.startcnt = 0;
+}
+function course3(map) {
+    if (map.startcnt / 40 === 1) {
+        map.onfire(0);
+        map.onfire(12);
+    }
+    if (map.startcnt / 65 === 1) {
+        map.onfire(1);
+        map.onfire(11);
+    }
+    if (map.startcnt / 90 === 1) {
+        map.onfire(2);
+        map.onfire(10);
+    }
+    if (map.startcnt / 115 === 1) {
+        map.onfire(3);
+        map.onfire(9);
+    }
+    if (map.startcnt / 140 === 1) {
+        map.onfire(4);
+        map.onfire(8);
+    }
+    if (map.startcnt / 165 === 1) {
+        map.onfire(5);
+        map.onfire(7);
+    }
+    if (map.startcnt / 250 === 1) {
+        map.onfire(6);
+    }
+    if (map.startcnt / 300 === 1)
+        map.startcnt = 0;
 }
 function makeunvisible(hero) {
     hero.right.visible = false;

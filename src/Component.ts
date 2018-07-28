@@ -1,11 +1,11 @@
 class Tile extends Laya.Sprite{
-    public type:string;//type of tile;  red:bomb yellow:safe zone ;green: finish zone ;blue and purple: bomb zone;
-    public width:number;
-    public height:number;
-    public posX:number;
-    public posY:number;
-    public bomb:Laya.Animation;
-    public fire:boolean; //judge whether this tile is bomb now;
+    public type: string;//type of tile;  red:bomb yellow:safe zone ;green: finish zone ;blue and purple: bomb zone;
+    public width: number;
+    public height: number;
+    public posX: number;
+    public posY: number;
+    public bomb: Laya.Animation;
+    public fire: boolean; //judge whether this tile is bomb now;
     constructor(){
         super();
     }

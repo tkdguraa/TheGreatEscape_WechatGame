@@ -60,7 +60,6 @@ class StartBackGround extends Laya.Sprite {
         let title2: string = "Escape";
         let letterText: Laya.Text;
         
-        //根据字符串长度创建单个字符，并对每个单独字符使用缓动动画
         for (let i: number = 0, len: number = title1.length; i < len; ++i) {
             letterText = this.createLetter(title1.charAt(i));
             letterText.x = w / len * i + offsetX;     
@@ -132,7 +131,6 @@ class Instruction extends Laya.Sprite{
     }
 }
 
-
 class ThunderMode1 extends Laya.Sprite {
  
     private bg: Laya.Sprite;
@@ -140,11 +138,10 @@ class ThunderMode1 extends Laya.Sprite {
     public startline: Tile;
     public challenge: Tile;
     public finishline: Tile;
-    public def: number;
+
     public Tmap1: Map;
     constructor() {
         super();
-        this.def = 0;
         this.init();
 
         this.frameLoop(1, this, this.Loop);
@@ -169,7 +166,6 @@ class ThunderMode1 extends Laya.Sprite {
         this.def = 1;
     }        
     judstate(): void {
-        if (this.def === 1){
             let m_tile = this.finishline;
             if (this.hero.alive === 1) {
                 if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
@@ -177,10 +173,10 @@ class ThunderMode1 extends Laya.Sprite {
                     for (let i: number = 0; i < this.stage.numChildren; i++) {
                         let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
                         m_child.removeSelf();
-                    }
-                
+                    } 
                     let bg = new BombMode1();
-                    bg.setmap();
+                    bg.setmap(1);
+                    bg.coursenum = 1;
                     this.timer.clear(this,this.judstate);
                     this.timer.clear(this,this.Loop);
                     Laya.stage.addChild(bg);
@@ -227,7 +223,6 @@ class ThunderMode1 extends Laya.Sprite {
                 if (this.hero.speedY > 0)
                     this.hero.y += 20;
             }
-        }
     }
     Loop(): void {
         for (let i: number = this.numChildren - 1; i >= 0; i--) {
@@ -272,27 +267,41 @@ class ThunderMode1 extends Laya.Sprite {
         }
     }
 }
-
+let mapnum = 1;
 class BombMode1 extends Laya.Sprite {
     private bg: Laya.Sprite;
     private hero: Hero;
     public startline: Tile;
     public challenge: Tile;
     public finishline: Tile;
+    public coursenum: number;
     public Bmap1: Map;
-
+    public Bmap2: Map;
+    public Bmap3: Map;
+    public startcnt: number;
     constructor() {
         super();
         this.init();
         this.frameLoop(5, this, this.normal);
-        this.timer.frameLoop(100, this, this.onfire);
+        this.timer.frameLoop(1, this, this.course);
         this.timer.frameLoop(1, this, this.judstate);
     }
-    setmap(): void {
-        this.startline = this.Bmap1.startline;
-        this.challenge = this.Bmap1.challenge;
-        this.finishline = this.Bmap1.finishline;
-        
+    setmap(n: number): void {
+        if (n === 1) {
+            this.startline = this.Bmap1.startline;
+            this.challenge = this.Bmap1.challenge;
+            this.finishline = this.Bmap1.finishline;
+        }
+        if (n === 2) {
+            this.startline = this.Bmap2.startline;
+            this.challenge = this.Bmap2.challenge;
+            this.finishline = this.Bmap2.finishline;
+        }
+        if (n === 3) {
+            this.startline = this.Bmap3.startline;
+            this.challenge = this.Bmap3.challenge;
+            this.finishline = this.Bmap3.finishline;
+        }
         this.stage.addChild(this.challenge);
         this.stage.addChild(this.startline);
         this.stage.addChild(this.finishline);
@@ -308,21 +317,40 @@ class BombMode1 extends Laya.Sprite {
         this.bg = new Laya.Sprite();
         this.stage.addChild(this.bg);
         this.bg.loadImage("res/stage2.png");
-        this.Bmap1 = new Map();
+        this.startcnt = 0;
+        this.Bmap1 = new Map(); 
+         for (let i = 0; i < 8; i++){
+            if (i % 2 === 0)
+                 this.Bmap1.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 90);
+            else
+                 this.Bmap1.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 90);
+           }
+        this.Bmap1.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap1.finishline.makeblock('1', 2, 9, 720, 90);
+
+        this.Bmap2 = new Map();
            for (let i = 0; i < 5; i++){
             if (i % 2 === 0)
-                 this.Bmap1.challenge.makeblock('2', 3, 4, 45 + i * 135, 90 + 45 * 3);
+                 this.Bmap2.challenge.makeblock('2', 3, 4, 90 + i * 135, 90 + 45 * 3);
             else
-                 this.Bmap1.challenge.makeblock('3', 3, 4, 45 + i * 135, 90 + 45 * 3);
+                 this.Bmap2.challenge.makeblock('3', 3, 4, 90 + i * 135, 90 + 45 * 3);
            }
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 3, 180);
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 6, 180);
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 9, 180);
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 12, 180);
-        this.Bmap1.challenge.makeblock('5', 1, 1, 45 * 15, 180);   
+        this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 3, 180);
+        this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 6, 180);
+        this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 9, 180);
+        this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 12, 180);   
                   
-        this.Bmap1.startline.makeblock('5', 1, 9, 0, 90);
-        this.Bmap1.finishline.makeblock('1', 2, 9, 720, 90);
+        this.Bmap2.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap2.finishline.makeblock('1', 1, 9, 765, 90);
+        
+        this.Bmap3 = new Map();
+        for (let i = 0; i < 6; i++)
+            this.Bmap3.challenge.makeblock('2', 1, 5, 90 + i * 45, 90 + 90);
+        this.Bmap3.challenge.makeblock('3', 2, 3, 90 + 6 * 45, 90 + 135);
+        for (let i = 0; i < 6; i++)
+            this.Bmap3.challenge.makeblock('2', 1, 5, 90 + 8 * 45 + i * 45, 90 + 90);
+        this.Bmap3.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap3.finishline.makeblock('1', 2, 9, 720,90)
     }
     normal(): void {
         for (let i: number = 0; i < this.challenge.numChildren; i++) {
@@ -330,18 +358,44 @@ class BombMode1 extends Laya.Sprite {
             m_tile.fire = false;
         }
     }
-    onfire(): void {
-        for (let i: number = 0; i < this.challenge.numChildren; i++) {
-            let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
+    course(): void {
+        this.startcnt ++;
+        if (this.coursenum === 1)
+            course1(this);
+        if (this.coursenum === 2)
+            course2(this);
+        if (this.coursenum === 3)
+            course3(this);
+    }
+    onfire(n:number): void {
+        // for (let i: number = 0; i < this.challenge.numChildren; i++) {
+            let m_tile: Tile = this.challenge.getChildAt(n) as Tile;
             m_tile.fire = true;
             for (let j: number = 0; j < m_tile.numChildren; j++) {
-                let _tile: Tile = m_tile.getChildAt(j) as Tile;
-                _tile.bomb.play(0, false);
-                Laya.SoundManager.playSound("res/sound/bomb.wav",1);
+                 let _tile: Tile = m_tile.getChildAt(j) as Tile;
+                 _tile.bomb.play(0, false);
+                 Laya.SoundManager.playSound("res/sound/bomb.wav",1);
             }
-        }
+       // }
     }
     judstate(): void{
+        let m_tile = this.finishline;
+            if (this.hero.alive === 1) {
+                if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
+                
+                    for (let i: number = 0; i < this.stage.numChildren; i++) {
+                        let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
+                        m_child.removeSelf();
+                    } 
+                    let bg = new BombMode1();
+                    mapnum++;
+                    bg.setmap(mapnum);
+                    bg.coursenum = mapnum;
+                    this.timer.clear(this,this.judstate);
+                    this.timer.clear(this,this.course);
+                    Laya.stage.addChild(bg);
+                }    
+            }
         if (this.hero.alive === 1) {
             let i: number = 0;
             let cnt: number = 0;
@@ -442,6 +496,74 @@ function judelectricshock(hero: Hero,trap: Thunder){
         Laya.SoundManager.playMusic("res/sound/thunder.wav",1);
         hero.alive = 0 ;        
     }
+}
+function course1(map:BombMode1){
+        if(map.startcnt / 40 === 1){
+            map.onfire(0);
+        }
+        if(map.startcnt / 65 === 1){
+            map.onfire(1);
+        }
+        if(map.startcnt / 90 === 1){
+            map.onfire(2);
+        }
+        if(map.startcnt / 115 === 1){
+            map.onfire(3);
+        }
+        if(map.startcnt / 140 === 1){
+            map.onfire(4);
+        }
+         if(map.startcnt / 165 === 1){
+            map.onfire(5);
+        }
+         if(map.startcnt / 190 === 1){
+            map.onfire(6);
+        }
+        if(map.startcnt / 215 === 1)
+            map.startcnt = 0;
+}
+
+function course2(map:BombMode1){  
+        if(map.startcnt / 40 === 1){
+                map.onfire(0);
+                map.onfire(1);
+                map.onfire(2);
+                map.onfire(3);
+                map.onfire(4);
+        }
+        if(map.startcnt / 80 === 1)
+            map.startcnt = 0;
+}
+function course3(map:BombMode1){
+        if(map.startcnt / 40 === 1){
+            map.onfire(0);
+            map.onfire(12);
+        }
+        if(map.startcnt / 65 === 1){
+            map.onfire(1);
+            map.onfire(11);
+        }
+        if(map.startcnt / 90 === 1){
+            map.onfire(2);
+            map.onfire(10);
+        }
+        if(map.startcnt / 115 === 1){
+            map.onfire(3);
+            map.onfire(9);
+        }
+        if(map.startcnt / 140 === 1){
+            map.onfire(4);
+            map.onfire(8);
+        }
+        if(map.startcnt / 165 === 1){
+            map.onfire(5);
+            map.onfire(7);
+        }
+         if(map.startcnt / 250 === 1){
+            map.onfire(6);
+        }
+        if(map.startcnt / 300 === 1)
+            map.startcnt = 0;
 }
 function makeunvisible(hero:Hero){
    hero.right.visible = false;
