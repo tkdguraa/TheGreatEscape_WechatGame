@@ -5,6 +5,7 @@ var Game = /** @class */ (function () {
         this.stageH = 600;
         this.ctrl_rocker_x = 50;
         this.ctrl_rocker_y = 400;
+        this.isHold = false;
         Laya.MiniAdpter.init();
         Laya.init(800, 600);
         // 初始屏幕适配
@@ -12,6 +13,7 @@ var Game = /** @class */ (function () {
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
         Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
         Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
+        Laya.stage.on("mouseup", this, this.ctrlRockerUp);
         this.init_ingame_images();
         this.bg = new StartBackGround();
         Laya.stage.addChild(this.bg);
@@ -20,6 +22,7 @@ var Game = /** @class */ (function () {
         Laya.timer.frameLoop(1, this, this.gameLoop);
     }
     Game.prototype.init_ingame_images = function () {
+        var _this = this;
         this.hero = new Hero();
         this.hero.pos(10, 300);
         this.rebutton = new Laya.Button();
@@ -31,15 +34,18 @@ var Game = /** @class */ (function () {
         this.ctrl_rocker.loadImage("res2/control-rocker.png");
         this.ctrl_rocker.pos(this.ctrl_rocker_x, this.ctrl_rocker_y);
         this.ctrl_rocker.pivot(17.5, 17.5);
+        this.ctrl_rocker.on(Laya.Event.MOUSE_DOWN, this, function () { _this.isHold = true; });
         this.ctrl_rocker_move = new Laya.Image();
         this.ctrl_rocker_move.loadImage("res2/control-rocker.png");
         this.ctrl_rocker_move.pos(this.ctrl_rocker_x, this.ctrl_rocker_y);
         this.ctrl_rocker_move.pivot(17.5, 17.5);
         this.ctrl_rocker_move.visible = false;
+        this.ctrl_rocker_move.on(Laya.Event.MOUSE_DOWN, this, function () { _this.isHold = true; });
     };
     Game.prototype.gameLoop = function () {
         if (this.hero.alive === 1) {
-            this.ctrlRockerDown();
+            if (this.isHold)
+                this.ctrlRockerDown();
             this.hero.right.visible = false;
             this.hero.left.visible = false;
             this.hero.up.visible = false;
@@ -58,25 +64,7 @@ var Game = /** @class */ (function () {
             this.hero.x += this.hero.speedX;
             this.hero.y += this.hero.speedY;
         }
-        //  if(this.hero.alive === 0){
-        //         this.rebutton.pos(400, 400);
-        //         this.rebutton.width = 45;
-        //         this.rebutton.height = 45;
-        //         this.rebutton.loadImage("res2/regame.png");
-        //         this.rebutton.on(Laya.Event.CLICK,this,this.regame);
-        //         Laya.stage.addChild(this.rebutton);
-        //     }
     };
-    // regame(): void {
-    //       let bg = new ThunderMode1();
-    //       bg.setmap();
-    //       this.hero.speedX = 0;
-    //       this.hero.speedY = 0;
-    //       this.hero.alive = 1;
-    //       this.hero.burn.visible = false;
-    //       this.hero.body.visible = false;
-    //       Laya.stage.addChild(bg);
-    // }
     Game.prototype.clickHandler = function () {
         this.bg.removeSelf();
         this.bg2 = new ThunderMode1();
@@ -91,6 +79,9 @@ var Game = /** @class */ (function () {
         if (Laya.stage.mouseX <= game.stageW / 2) {
             this.ctrl_rocker.visible = true;
             this.ctrl_rocker_move.visible = false;
+            this.hero.speedX = 0;
+            this.hero.speedY = 0;
+            this.isHold = false;
         }
     };
     Game.prototype.ctrlRockerDown = function () {

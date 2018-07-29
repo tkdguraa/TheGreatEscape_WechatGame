@@ -8,11 +8,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var revival = 0;
 var StartBackGround = /** @class */ (function (_super) {
     __extends(StartBackGround, _super);
     function StartBackGround() {
         var _this = _super.call(this) || this;
-        //Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
+        Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
         console.log("this");
         _this.init();
         return _this;
@@ -139,6 +140,7 @@ var ThunderMode1 = /** @class */ (function (_super) {
         _this.thu = new Thunder();
         _this.frameLoop(1, _this, _this.Loop);
         _this.frameLoop(1, _this, _this.judstate);
+        DisplayRevival();
         return _this;
     }
     ThunderMode1.prototype.setmap = function () {
@@ -159,14 +161,17 @@ var ThunderMode1 = /** @class */ (function (_super) {
         this.stage.addChild(this.thu);
     };
     ThunderMode1.prototype.regame = function () {
-        var bg = new ThunderMode1();
-        bg.setmap();
-        this.hero.speedX = 0;
-        this.hero.speedY = 0;
-        this.hero.alive = 1;
-        this.hero.burn.visible = false;
-        this.hero.body.visible = false;
-        Laya.stage.addChild(bg);
+        if (this.hero.alive === 0) {
+            revival++;
+            var bg = new ThunderMode1();
+            bg.setmap();
+            this.hero.speedX = 0;
+            this.hero.speedY = 0;
+            this.hero.alive = 1;
+            this.hero.burn.visible = false;
+            this.hero.body.visible = false;
+            Laya.stage.addChild(bg);
+        }
     };
     ThunderMode1.prototype.judstate = function () {
         var m_tile = this.finishline;
@@ -280,7 +285,7 @@ var ThunderMode1 = /** @class */ (function (_super) {
     };
     return ThunderMode1;
 }(Laya.Sprite));
-var mapnum = 1;
+var mapnum = 0;
 var BombMode1 = /** @class */ (function (_super) {
     __extends(BombMode1, _super);
     function BombMode1() {
@@ -290,35 +295,9 @@ var BombMode1 = /** @class */ (function (_super) {
         _this.timer.frameLoop(1, _this, _this.course);
         _this.timer.frameLoop(1, _this, _this.judstate);
         _this.rebutton = new Laya.Button();
+        DisplayRevival();
         return _this;
     }
-    BombMode1.prototype.setmap = function (n) {
-        if (n === 1) {
-            this.startline = this.Bmap1.startline;
-            this.challenge = this.Bmap1.challenge;
-            this.finishline = this.Bmap1.finishline;
-        }
-        if (n === 2) {
-            this.startline = this.Bmap2.startline;
-            this.challenge = this.Bmap2.challenge;
-            this.finishline = this.Bmap2.finishline;
-        }
-        if (n === 3) {
-            this.startline = this.Bmap3.startline;
-            this.challenge = this.Bmap3.challenge;
-            this.finishline = this.Bmap3.finishline;
-        }
-        this.stage.addChild(this.challenge);
-        this.stage.addChild(this.startline);
-        this.stage.addChild(this.finishline);
-        this.hero = game.hero;
-        this.hero.pos(0, 300);
-        this.stage.addChild(this.hero);
-        this.stage.addChild(game.hero);
-        this.stage.addChild(game.ctrl_rocker);
-        this.stage.addChild(game.ctrl_rocker_move);
-        this.stage.addChild(game.ctrl_back);
-    };
     BombMode1.prototype.init = function () {
         this.bg = new Laya.Sprite();
         this.stage.addChild(this.bg);
@@ -355,6 +334,28 @@ var BombMode1 = /** @class */ (function (_super) {
             this.Bmap3.challenge.makeblock('2', 1, 5, 90 + 8 * 45 + i * 45, 90 + 90);
         this.Bmap3.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap3.finishline.makeblock('1', 2, 9, 720, 90);
+        this.Bmap4 = new Map();
+        for (var i = 0; i < 6; i++)
+            if (i % 2 === 0)
+                this.Bmap4.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 45 * 4);
+            else
+                this.Bmap4.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 45 * 4);
+        this.Bmap4.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap4.finishline.makeblock('1', 2, 9, 630, 90);
+        this.Bmap5 = new Map();
+        this.Bmap5.challenge.makeblock('2', 13, 2, 90, 90 + 45 * 3);
+        this.Bmap5.challenge.makeblock('3', 13, 2, 90, 90 + 45 * 5);
+        this.Bmap5.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap5.finishline.makeblock('1', 2, 9, 675, 90);
+        this.Bmap6 = new Map();
+        for (var i = 0; i < 3; i++)
+            this.Bmap6.challenge.makeblock('2', 2, 2, 90 + 90 * i, 90);
+        for (var i = 0; i < 3; i++)
+            this.Bmap6.challenge.makeblock('3', 2, 2, 270 + 90 * i, 90 + 90);
+        for (var i = 0; i < 3; i++)
+            this.Bmap6.challenge.makeblock('2', 2, 2, 450 + 90 * i, 90 + 90 * 2);
+        this.Bmap6.startline.makeblock('5', 2, 9, 0, 90);
+        this.Bmap6.finishline.makeblock('1', 2, 9, 720, 90);
     };
     BombMode1.prototype.normal = function () {
         for (var i = 0; i < this.challenge.numChildren; i++) {
@@ -362,14 +363,62 @@ var BombMode1 = /** @class */ (function (_super) {
             m_tile.fire = false;
         } //让爆炸区恢复正常
     };
+    BombMode1.prototype.setmap = function (n) {
+        if (n === 1) {
+            this.startline = this.Bmap1.startline;
+            this.challenge = this.Bmap1.challenge;
+            this.finishline = this.Bmap1.finishline;
+        }
+        if (n === 2) {
+            this.startline = this.Bmap5.startline;
+            this.challenge = this.Bmap5.challenge;
+            this.finishline = this.Bmap5.finishline;
+        }
+        if (n === 3) {
+            this.startline = this.Bmap3.startline;
+            this.challenge = this.Bmap3.challenge;
+            this.finishline = this.Bmap3.finishline;
+        }
+        if (n === 4) {
+            this.startline = this.Bmap2.startline;
+            this.challenge = this.Bmap2.challenge;
+            this.finishline = this.Bmap2.finishline;
+        }
+        if (n === 5) {
+            this.startline = this.Bmap6.startline;
+            this.challenge = this.Bmap6.challenge;
+            this.finishline = this.Bmap6.finishline;
+        }
+        if (n === 6) {
+            this.startline = this.Bmap4.startline;
+            this.challenge = this.Bmap4.challenge;
+            this.finishline = this.Bmap4.finishline;
+        }
+        this.stage.addChild(this.challenge);
+        this.stage.addChild(this.startline);
+        this.stage.addChild(this.finishline);
+        this.hero = game.hero;
+        this.hero.pos(0, 300);
+        this.stage.addChild(this.hero);
+        this.stage.addChild(game.hero);
+        this.stage.addChild(game.ctrl_rocker);
+        this.stage.addChild(game.ctrl_rocker_move);
+        this.stage.addChild(game.ctrl_back);
+    };
     BombMode1.prototype.course = function () {
         this.startcnt++;
         if (this.coursenum === 1)
             course1(this);
         if (this.coursenum === 2)
-            course2(this);
+            course5(this);
         if (this.coursenum === 3)
             course3(this);
+        if (this.coursenum === 4)
+            course2(this);
+        if (this.coursenum === 5)
+            course6(this);
+        if (this.coursenum === 6)
+            course4(this);
     };
     BombMode1.prototype.onfire = function (n) {
         var m_tile = this.challenge.getChildAt(n);
@@ -381,21 +430,38 @@ var BombMode1 = /** @class */ (function (_super) {
         } //让第n块瓷砖炸弹爆炸
     };
     BombMode1.prototype.regame = function () {
-        for (var i = 0; i < this.stage.numChildren; i++) {
-            var m_child = this.stage.getChildAt(i);
-            m_child.removeSelf();
+        if (this.hero.alive === 0) {
+            for (var i = 0; i < this.stage.numChildren; i++) {
+                var m_child = this.stage.getChildAt(i);
+                m_child.removeSelf();
+            }
+            revival++;
+            if (mapnum === 0) {
+                var bg = new ThunderMode1();
+                bg.setmap();
+                this.hero.speedX = 0;
+                this.hero.speedY = 0;
+                this.hero.alive = 1;
+                this.hero.burn.visible = false;
+                this.hero.body.visible = false;
+                this.timer.clear(this, this.judstate);
+                this.timer.clear(this, this.course);
+                Laya.stage.addChild(bg);
+            }
+            else {
+                var bg = new BombMode1();
+                bg.setmap(mapnum);
+                bg.coursenum = mapnum;
+                this.hero.speedX = 0;
+                this.hero.speedY = 0;
+                this.hero.alive = 1;
+                this.hero.burn.visible = false;
+                this.hero.body.visible = false;
+                this.timer.clear(this, this.judstate);
+                this.timer.clear(this, this.course);
+                Laya.stage.addChild(bg);
+            }
         }
-        var bg = new ThunderMode1();
-        bg.setmap();
-        mapnum = 1;
-        this.hero.speedX = 0;
-        this.hero.speedY = 0;
-        this.hero.alive = 1;
-        this.hero.burn.visible = false;
-        this.hero.body.visible = false;
-        this.timer.clear(this, this.judstate);
-        this.timer.clear(this, this.course);
-        Laya.stage.addChild(bg);
     };
     BombMode1.prototype.judstate = function () {
         if (this.hero.alive === 0) {
@@ -409,8 +475,9 @@ var BombMode1 = /** @class */ (function (_super) {
         var m_tile = this.finishline;
         if (this.hero.alive === 1) {
             if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
-                if (mapnum === 3) {
+                if (mapnum === 6) {
                     DisplayWords(1);
+                    mapnum = 0;
                     this.hero.alive = 0;
                 }
                 else {
@@ -561,7 +628,7 @@ function course2(map) {
         map.onfire(3);
         map.onfire(4);
     }
-    if (map.startcnt / 80 === 1)
+    if (map.startcnt / 120 === 1)
         map.startcnt = 0;
 }
 function course3(map) {
@@ -595,6 +662,74 @@ function course3(map) {
     if (map.startcnt / 300 === 1)
         map.startcnt = 0;
 }
+function course4(map) {
+    if (map.startcnt / 40 === 1) {
+        map.onfire(0);
+    }
+    if (map.startcnt / 50 === 1) {
+        map.onfire(1);
+    }
+    if (map.startcnt / 60 === 1) {
+        map.onfire(2);
+    }
+    if (map.startcnt / 90 === 1) {
+        map.onfire(5);
+    }
+    if (map.startcnt / 100 === 1) {
+        map.onfire(4);
+    }
+    if (map.startcnt / 110 === 1) {
+        map.onfire(3);
+    }
+    if (map.startcnt / 170 === 1) {
+        map.onfire(0);
+        map.onfire(2);
+        map.onfire(4);
+    }
+    if (map.startcnt / 230 === 1) {
+        map.onfire(1);
+        map.onfire(3);
+        map.onfire(5);
+    }
+    if (map.startcnt / 290 === 1)
+        map.startcnt = 0;
+}
+function course5(map) {
+    if (map.startcnt / 40 === 1)
+        map.onfire(0);
+    if (map.startcnt / 100 === 1)
+        map.onfire(1);
+    if (map.startcnt / 150 === 1)
+        map.startcnt = 0;
+}
+function course6(map) {
+    if (map.startcnt / 40 === 1) {
+        map.onfire(0);
+        map.onfire(2);
+        map.onfire(6);
+        map.onfire(8);
+    }
+    if (map.startcnt / 80 === 1) {
+        map.onfire(1);
+        map.onfire(7);
+    }
+    if (map.startcnt / 120 === 1) {
+        map.onfire(0);
+        map.onfire(2);
+        map.onfire(6);
+        map.onfire(8);
+    }
+    if (map.startcnt / 160 === 1) {
+        map.onfire(1);
+        map.onfire(3);
+        map.onfire(4);
+        map.onfire(5);
+        map.onfire(7);
+    }
+    if (map.startcnt / 200 === 1) {
+        map.startcnt = 0;
+    }
+}
 function makeunvisible(hero) {
     hero.right.visible = false;
     hero.left.visible = false;
@@ -602,5 +737,14 @@ function makeunvisible(hero) {
     hero.down.visible = false;
     hero.stand.visible = false;
     hero.body.visible = false;
+}
+function DisplayRevival() {
+    var Revtxt = new Laya.Text();
+    Revtxt.text = "Revival: " + revival;
+    Revtxt.color = "#ffffff";
+    Revtxt.font = "Impact";
+    Revtxt.fontSize = 50;
+    Revtxt.pos(0, 0);
+    Laya.stage.addChild(Revtxt);
 }
 //# sourceMappingURL=BackGround.js.map
