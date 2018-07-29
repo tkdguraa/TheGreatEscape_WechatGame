@@ -4,22 +4,25 @@ class Game {
     public bg3: BombMode1;
     public instruction: Instruction;
     public rebutton: Laya.Button;
+
     hero: Hero;
     ctrl_rocker: Laya.Image;
     ctrl_rocker_move: Laya.Image;
     ctrl_back: Laya.Image;
+    isHold: boolean = false;
     
     stageW: number = 800;
     stageH: number = 600;
     ctrl_rocker_x: number = 50;
     ctrl_rocker_y: number = 400;
+    hr_get: Laya.HttpRequest;
+    hr_post: Laya.HttpRequest;
 
-    isHold: boolean = false;
     constructor() {
       // 初始屏幕适配
-        
         Laya.MiniAdpter.init();
         Laya.init(800, 600);
+
         // 初始屏幕适配
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
@@ -28,13 +31,14 @@ class Game {
         Laya.stage.on("mouseup", this, this.ctrlRockerUp)
 
         this.init_ingame_images();
-        this.bg = new StartBackGround();
-        Laya.stage.addChild(this.bg);
-        this.bg.Play.on(Laya.Event.CLICK,this,this.clickHandler);
-        this.bg.Help.on(Laya.Event.CLICK,this,this.helpHandler);
-        Laya.timer.frameLoop(1, this, this.gameLoop)
-    }
+        this.init_server_connection();
 
+        this.sendRanking('user5', '50');
+        this.getRanking();
+
+        // main game loop
+        Laya.timer.frameLoop(1, this, this.gameLoop);
+    }
 
     init_ingame_images(): void {
         this.hero = new Hero();
@@ -58,6 +62,21 @@ class Game {
         this.ctrl_rocker_move.pivot(17.5, 17.5);
         this.ctrl_rocker_move.visible = false;
         this.ctrl_rocker_move.on(Laya.Event.MOUSE_DOWN, this, ()=> {this.isHold = true;});
+
+        this.bg = new StartBackGround();
+        Laya.stage.addChild(this.bg);
+        this.bg.Play.on(Laya.Event.CLICK,this,this.clickHandler);
+        this.bg.Help.on(Laya.Event.CLICK,this,this.helpHandler);
+    }
+
+    init_server_connection(): void {
+        this.hr_get = new Laya.HttpRequest();
+        this.hr_get.once(Laya.Event.ERROR, this, this.onHttpRequestError);
+        this.hr_get.once(Laya.Event.COMPLETE, this, this.onHttpRequestCompleteGet);
+
+        this.hr_post = new Laya.HttpRequest();
+        this.hr_post.once(Laya.Event.ERROR, this, this.onHttpRequestError);
+        this.hr_post.once(Laya.Event.COMPLETE, this, this.onHttpRequestCompletePost);
     }
 
     gameLoop(): void {
@@ -114,7 +133,7 @@ class Game {
        Laya.stage.addChild(this.instruction);
     }
     ctrlRockerUp(): void {
-        if (Laya.stage.mouseX <= game.stageW / 2) {
+        if (Laya.stage.mouseX <= this.stageW / 2) {
             this.ctrl_rocker.visible = true;
             this.ctrl_rocker_move.visible = false;
             this.hero.speedX = 0;
@@ -122,7 +141,6 @@ class Game {
             this.isHold = false;
         }
     }
-
     ctrlRockerDown(): void {
         // stop moving. control rocker is centered
         if (distance(Laya.stage.mouseX, Laya.stage.mouseY, this.ctrl_back.x, this.ctrl_back.y) <= 0.2 * this.ctrl_back.width) {
@@ -149,7 +167,7 @@ class Game {
                 );
 
             // move hero
-            let angle = Math.atan2(Laya.stage.mouseY - game.ctrl_rocker_y, Laya.stage.mouseX - game.ctrl_rocker_x);
+            let angle = Math.atan2(Laya.stage.mouseY - this.ctrl_rocker_y, Laya.stage.mouseX - this.ctrl_rocker_x);
             this.hero.speedX = 2 * Math.cos(angle);
             this.hero.speedY = 2 * Math.sin(angle);
     
@@ -159,6 +177,27 @@ class Game {
             this.hero.speedX = 0;
             this.hero.speedY = 0;
         }
+    }
+
+    onHttpRequestError(err): void {
+        if (err) console.log('err' + err);
+    }
+    // send GET ranking request to redis server
+    getRanking(): void {
+        this.hr_get.send('http://192.144.144.22:12306/ranking', null, 'get', 'text');
+    }
+    // send POST ranking request to redis server
+    sendRanking(name, score): void {
+         this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'text');
+    }
+    // get GET response from redis server
+    onHttpRequestCompleteGet(): void {
+        let data = this.hr_get.data;
+        console.log(data);
+    }
+    // get POST response from redis server
+    onHttpRequestCompletePost(res): void {
+        console.log('post complete' + res);
     }
 }
 let game = new Game();
