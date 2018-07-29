@@ -53427,7 +53427,8 @@ var StartBackGround = /** @class */ (function (_super) {
     __extends(StartBackGround, _super);
     function StartBackGround() {
         var _this = _super.call(this) || this;
-        // Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
+        Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
+        console.log("this");
         _this.init();
         return _this;
     }
@@ -53549,6 +53550,8 @@ var ThunderMode1 = /** @class */ (function (_super) {
     function ThunderMode1() {
         var _this = _super.call(this) || this;
         _this.init();
+        _this.rebutton = new Laya.Button();
+        _this.thu = new Thunder();
         _this.frameLoop(1, _this, _this.Loop);
         _this.frameLoop(1, _this, _this.judstate);
         return _this;
@@ -53568,6 +53571,7 @@ var ThunderMode1 = /** @class */ (function (_super) {
         this.stage.addChild(game.ctrl_rocker_move);
         this.stage.addChild(game.ctrl_back);
         this.createTrap(20, 3);
+        this.stage.addChild(this.thu);
     };
     ThunderMode1.prototype.judstate = function () {
         var m_tile = this.finishline;
@@ -53578,15 +53582,16 @@ var ThunderMode1 = /** @class */ (function (_super) {
                     m_child.removeSelf();
                 }
                 var bg = new BombMode1();
-                bg.setmap(1);
-                bg.coursenum = 1;
+                bg.setmap(3);
+                bg.coursenum = 3;
+                mapnum = 3;
                 this.hero.speedX = 0;
                 this.hero.speedY = 0;
                 this.timer.clear(this, this.judstate);
                 this.timer.clear(this, this.Loop);
                 Laya.stage.addChild(bg);
             }
-        }
+        } //若角色到达终点，则删除所有节点与循环，移动到下一个地图
         var cnt = 0;
         for (var i = 1; i < this.stage.numChildren - 2; i++) {
             var m_tile_1 = this.stage.getChildAt(i);
@@ -53606,9 +53611,8 @@ var ThunderMode1 = /** @class */ (function (_super) {
             }
         }
         if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
-            console.log(cnt, this.stage.numChildren, this.challenge.numChildren);
-            Laya.SoundManager.playMusic("res2/sound/fall.wav", 1);
-            DisplayWords();
+            Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
+            DisplayWords(0);
             this.hero.alive = 0;
             makeunvisible(this.hero);
             this.hero.body.visible = true;
@@ -53622,10 +53626,19 @@ var ThunderMode1 = /** @class */ (function (_super) {
             if (this.hero.speedY > 0)
                 this.hero.y += 20;
         }
-    };
+        if (this.hero.alive === 0) {
+            this.timer.clear(this, this.judstate);
+            this.timer.clear(this, this.Loop);
+            mapnum = 0;
+            for (var i = this.thu.numChildren - 1; i >= 0; i--) {
+                var trap = this.thu.getChildAt(i);
+                trap.removeSelf();
+            } //给予每一个闪电速度
+        }
+    }; //遍历每块瓷砖，知道找到英雄所处的瓷砖为止若遍历了所有瓷砖，则说明英雄不再瓷砖上，判掉落
     ThunderMode1.prototype.Loop = function () {
-        for (var i = this.numChildren - 1; i >= 0; i--) {
-            var trap = this.getChildAt(i);
+        for (var i = this.thu.numChildren - 1; i >= 0; i--) {
+            var trap = this.thu.getChildAt(i);
             var temp = Math.random();
             if (temp > 0.7 && trap.x + 5 < 660)
                 trap.x += trap.speed;
@@ -53637,7 +53650,7 @@ var ThunderMode1 = /** @class */ (function (_super) {
             else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
                 trap.y -= trap.speed;
             judelectricshock(this.hero, trap);
-        }
+        } //给予每一个闪电速度
     };
     ThunderMode1.prototype.init = function () {
         this.bg = new Laya.Sprite();
@@ -53657,7 +53670,7 @@ var ThunderMode1 = /** @class */ (function (_super) {
             var trap = Laya.Pool.getItemByClass("thunder", Thunder);
             trap.init(speed);
             trap.pos(Math.random() * 600 + 90, Math.random() * 500 + 50);
-            this.addChild(trap);
+            this.thu.addChild(trap);
         }
     };
     return ThunderMode1;
@@ -53671,6 +53684,7 @@ var BombMode1 = /** @class */ (function (_super) {
         _this.frameLoop(5, _this, _this.normal);
         _this.timer.frameLoop(1, _this, _this.course);
         _this.timer.frameLoop(1, _this, _this.judstate);
+        _this.rebutton = new Laya.Button();
         return _this;
     }
     BombMode1.prototype.setmap = function (n) {
@@ -53706,6 +53720,7 @@ var BombMode1 = /** @class */ (function (_super) {
         this.bg.loadImage("res2/stage2.png");
         this.startcnt = 0;
         this.Bmap1 = new Map();
+        //制作地图
         for (var i = 0; i < 8; i++) {
             if (i % 2 === 0)
                 this.Bmap1.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 90);
@@ -53740,7 +53755,7 @@ var BombMode1 = /** @class */ (function (_super) {
         for (var i = 0; i < this.challenge.numChildren; i++) {
             var m_tile = this.challenge.getChildAt(i);
             m_tile.fire = false;
-        }
+        } //让爆炸区恢复正常
     };
     BombMode1.prototype.course = function () {
         this.startcnt++;
@@ -53752,31 +53767,39 @@ var BombMode1 = /** @class */ (function (_super) {
             course3(this);
     };
     BombMode1.prototype.onfire = function (n) {
-        // for (let i: number = 0; i < this.challenge.numChildren; i++) {
         var m_tile = this.challenge.getChildAt(n);
         m_tile.fire = true;
         for (var j = 0; j < m_tile.numChildren; j++) {
             var _tile = m_tile.getChildAt(j);
             _tile.bomb.play(0, false);
             Laya.SoundManager.playSound("res2/sound/bomb.wav", 1);
-        }
-        // }
+        } //让第n块瓷砖炸弹爆炸
     };
     BombMode1.prototype.judstate = function () {
+        if (this.hero.alive === 0) {
+            this.timer.clear(this, this.judstate);
+            this.timer.clear(this, this.course);
+        } //若死亡，那么停止爆炸
         var m_tile = this.finishline;
         if (this.hero.alive === 1) {
             if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
-                for (var i = 0; i < this.stage.numChildren; i++) {
-                    var m_child = this.stage.getChildAt(i);
-                    m_child.removeSelf();
+                if (mapnum === 3) {
+                    DisplayWords(1);
+                    this.hero.alive = 0;
                 }
-                var bg = new BombMode1();
-                mapnum++;
-                bg.setmap(mapnum);
-                bg.coursenum = mapnum;
-                this.timer.clear(this, this.judstate);
-                this.timer.clear(this, this.course);
-                Laya.stage.addChild(bg);
+                else {
+                    for (var i = 0; i < this.stage.numChildren; i++) {
+                        var m_child = this.stage.getChildAt(i);
+                        m_child.removeSelf();
+                    }
+                    var bg = new BombMode1();
+                    mapnum++;
+                    bg.setmap(mapnum);
+                    bg.coursenum = mapnum;
+                    this.timer.clear(this, this.judstate);
+                    this.timer.clear(this, this.course);
+                    Laya.stage.addChild(bg); //如果角色到达了终点，则删除所有子节点与循环，进入下一个地图
+                }
             }
         }
         if (this.hero.alive === 1) {
@@ -53791,14 +53814,14 @@ var BombMode1 = /** @class */ (function (_super) {
             var _tile = this.challenge.getChildAt(i);
             if (cnt != this.challenge.numChildren) {
                 if (_tile.fire === true && _tile.type != "5") {
-                    DisplayWords();
+                    DisplayWords(0);
                     this.hero.alive = 0;
                     makeunvisible(this.hero);
                     this.hero.burn.visible = true;
                     this.hero.burn.play(0, false);
-                    Laya.SoundManager.playMusic("res2/sound/gameover.wav", 1);
+                    Laya.SoundManager.playMusic("res/sound/gameover.wav", 1);
                 }
-            }
+            } //判断英雄是否被炸弹炸死
         }
         if (this.hero.alive === 1) {
             var cnt = 0;
@@ -53821,11 +53844,11 @@ var BombMode1 = /** @class */ (function (_super) {
             }
             if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
                 this.hero.alive = 0;
-                Laya.SoundManager.playMusic("res2/sound/fall.wav", 1);
+                Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
                 makeunvisible(this.hero);
                 this.hero.body.visible = true;
                 this.hero.body.play(0, false);
-                DisplayWords();
+                DisplayWords(0);
                 if (this.hero.speedX < 0)
                     this.hero.x -= 20;
                 if (this.hero.speedY < 0)
@@ -53834,18 +53857,22 @@ var BombMode1 = /** @class */ (function (_super) {
                     this.hero.x += 20;
                 if (this.hero.speedY > 0)
                     this.hero.y += 20;
-            }
+            } //同上
         }
     };
     return BombMode1;
 }(Laya.Sprite));
-function DisplayWords() {
+function DisplayWords(n) {
     var w = 800;
     var offsetX = Laya.stage.width - w >> 1;
-    var demoString = "GameOver";
+    var words;
     var letterText;
-    for (var i = 0, len = demoString.length; i < len; ++i) {
-        letterText = createLetter(demoString.charAt(i));
+    if (n === 0)
+        words = "GameOver";
+    if (n === 1)
+        words = "WIN";
+    for (var i = 0, len = words.length; i < len; ++i) {
+        letterText = createLetter(words.charAt(i));
         letterText.x = w / len * i + offsetX;
         letterText.y = -200;
         Laya.Tween.to(letterText, { y: 100 }, 3000, Laya.Ease.elasticOut, null, i * 100);
@@ -53861,7 +53888,7 @@ function createLetter(char) {
     return letter;
 }
 function judelectricshock(hero, trap) {
-    if (Math.abs(hero.x - trap.x) < 13 && Math.abs(hero.y - trap.y) < 30 && hero.alive === 1) { //判断碰撞
+    if (Math.abs(hero.x - trap.x) < 13 && Math.abs(hero.y - trap.y) < 30 && hero.alive === 1) { //判断闪电碰撞
         hero.right.visible = false;
         hero.left.visible = false;
         hero.up.visible = false;
@@ -53869,11 +53896,12 @@ function judelectricshock(hero, trap) {
         hero.stand.visible = false;
         hero.burn.visible = true;
         hero.burn.play(0, false);
-        DisplayWords();
-        Laya.SoundManager.playMusic("res2/sound/thunder.wav", 1);
+        DisplayWords(0);
+        Laya.SoundManager.playMusic("res/sound/thunder.wav", 1);
         hero.alive = 0;
     }
 }
+//炸弹爆炸规律
 function course1(map) {
     if (map.startcnt / 40 === 1) {
         map.onfire(0);
@@ -53982,8 +54010,6 @@ var Tile = /** @class */ (function (_super) {
             this.bomb.loadAtlas("res2/atlas/boom1.atlas", Laya.Handler.create(this, this.exploison));
         else if (this.type === "3")
             this.bomb.loadAtlas("res2/atlas/boom2.atlas", Laya.Handler.create(this, this.exploison));
-        else if (this.type === "4")
-            this.bomb.loadAtlas("res2/atlas/blackhole.atlas", Laya.Handler.create(this, this.exploison));
         this.loadImage("res2/tile" + this.type + ".png");
         this.bomb.interval = 100;
     };
@@ -54012,7 +54038,6 @@ var Tile = /** @class */ (function (_super) {
             } //combinate the small block to make bigger block;
         }
         this.addChild(block);
-        //this.stage.addChild(block);
     };
     return Tile;
 }(Laya.Sprite));
@@ -54159,6 +54184,7 @@ var Game = /** @class */ (function () {
     Game.prototype.init_ingame_images = function () {
         this.hero = new Hero();
         this.hero.pos(10, 300);
+        this.rebutton = new Laya.Button();
         this.ctrl_back = new Laya.Image();
         this.ctrl_back.loadImage("res2/control-back.png");
         this.ctrl_back.pos(this.ctrl_rocker_x, this.ctrl_rocker_y);
@@ -54194,6 +54220,24 @@ var Game = /** @class */ (function () {
             this.hero.x += this.hero.speedX;
             this.hero.y += this.hero.speedY;
         }
+        if (this.hero.alive === 0) {
+            this.rebutton.pos(400, 400);
+            this.rebutton.width = 45;
+            this.rebutton.height = 45;
+            this.rebutton.loadImage("res2/regame.png");
+            this.rebutton.on(Laya.Event.CLICK, this, this.regame);
+            Laya.stage.addChild(this.rebutton);
+        }
+    };
+    Game.prototype.regame = function () {
+        var bg = new ThunderMode1();
+        bg.setmap();
+        this.hero.speedX = 0;
+        this.hero.speedY = 0;
+        this.hero.alive = 1;
+        this.hero.burn.visible = false;
+        this.hero.body.visible = false;
+        Laya.stage.addChild(bg);
     };
     Game.prototype.clickHandler = function () {
         this.bg.removeSelf();

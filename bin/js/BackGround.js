@@ -12,7 +12,7 @@ var StartBackGround = /** @class */ (function (_super) {
     __extends(StartBackGround, _super);
     function StartBackGround() {
         var _this = _super.call(this) || this;
-        Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
+        //Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
         console.log("this");
         _this.init();
         return _this;
@@ -158,6 +158,16 @@ var ThunderMode1 = /** @class */ (function (_super) {
         this.createTrap(20, 3);
         this.stage.addChild(this.thu);
     };
+    ThunderMode1.prototype.regame = function () {
+        var bg = new ThunderMode1();
+        bg.setmap();
+        this.hero.speedX = 0;
+        this.hero.speedY = 0;
+        this.hero.alive = 1;
+        this.hero.burn.visible = false;
+        this.hero.body.visible = false;
+        Laya.stage.addChild(bg);
+    };
     ThunderMode1.prototype.judstate = function () {
         var m_tile = this.finishline;
         if (this.hero.alive === 1) {
@@ -167,9 +177,9 @@ var ThunderMode1 = /** @class */ (function (_super) {
                     m_child.removeSelf();
                 }
                 var bg = new BombMode1();
-                bg.setmap(3);
-                bg.coursenum = 3;
-                mapnum = 3;
+                bg.setmap(1);
+                bg.coursenum = 1;
+                mapnum = 1;
                 this.hero.speedX = 0;
                 this.hero.speedY = 0;
                 this.timer.clear(this, this.judstate);
@@ -185,6 +195,7 @@ var ThunderMode1 = /** @class */ (function (_super) {
                     var _tile = this.challenge.getChildAt(j);
                     if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
                         break;
+                    console.log(j);
                     cnt++;
                 }
             }
@@ -210,6 +221,15 @@ var ThunderMode1 = /** @class */ (function (_super) {
                 this.hero.x += 20;
             if (this.hero.speedY > 0)
                 this.hero.y += 20;
+        }
+        if (this.hero.alive === 0) {
+            this.rebutton.pos(400, 400);
+            this.rebutton.width = 45;
+            this.rebutton.height = 45;
+            console.log('asd');
+            this.rebutton.loadImage("res2/regame.png");
+            this.rebutton.on(Laya.Event.CLICK, this, this.regame);
+            Laya.stage.addChild(this.rebutton);
         }
         if (this.hero.alive === 0) {
             this.timer.clear(this, this.judstate);
@@ -360,10 +380,31 @@ var BombMode1 = /** @class */ (function (_super) {
             Laya.SoundManager.playSound("res2/sound/bomb.wav", 1);
         } //让第n块瓷砖炸弹爆炸
     };
+    BombMode1.prototype.regame = function () {
+        for (var i = 0; i < this.stage.numChildren; i++) {
+            var m_child = this.stage.getChildAt(i);
+            m_child.removeSelf();
+        }
+        var bg = new ThunderMode1();
+        bg.setmap();
+        mapnum = 1;
+        this.hero.speedX = 0;
+        this.hero.speedY = 0;
+        this.hero.alive = 1;
+        this.hero.burn.visible = false;
+        this.hero.body.visible = false;
+        this.timer.clear(this, this.judstate);
+        this.timer.clear(this, this.course);
+        Laya.stage.addChild(bg);
+    };
     BombMode1.prototype.judstate = function () {
         if (this.hero.alive === 0) {
-            this.timer.clear(this, this.judstate);
-            this.timer.clear(this, this.course);
+            this.rebutton.pos(400, 400);
+            this.rebutton.width = 45;
+            this.rebutton.height = 45;
+            this.rebutton.loadImage("res2/regame.png");
+            this.rebutton.on(Laya.Event.CLICK, this, this.regame);
+            Laya.stage.addChild(this.rebutton);
         } //若死亡，那么停止爆炸
         var m_tile = this.finishline;
         if (this.hero.alive === 1) {
@@ -455,7 +496,7 @@ function DisplayWords(n) {
     if (n === 0)
         words = "GameOver";
     if (n === 1)
-        words = "WIN";
+        words = "Finish";
     for (var i = 0, len = words.length; i < len; ++i) {
         letterText = createLetter(words.charAt(i));
         letterText.x = w / len * i + offsetX;

@@ -17,8 +17,9 @@ class Game {
     isHold: boolean = false;
     constructor() {
       // 初始屏幕适配
+        
         Laya.MiniAdpter.init();
-        Laya.init(this.stageW, this.stageH);
+        Laya.init(800, 600);
         // 初始屏幕适配
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
@@ -33,6 +34,7 @@ class Game {
         this.bg.Help.on(Laya.Event.CLICK,this,this.helpHandler);
         Laya.timer.frameLoop(1, this, this.gameLoop)
     }
+
 
     init_ingame_images(): void {
         this.hero = new Hero();
@@ -67,49 +69,49 @@ class Game {
             this.hero.up.visible = false;
             this.hero.down.visible = false;
             this.hero.stand.visible = false;
-
-            if (this.hero.speedX === 0 && this.hero.speedY === 0)
+            if(this.hero.speedX === 0 && this.hero.speedY === 0)
                 this.hero.stand.visible = true;
-            else if (this.hero.speedX > 0 && (Math.abs(this.hero.speedX) > Math.abs(this.hero.speedY)))
+            else if(this.hero.speedX > 0 && (Math.abs(this.hero.speedX) > Math.abs(this.hero.speedY)))
                 this.hero.right.visible = true;
-            else if (this.hero.speedX < 0 && (Math.abs(this.hero.speedX) > Math.abs(this.hero.speedY)))
+            else if(this.hero.speedX < 0 && (Math.abs(this.hero.speedX) > Math.abs(this.hero.speedY)))
                 this.hero.left.visible = true;
-            else if (this.hero.speedY > 0 && (Math.abs(this.hero.speedY) > Math.abs(this.hero.speedX)))
+            else if(this.hero.speedY > 0 && (Math.abs(this.hero.speedY) > Math.abs(this.hero.speedX)))
                 this.hero.down.visible = true;
-            else if (this.hero.speedY < 0 && (Math.abs(this.hero.speedY) > Math.abs(this.hero.speedX)))
+            else if(this.hero.speedY < 0 && (Math.abs(this.hero.speedY) > Math.abs(this.hero.speedX)))
                 this.hero.up.visible = true;
             
             this.hero.x += this.hero.speedX;
             this.hero.y += this.hero.speedY;
         }
-        if (this.hero.alive === 0) {
-            this.rebutton.pos(400, 400);
-            this.rebutton.width = 45;
-            this.rebutton.height = 45;
-            this.rebutton.loadImage("res2/regame.png");
-            this.rebutton.on(Laya.Event.CLICK,this,this.regame);
-            Laya.stage.addChild(this.rebutton);
-        }
+        //  if(this.hero.alive === 0){
+        //         this.rebutton.pos(400, 400);
+        //         this.rebutton.width = 45;
+        //         this.rebutton.height = 45;
+        //         this.rebutton.loadImage("res2/regame.png");
+        //         this.rebutton.on(Laya.Event.CLICK,this,this.regame);
+        //         Laya.stage.addChild(this.rebutton);
+        //     }
     }
-    regame(): void {
-        let bg = new ThunderMode1();
-        bg.setmap();
-        this.hero.speedX = 0;
-        this.hero.speedY = 0;
-        this.hero.alive = 1;
-        this.hero.burn.visible = false;
-        this.hero.body.visible = false;
-        Laya.stage.addChild(bg);
-    }
+    // regame(): void {
+    //       let bg = new ThunderMode1();
+    //       bg.setmap();
+    //       this.hero.speedX = 0;
+    //       this.hero.speedY = 0;
+    //       this.hero.alive = 1;
+    //       this.hero.burn.visible = false;
+    //       this.hero.body.visible = false;
+    //       Laya.stage.addChild(bg);
+    // }
+
     clickHandler(): void {
-        this.bg.removeSelf();
-        this.bg2 = new ThunderMode1();
-        this.bg2.setmap();
-        Laya.stage.addChild(this.bg2);
+       this.bg.removeSelf();
+       this.bg2 = new ThunderMode1();
+       this.bg2.setmap();
+       Laya.stage.addChild(this.bg2);
     }
-    helpHandler(): void {
-        this.instruction = new Instruction();
-        Laya.stage.addChild(this.instruction);
+    helpHandler():void{
+       this.instruction = new Instruction();
+       Laya.stage.addChild(this.instruction);
     }
     ctrlRockerUp(): void {
         if (Laya.stage.mouseX <= game.stageW / 2) {
@@ -120,10 +122,10 @@ class Game {
             this.isHold = false;
         }
     }
+
     ctrlRockerDown(): void {
-        // stop moving. mouse up or control rocker is centered
-        if (!Laya.Event.MOUSE_DOWN ||
-            distance(Laya.stage.mouseX, Laya.stage.mouseY, this.ctrl_back.x, this.ctrl_back.y) <= 0.2 * this.ctrl_back.width) {
+        // stop moving. control rocker is centered
+        if (distance(Laya.stage.mouseX, Laya.stage.mouseY, this.ctrl_back.x, this.ctrl_back.y) <= 0.2 * this.ctrl_back.width) {
             this.ctrl_rocker.visible = true;
             this.ctrl_rocker_move.visible = false;
             this.hero.speedX = 0;
