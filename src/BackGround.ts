@@ -139,7 +139,7 @@ class StartBackGround extends Laya.Sprite {
     
     private updateColor(txt: Laya.Text): void {
         let c: number = Math.floor(Math.random() * 3);
-        switch (c) {
+        switch(c) {
             case 0:
                 txt.color = "#912299";
                 break;
@@ -179,7 +179,7 @@ class Scoreboard extends Laya.Sprite{
     public Rank5: Laya.Text;
     public MyRank: Laya.Text;
 
-    constructor(){
+    constructor() {
         super();
         this.Rank1 = new Laya.Text();
         this.Rank2 = new Laya.Text();
@@ -250,10 +250,10 @@ class Scoreboard extends Laya.Sprite{
         Laya.stage.addChild(game.bg);
     }
 }
-class Instruction extends Laya.Sprite{
+class Instruction extends Laya.Sprite {
     public bg: Laya.Sprite;
     public Back: Laya.Button;
-    constructor(){
+    constructor() {
         super();
         this.Back = new Laya.Button();
         this.bg = new Laya.Sprite();
@@ -276,7 +276,6 @@ class Instruction extends Laya.Sprite{
 }
 
 class ThunderMode1 extends Laya.Sprite {
- 
     private bg: Laya.Sprite;
     private hero: Hero;
     public startline: Tile;
@@ -314,7 +313,7 @@ class ThunderMode1 extends Laya.Sprite {
         this.stage.addChild(this.thu);
     }  
     regame(): void {
-        if (this.hero.alive === 0){
+        if (this.hero.alive === 0) {
             revival++;
             for (let i: number = 0; i < this.stage.numChildren; i++) {
                     let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
@@ -339,7 +338,6 @@ class ThunderMode1 extends Laya.Sprite {
             let m_tile = this.finishline;
             if (this.hero.alive === 1) {
                 if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
-                
                     for (let i: number = 0; i < this.stage.numChildren; i++) {
                         let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
                         m_child.removeSelf();
@@ -401,7 +399,7 @@ class ThunderMode1 extends Laya.Sprite {
                 if (this.hero.speedY > 0)
                     this.hero.y += 20;
             }
-            if(this.hero.alive === 0){
+            if (this.hero.alive === 0) {
                  this.rebutton.pos(400, 400);
                  this.rebutton.width = 45;
                  this.rebutton.height = 45;
@@ -409,14 +407,14 @@ class ThunderMode1 extends Laya.Sprite {
                  this.rebutton.on(Laya.Event.CLICK,this,this.regame);
                  Laya.stage.addChild(this.rebutton);
             }
-            if(this.hero.alive === 0){
-                 this.timer.clear(this,this.judstate);
-                 this.timer.clear(this,this.Loop);
-                 mapnum = 0;
-                 for (let i: number = this.thu.numChildren - 1; i >= 0; i--) {
+            if (this.hero.alive === 0) {
+                this.timer.clear(this,this.judstate);
+                this.timer.clear(this,this.Loop);
+                mapnum = 0;
+                for (let i: number = this.thu.numChildren - 1; i >= 0; i--) {
                     let trap: Thunder = this.thu.getChildAt(i) as Thunder;
                     trap.removeSelf();   
-                 }//给予每一个闪电速度
+                }//给予每一个闪电速度
             }
     }//遍历每块瓷砖，知道找到英雄所处的瓷砖为止若遍历了所有瓷砖，则说明英雄不再瓷砖上，判掉落
    
@@ -426,15 +424,15 @@ class ThunderMode1 extends Laya.Sprite {
             let trap: Thunder = this.thu.getChildAt(i) as Thunder;
             
             let temp: number = Math.random();
-            if(temp > 0.7 && trap.x + 5 < 660 )
+            if (temp > 0.7 && trap.x + 5 < 660 )
                 trap.x += trap.speed;
-            else if(temp < 0.7 && temp > 0.4 && trap.x - 5 > 90)
+            else if (temp < 0.7 && temp > 0.4 && trap.x - 5 > 90)
                 trap.x -= trap.speed;
             
             let temp2: number = Math.random();
             if (temp2 > 0.7 && trap.y + 55 < 600)
                 trap.y += trap.speed;
-            else if(temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
+            else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
                 trap.y -= trap.speed;
 
             judelectricshock(this.hero,trap);
@@ -480,6 +478,7 @@ class BombMode1 extends Laya.Sprite {
     public Bmap6: Map;
     public rebutton: Laya.Button;
     public startcnt: number;
+
     constructor() {
         super();
         this.init();
@@ -497,22 +496,22 @@ class BombMode1 extends Laya.Sprite {
         this.startcnt = 0;
         this.Bmap1 = new Map(); 
         //制作地图
-         for (let i = 0; i < 8; i++){
+        for (let i = 0; i < 8; i++) {
             if (i % 2 === 0)
-                 this.Bmap1.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 90);
+                this.Bmap1.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 90);
             else
-                 this.Bmap1.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 90);
-           }
+                this.Bmap1.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 90);
+        }
         this.Bmap1.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap1.finishline.makeblock('1', 2, 9, 720, 90);
 
         this.Bmap2 = new Map();
-           for (let i = 0; i < 5; i++){
+        for (let i = 0; i < 5; i++) {
             if (i % 2 === 0)
-                 this.Bmap2.challenge.makeblock('2', 3, 4, 90 + i * 135, 90 + 45 * 3);
+                this.Bmap2.challenge.makeblock('2', 3, 4, 90 + i * 135, 90 + 45 * 3);
             else
-                 this.Bmap2.challenge.makeblock('3', 3, 4, 90 + i * 135, 90 + 45 * 3);
-           }
+                this.Bmap2.challenge.makeblock('3', 3, 4, 90 + i * 135, 90 + 45 * 3);
+        }
         this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 3, 180);
         this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 6, 180);
         this.Bmap2.challenge.makeblock('5', 2, 1, 45 * 9, 180);
@@ -531,11 +530,12 @@ class BombMode1 extends Laya.Sprite {
         this.Bmap3.finishline.makeblock('1', 2, 9, 720,90)
 
         this.Bmap4 = new Map();
-        for (let i = 0; i < 6; i++)
-            if(i % 2 === 0)
+        for (let i = 0; i < 6; i++) {
+            if (i % 2 === 0)
                 this.Bmap4.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 45 * 4);
             else
                 this.Bmap4.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 45 * 4);
+        }
       
         this.Bmap4.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap4.finishline.makeblock('1', 2, 9, 630,90)
@@ -579,17 +579,17 @@ class BombMode1 extends Laya.Sprite {
             this.challenge = this.Bmap3.challenge;
             this.finishline = this.Bmap3.finishline;
         }
-         if (n === 4) {
+        if (n === 4) {
             this.startline = this.Bmap2.startline;
             this.challenge = this.Bmap2.challenge;
             this.finishline = this.Bmap2.finishline;
         }
-         if (n === 5) {
+        if (n === 5) {
             this.startline = this.Bmap6.startline;
             this.challenge = this.Bmap6.challenge;
             this.finishline = this.Bmap6.finishline;
         }
-         if (n === 6) {
+        if (n === 6) {
             this.startline = this.Bmap4.startline;
             this.challenge = this.Bmap4.challenge;
             this.finishline = this.Bmap4.finishline;
@@ -606,7 +606,7 @@ class BombMode1 extends Laya.Sprite {
         this.stage.addChild(game.ctrl_back)
     }   
     course(): void {
-        this.startcnt ++;
+        this.startcnt++;
         if (this.coursenum === 1)
             course1(this);
         if (this.coursenum === 2)
@@ -620,29 +620,28 @@ class BombMode1 extends Laya.Sprite {
         if (this.coursenum === 6)
             course4(this);
     }
-    onfire(n:number): void {
-            let m_tile: Tile = this.challenge.getChildAt(n) as Tile;
-            m_tile.fire = true;
-            for (let j: number = 0; j < m_tile.numChildren; j++) {
-                 let _tile: Tile = m_tile.getChildAt(j) as Tile;
-                 _tile.bomb.play(0, false);
-                 Laya.SoundManager.playSound("res2/sound/bomb.wav",1);
-            }//让第n块瓷砖炸弹爆炸
+    onfire(n: number): void {
+        let m_tile: Tile = this.challenge.getChildAt(n) as Tile;
+        m_tile.fire = true;
+        for (let j: number = 0; j < m_tile.numChildren; j++) {
+                let _tile: Tile = m_tile.getChildAt(j) as Tile;
+                _tile.bomb.play(0, false);
+                Laya.SoundManager.playSound("res2/sound/bomb.wav",1);
+        }//让第n块瓷砖炸弹爆炸
     }
     regame(): void {
-
-        if (this.hero.alive === 0){
+        if (this.hero.alive === 0) {
             for (let i: number = 0; i < this.stage.numChildren; i++) {
-                    let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
-                    m_child.removeSelf();
+                let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
+                m_child.removeSelf();
             }
             for (let i: number = 0; i < this.numChildren; i++) {
-                     let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
-                     m_child.removeSelf();
+                let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
+                m_child.removeSelf();
             }
             revival++;
             Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
-            if (mapnum === 0){
+            if (mapnum === 0) {
                 let bg = new ThunderMode1();
                 bg.setmap();
                 this.hero.speedX = 0;
@@ -653,8 +652,7 @@ class BombMode1 extends Laya.Sprite {
                 this.timer.clear(this,this.judstate);
                 this.timer.clear(this,this.course); 
                 Laya.stage.addChild(bg);
-            }
-            else {
+            } else {
                 let bg = new BombMode1();
                 bg.setmap(mapnum);
                 bg.coursenum = mapnum;
@@ -667,18 +665,18 @@ class BombMode1 extends Laya.Sprite {
                 this.timer.clear(this,this.course); 
                 Laya.stage.addChild(bg);
             }
-            
         }
     }
     judstate(): void {
-        if(this.hero.alive === 0){
-           this.rebutton.pos(400, 400);
-           this.rebutton.width = 45;
-           this.rebutton.height = 45;
-           this.rebutton.loadImage("res2/regame.png");
-           this.rebutton.on(Laya.Event.CLICK,this,this.regame);
-           Laya.stage.addChild(this.rebutton);
-        }//若死亡，那么停止爆炸
+        if (this.hero.alive === 0) {
+            this.rebutton.pos(400, 400);
+            this.rebutton.width = 45;
+            this.rebutton.height = 45;
+            this.rebutton.loadImage("res2/regame.png");
+            this.rebutton.on(Laya.Event.CLICK,this,this.regame);
+            Laya.stage.addChild(this.rebutton);
+        } //若死亡，那么停止爆炸
+
         let m_tile = this.finishline;
         if (this.hero.alive === 1) {
             if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
@@ -720,7 +718,7 @@ class BombMode1 extends Laya.Sprite {
             let i: number = 0;
             let cnt: number = 0;
             for (i = 0; i < this.challenge.numChildren; i++) {
-            let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
+                let m_tile: Tile = this.challenge.getChildAt(i) as Tile;
                 if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
                     break;
 
@@ -739,7 +737,7 @@ class BombMode1 extends Laya.Sprite {
             }   //判断英雄是否被炸弹炸死
         }
         if (this.hero.alive === 1) {
-                let cnt: number = 0;
+            let cnt: number = 0;
             for (let i: number = 1; i < this.stage.numChildren - 2; i++) {
                 let m_tile: Tile = this.stage.getChildAt(i) as Tile;
                 
@@ -767,16 +765,16 @@ class BombMode1 extends Laya.Sprite {
                 this.hero.body.play(0,false);
                 DisplayWords(0);
 
-                if(this.hero.speedX < 0)
+                if (this.hero.speedX < 0)
                 this.hero.x -= 20;
                                     
-                if(this.hero.speedY < 0)
+                if (this.hero.speedY < 0)
                     this.hero.y -= 20;
                         
-                if(this.hero.speedX > 0)
+                if (this.hero.speedX > 0)
                     this.hero.x += 20;         
                 
-                if(this.hero.speedY > 0)
+                if (this.hero.speedY > 0)
                     this.hero.y += 20;
             }//同上
         }     
@@ -789,8 +787,9 @@ function DisplayWords(n: number): void {
     let words: string;
     let letterText: Laya.Text;
 
-    if(n === 0)
+    if (n === 0)
         words = "GameOver";
+
     for (let i: number = 0,len: number = words.length; i < len; ++i) {
         letterText = createLetter(words.charAt(i));
         letterText.x = w / len * i + offsetX;
@@ -809,8 +808,8 @@ function createLetter(char: string): Laya.Text {
     return letter;
 }
 
-function judelectricshock(hero: Hero,trap: Thunder){
-    if(Math.abs(hero.x - trap.x) < 13 && Math.abs(hero.y - trap.y) < 30 && hero.alive === 1){//判断闪电碰撞
+function judelectricshock(hero: Hero,trap: Thunder) {
+    if (Math.abs(hero.x - trap.x) < 13 && Math.abs(hero.y - trap.y) < 30 && hero.alive === 1) {//判断闪电碰撞
         hero.right.visible = false;
         hero.left.visible = false;
         hero.up.visible = false;
@@ -824,7 +823,7 @@ function judelectricshock(hero: Hero,trap: Thunder){
     }
 }
 //炸弹爆炸规律
-function course1(map:BombMode1){
+function course1(map:BombMode1) {
     if (map.startcnt / 40 === 1)
         map.onfire(0);
     if (map.startcnt / 65 === 1)
@@ -898,12 +897,12 @@ function course4(map: BombMode1) {
         map.onfire(4);
     if (map.startcnt / 110 === 1)
         map.onfire(3);
-    if (map.startcnt / 170 === 1){
+    if (map.startcnt / 170 === 1) {
         map.onfire(0);
         map.onfire(2);
         map.onfire(4);
     }
-    if (map.startcnt / 230 === 1){
+    if (map.startcnt / 230 === 1) {
         map.onfire(1);
         map.onfire(3);
         map.onfire(5);
@@ -936,7 +935,7 @@ function course6(map: BombMode1) {
         map.onfire(6);
         map.onfire(8);
     }
-    if (map.startcnt / 160 === 1){
+    if (map.startcnt / 160 === 1) {
         map.onfire(1);
         map.onfire(3);
         map.onfire(4);

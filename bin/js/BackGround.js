@@ -71,20 +71,11 @@ var StartBackGround = /** @class */ (function (_super) {
         this.bgSecond.loadImage("res2/background.jpg");
         this.bgSecond.pos(-800, 0);
         this.addChild(this.bgSecond);
-<<<<<<< HEAD
-        this.Help = new Laya.Button();
-=======
         this.Help = new Laya.Button(); //进入说明界面的按钮
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         this.Help.x = 730;
         this.Help.y = 0;
         this.Help.width = 70;
         this.Help.height = 70;
-<<<<<<< HEAD
-        this.Help.loadImage("res/Help.png");
-        this.addChild(this.Help);
-        this.Play = new Laya.Button();
-=======
         this.Help.loadImage("res2/Help.png");
         this.addChild(this.Help);
         this.Rank = new Laya.Button(); //进入积分榜界面的按钮
@@ -95,7 +86,6 @@ var StartBackGround = /** @class */ (function (_super) {
         this.Rank.loadImage("res2/rank.png");
         this.addChild(this.Rank);
         this.Play = new Laya.Button(); //计入游戏界面的按钮
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         this.Play.x = 272;
         this.Play.y = 350;
         this.Play.width = 250;
@@ -258,44 +248,13 @@ var Instruction = /** @class */ (function (_super) {
     };
     return Instruction;
 }(Laya.Sprite));
-<<<<<<< HEAD
-var Instruction = /** @class */ (function (_super) {
-    __extends(Instruction, _super);
-    function Instruction() {
-        var _this = _super.call(this) || this;
-        _this.Back = new Laya.Button();
-        _this.bg = new Laya.Sprite();
-        _this.bg.loadImage("res/instruction.png");
-        _this.Back = new Laya.Button();
-        _this.Back.x = 10;
-        _this.Back.y = 510;
-        _this.Back.width = 90;
-        _this.Back.height = 45;
-        _this.Back.loadImage("res/back.png");
-        _this.addChild(_this.bg);
-        _this.addChild(_this.Back);
-        _this.Back.on(Laya.Event.CLICK, _this, _this.backtoStart);
-        return _this;
-    }
-    Instruction.prototype.backtoStart = function () {
-        this.bg.removeSelf();
-        this.Back.removeSelf();
-        Laya.stage.addChild(game.bg);
-    };
-    return Instruction;
-}(Laya.Sprite));
-=======
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
 var ThunderMode1 = /** @class */ (function (_super) {
     __extends(ThunderMode1, _super);
     function ThunderMode1() {
         var _this = _super.call(this) || this;
         _this.init();
-<<<<<<< HEAD
-=======
         _this.rebutton = new Laya.Button();
         _this.thu = new Thunder();
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         _this.frameLoop(1, _this, _this.Loop);
         _this.frameLoop(1, _this, _this.judstate);
         DisplayRevival();
@@ -316,10 +275,6 @@ var ThunderMode1 = /** @class */ (function (_super) {
         this.stage.addChild(game.ctrl_rocker_move);
         this.stage.addChild(game.ctrl_back);
         this.createTrap(20, 3);
-<<<<<<< HEAD
-        this.def = 1;
-    };
-=======
         this.stage.addChild(this.thu);
     };
     ThunderMode1.prototype.regame = function () {
@@ -344,7 +299,6 @@ var ThunderMode1 = /** @class */ (function (_super) {
             Laya.stage.addChild(bg);
         }
     };
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
     ThunderMode1.prototype.judstate = function () {
         var m_tile = this.finishline;
         if (this.hero.alive === 1) {
@@ -353,11 +307,6 @@ var ThunderMode1 = /** @class */ (function (_super) {
                     var m_child = this.stage.getChildAt(i);
                     m_child.removeSelf();
                 }
-<<<<<<< HEAD
-                var bg = new BombMode1();
-                bg.setmap(1);
-                bg.coursenum = 1;
-=======
                 for (var i = 0; i < this.numChildren; i++) {
                     var m_child = this.getChildAt(i);
                     m_child.removeSelf();
@@ -369,16 +318,11 @@ var ThunderMode1 = /** @class */ (function (_super) {
                 console.log(mapnum);
                 this.hero.speedX = 0;
                 this.hero.speedY = 0;
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
                 this.timer.clear(this, this.judstate);
                 this.timer.clear(this, this.Loop);
                 Laya.stage.addChild(bg);
             }
-<<<<<<< HEAD
-        }
-=======
         } //若角色到达终点，则删除所有节点与循环，移动到下一个地图
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         var cnt = 0;
         for (var i = 1; i < this.stage.numChildren - 2; i++) {
             var m_tile_1 = this.stage.getChildAt(i);
@@ -398,13 +342,8 @@ var ThunderMode1 = /** @class */ (function (_super) {
             }
         }
         if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
-            console.log(cnt, this.stage.numChildren, this.challenge.numChildren);
             Laya.SoundManager.playMusic("res/sound/fall.wav", 1);
-<<<<<<< HEAD
-            DisplayWords();
-=======
             DisplayWords(0);
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
             this.hero.alive = 0;
             makeunvisible(this.hero);
             this.hero.body.visible = true;
@@ -465,53 +404,16 @@ var ThunderMode1 = /** @class */ (function (_super) {
         this.Tmap1.finishline.makeblock('1', 2, 9, 720, 90);
         this.Tmap1.challenge.makeblock('2', 15, 9, 45, 90);
     };
-<<<<<<< HEAD
-    ThunderMode1.prototype.Loop = function () {
-        for (var i = this.numChildren - 1; i >= 0; i--) {
-            var trap = this.getChildAt(i);
-            var temp = Math.random();
-            if (temp > 0.7 && trap.x + 5 < 660)
-                trap.x += trap.speed;
-            else if (temp < 0.7 && temp > 0.4 && trap.x - 5 > 90)
-                trap.x -= trap.speed;
-            var temp2 = Math.random();
-            if (temp2 > 0.7 && trap.y + 55 < 600)
-                trap.y += trap.speed;
-            else if (temp2 < 0.7 && temp2 > 0.4 && trap.y - 5 > 0)
-                trap.y -= trap.speed;
-            judelectricshock(this.hero, trap);
-        }
-    };
-    ThunderMode1.prototype.init = function () {
-        this.bg = new Laya.Sprite();
-        this.hero = game.hero;
-        this.stage.addChild(this.bg);
-        this.bg.loadImage("res/stage.png");
-        this.startline = new Tile();
-        this.challenge = new Tile();
-        this.finishline = new Tile();
-        this.Tmap1 = new Map();
-        this.Tmap1.startline.makeblock('5', 1, 9, 0, 90);
-        this.Tmap1.finishline.makeblock('1', 2, 9, 720, 90);
-        this.Tmap1.challenge.makeblock('2', 15, 9, 45, 90);
-    };
-=======
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
     ThunderMode1.prototype.createTrap = function (num, speed) {
         for (var i = 0; i < num; i++) {
             var trap = Laya.Pool.getItemByClass("thunder", Thunder);
             trap.init(speed);
             trap.pos(Math.random() * 600 + 90, Math.random() * 500 + 50);
-<<<<<<< HEAD
-            this.addChild(trap);
-=======
             this.thu.addChild(trap);
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         }
     };
     return ThunderMode1;
 }(Laya.Sprite));
-var mapnum = 1;
 var BombMode1 = /** @class */ (function (_super) {
     __extends(BombMode1, _super);
     function BombMode1() {
@@ -524,47 +426,6 @@ var BombMode1 = /** @class */ (function (_super) {
         DisplayRevival();
         return _this;
     }
-<<<<<<< HEAD
-    BombMode1.prototype.setmap = function (n) {
-        if (n === 1) {
-            this.startline = this.Bmap1.startline;
-            this.challenge = this.Bmap1.challenge;
-            this.finishline = this.Bmap1.finishline;
-        }
-        if (n === 2) {
-            this.startline = this.Bmap2.startline;
-            this.challenge = this.Bmap2.challenge;
-            this.finishline = this.Bmap2.finishline;
-        }
-        if (n === 3) {
-            this.startline = this.Bmap3.startline;
-            this.challenge = this.Bmap3.challenge;
-            this.finishline = this.Bmap3.finishline;
-        }
-        this.stage.addChild(this.challenge);
-        this.stage.addChild(this.startline);
-        this.stage.addChild(this.finishline);
-        this.hero = game.hero;
-        this.hero.pos(0, 300);
-        this.stage.addChild(this.hero);
-        this.stage.addChild(game.hero);
-        this.stage.addChild(game.ctrl_rocker);
-        this.stage.addChild(game.ctrl_rocker_move);
-        this.stage.addChild(game.ctrl_back);
-    };
-    BombMode1.prototype.init = function () {
-        this.bg = new Laya.Sprite();
-        this.stage.addChild(this.bg);
-        this.bg.loadImage("res/stage2.png");
-        this.startcnt = 0;
-        this.Bmap1 = new Map();
-        for (var i = 0; i < 8; i++) {
-            if (i % 2 === 0)
-                this.Bmap1.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 90);
-            else
-                this.Bmap1.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 90);
-        }
-=======
     BombMode1.prototype.init = function () {
         this.bg = new Laya.Sprite();
         this.stage.addChild(this.bg);
@@ -578,7 +439,6 @@ var BombMode1 = /** @class */ (function (_super) {
             else
                 this.Bmap1.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 90);
         }
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         this.Bmap1.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap1.finishline.makeblock('1', 2, 9, 720, 90);
         this.Bmap2 = new Map();
@@ -602,8 +462,6 @@ var BombMode1 = /** @class */ (function (_super) {
             this.Bmap3.challenge.makeblock('2', 1, 5, 90 + 8 * 45 + i * 45, 90 + 90);
         this.Bmap3.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap3.finishline.makeblock('1', 2, 9, 720, 90);
-<<<<<<< HEAD
-=======
         this.Bmap4 = new Map();
         for (var i = 0; i < 6; i++)
             if (i % 2 === 0)
@@ -626,14 +484,11 @@ var BombMode1 = /** @class */ (function (_super) {
             this.Bmap6.challenge.makeblock('2', 2, 2, 450 + 90 * i, 90 + 90 * 2);
         this.Bmap6.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap6.finishline.makeblock('1', 2, 9, 720, 90);
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
     };
     BombMode1.prototype.normal = function () {
         for (var i = 0; i < this.challenge.numChildren; i++) {
             var m_tile = this.challenge.getChildAt(i);
             m_tile.fire = false;
-<<<<<<< HEAD
-=======
         } //让爆炸区恢复正常
     };
     BombMode1.prototype.setmap = function (n) {
@@ -656,7 +511,6 @@ var BombMode1 = /** @class */ (function (_super) {
             this.startline = this.Bmap2.startline;
             this.challenge = this.Bmap2.challenge;
             this.finishline = this.Bmap2.finishline;
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         }
         if (n === 5) {
             this.startline = this.Bmap6.startline;
@@ -684,14 +538,6 @@ var BombMode1 = /** @class */ (function (_super) {
         if (this.coursenum === 1)
             course1(this);
         if (this.coursenum === 2)
-<<<<<<< HEAD
-            course2(this);
-        if (this.coursenum === 3)
-            course3(this);
-    };
-    BombMode1.prototype.onfire = function (n) {
-        // for (let i: number = 0; i < this.challenge.numChildren; i++) {
-=======
             course5(this);
         if (this.coursenum === 3)
             course3(this);
@@ -703,15 +549,11 @@ var BombMode1 = /** @class */ (function (_super) {
             course4(this);
     };
     BombMode1.prototype.onfire = function (n) {
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         var m_tile = this.challenge.getChildAt(n);
         m_tile.fire = true;
         for (var j = 0; j < m_tile.numChildren; j++) {
             var _tile = m_tile.getChildAt(j);
             _tile.bomb.play(0, false);
-<<<<<<< HEAD
-            Laya.SoundManager.playSound("res/sound/bomb.wav", 1);
-=======
             Laya.SoundManager.playSound("res2/sound/bomb.wav", 1);
         } //让第n块瓷砖炸弹爆炸
     };
@@ -752,27 +594,9 @@ var BombMode1 = /** @class */ (function (_super) {
                 this.timer.clear(this, this.course);
                 Laya.stage.addChild(bg);
             }
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         }
-        // }
     };
     BombMode1.prototype.judstate = function () {
-<<<<<<< HEAD
-        var m_tile = this.finishline;
-        if (this.hero.alive === 1) {
-            if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
-                for (var i = 0; i < this.stage.numChildren; i++) {
-                    var m_child = this.stage.getChildAt(i);
-                    m_child.removeSelf();
-                }
-                var bg = new BombMode1();
-                mapnum++;
-                bg.setmap(mapnum);
-                bg.coursenum = mapnum;
-                this.timer.clear(this, this.judstate);
-                this.timer.clear(this, this.course);
-                Laya.stage.addChild(bg);
-=======
         if (this.hero.alive === 0) {
             this.rebutton.pos(400, 400);
             this.rebutton.width = 45;
@@ -816,7 +640,6 @@ var BombMode1 = /** @class */ (function (_super) {
                     this.timer.clear(this, this.course);
                     Laya.stage.addChild(bg); //如果角色到达了终点，则删除所有子节点与循环，进入下一个地图
                 }
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
             }
         }
         if (this.hero.alive === 1) {
@@ -831,22 +654,14 @@ var BombMode1 = /** @class */ (function (_super) {
             var _tile = this.challenge.getChildAt(i);
             if (cnt != this.challenge.numChildren) {
                 if (_tile.fire === true && _tile.type != "5") {
-<<<<<<< HEAD
-                    DisplayWords();
-=======
                     DisplayWords(0);
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
                     this.hero.alive = 0;
                     makeunvisible(this.hero);
                     this.hero.burn.visible = true;
                     this.hero.burn.play(0, false);
                     Laya.SoundManager.playMusic("res/sound/gameover.wav", 1);
                 }
-<<<<<<< HEAD
-            }
-=======
             } //判断英雄是否被炸弹炸死
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         }
         if (this.hero.alive === 1) {
             var cnt = 0;
@@ -873,11 +688,7 @@ var BombMode1 = /** @class */ (function (_super) {
                 makeunvisible(this.hero);
                 this.hero.body.visible = true;
                 this.hero.body.play(0, false);
-<<<<<<< HEAD
-                DisplayWords();
-=======
                 DisplayWords(0);
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
                 if (this.hero.speedX < 0)
                     this.hero.x -= 20;
                 if (this.hero.speedY < 0)
@@ -886,24 +697,11 @@ var BombMode1 = /** @class */ (function (_super) {
                     this.hero.x += 20;
                 if (this.hero.speedY > 0)
                     this.hero.y += 20;
-<<<<<<< HEAD
-            }
-=======
             } //同上
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         }
     };
     return BombMode1;
 }(Laya.Sprite));
-<<<<<<< HEAD
-function DisplayWords() {
-    var w = 800;
-    var offsetX = Laya.stage.width - w >> 1;
-    var demoString = "GameOver";
-    var letterText;
-    for (var i = 0, len = demoString.length; i < len; ++i) {
-        letterText = this.createLetter(demoString.charAt(i));
-=======
 function DisplayWords(n) {
     var w = 800;
     var offsetX = Laya.stage.width - w >> 1;
@@ -913,7 +711,6 @@ function DisplayWords(n) {
         words = "GameOver";
     for (var i = 0, len = words.length; i < len; ++i) {
         letterText = createLetter(words.charAt(i));
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         letterText.x = w / len * i + offsetX;
         letterText.y = -200;
         Laya.Tween.to(letterText, { y: 100 }, 3000, Laya.Ease.elasticOut, null, i * 100);
@@ -929,11 +726,7 @@ function createLetter(char) {
     return letter;
 }
 function judelectricshock(hero, trap) {
-<<<<<<< HEAD
-    if (Math.abs(hero.x - trap.x) < 13 && Math.abs(hero.y - trap.y) < 30 && hero.alive === 1) { //判断碰撞
-=======
     if (Math.abs(hero.x - trap.x) < 13 && Math.abs(hero.y - trap.y) < 30 && hero.alive === 1) { //判断闪电碰撞
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         hero.right.visible = false;
         hero.left.visible = false;
         hero.up.visible = false;
@@ -941,41 +734,27 @@ function judelectricshock(hero, trap) {
         hero.stand.visible = false;
         hero.burn.visible = true;
         hero.burn.play(0, false);
-<<<<<<< HEAD
-        DisplayWords();
-=======
         DisplayWords(0);
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         Laya.SoundManager.playMusic("res/sound/thunder.wav", 1);
         hero.alive = 0;
     }
 }
-<<<<<<< HEAD
-=======
 //炸弹爆炸规律
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
 function course1(map) {
-    if (map.startcnt / 40 === 1) {
+    if (map.startcnt / 40 === 1)
         map.onfire(0);
-    }
-    if (map.startcnt / 65 === 1) {
+    if (map.startcnt / 65 === 1)
         map.onfire(1);
-    }
-    if (map.startcnt / 90 === 1) {
+    if (map.startcnt / 90 === 1)
         map.onfire(2);
-    }
-    if (map.startcnt / 115 === 1) {
+    if (map.startcnt / 115 === 1)
         map.onfire(3);
-    }
-    if (map.startcnt / 140 === 1) {
+    if (map.startcnt / 140 === 1)
         map.onfire(4);
-    }
-    if (map.startcnt / 165 === 1) {
+    if (map.startcnt / 165 === 1)
         map.onfire(5);
-    }
-    if (map.startcnt / 190 === 1) {
+    if (map.startcnt / 190 === 1)
         map.onfire(6);
-    }
     if (map.startcnt / 215 === 1)
         map.startcnt = 0;
 }
@@ -987,11 +766,7 @@ function course2(map) {
         map.onfire(3);
         map.onfire(4);
     }
-<<<<<<< HEAD
-    if (map.startcnt / 80 === 1)
-=======
     if (map.startcnt / 120 === 1)
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         map.startcnt = 0;
 }
 function course3(map) {
@@ -1019,33 +794,24 @@ function course3(map) {
         map.onfire(5);
         map.onfire(7);
     }
-    if (map.startcnt / 250 === 1) {
+    if (map.startcnt / 250 === 1)
         map.onfire(6);
-    }
     if (map.startcnt / 300 === 1)
         map.startcnt = 0;
 }
-<<<<<<< HEAD
-=======
 function course4(map) {
-    if (map.startcnt / 40 === 1) {
+    if (map.startcnt / 40 === 1)
         map.onfire(0);
-    }
-    if (map.startcnt / 50 === 1) {
+    if (map.startcnt / 50 === 1)
         map.onfire(1);
-    }
-    if (map.startcnt / 60 === 1) {
+    if (map.startcnt / 60 === 1)
         map.onfire(2);
-    }
-    if (map.startcnt / 90 === 1) {
+    if (map.startcnt / 90 === 1)
         map.onfire(5);
-    }
-    if (map.startcnt / 100 === 1) {
+    if (map.startcnt / 100 === 1)
         map.onfire(4);
-    }
-    if (map.startcnt / 110 === 1) {
+    if (map.startcnt / 110 === 1)
         map.onfire(3);
-    }
     if (map.startcnt / 170 === 1) {
         map.onfire(0);
         map.onfire(2);
@@ -1091,11 +857,9 @@ function course6(map) {
         map.onfire(5);
         map.onfire(7);
     }
-    if (map.startcnt / 200 === 1) {
+    if (map.startcnt / 200 === 1)
         map.startcnt = 0;
-    }
 }
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
 function makeunvisible(hero) {
     hero.right.visible = false;
     hero.left.visible = false;
@@ -1104,9 +868,6 @@ function makeunvisible(hero) {
     hero.stand.visible = false;
     hero.body.visible = false;
 }
-<<<<<<< HEAD
-//# sourceMappingURL=BackGround.js.map
-=======
 function DisplayRevival() {
     var Revtxt = new Laya.Text();
     Revtxt.text = "Revival: " + revival;
@@ -1116,4 +877,3 @@ function DisplayRevival() {
     Revtxt.pos(0, 0);
     Laya.stage.addChild(Revtxt);
 }
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636

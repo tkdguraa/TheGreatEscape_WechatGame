@@ -6,85 +6,68 @@ class Tile extends Laya.Sprite{
     public posY: number;
     public bomb: Laya.Animation;
     public fire: boolean; //judge whether this tile is bomb now;
-    constructor(){
+    constructor() {
         super();
     }
-    public resPos():void{
+    public resPos(): void {
         this.posX = -1;
         this.posY = -1;
         this.width = -1;
         this.height = -1;
     }
-    public init(_type:string, posX:number, posY:number):void{
+    public init(_type:string, posX:number, posY:number): void {
         this.bomb = new Laya.Animation();
         this.type = _type;
         this.x = posX;
         this.y = posY;
         this.fire = false;
         this.pos(this.x,this.y);
-        if(this.type === "2")
+        if (this.type === "2")
             this.bomb.loadAtlas("res2/atlas/boom1.atlas",Laya.Handler.create(this,this.exploison));
-        else if(this.type === "3")
+        else if (this.type === "3")
             this.bomb.loadAtlas("res2/atlas/boom2.atlas",Laya.Handler.create(this,this.exploison));
         this.loadImage("res2/tile"+this.type+".png");
         this.bomb.interval = 100;
     }
-    exploison():void{
+    exploison():void {
         this.addChild(this.bomb);
     }
-    public makeblock(_type:string, width:number, height:number, posX:number, posY:number):void{
-           this.width = width;
-           this.height = height;
-           this.posX = posX;
-           this.posY = posY;
-           this.fire = false;
-           this.type = _type;
-           let block:Tile = new Tile();
-           block.type = _type;
-           block.posX = posX;
-           block.posY = posY;
-           block.width = width;
-           block.height = height;
-           block.fire = false;
-           for(let i = 0 ; i < width; i++){
-                for(let j = 0; j < height; j++){
-                    let m_tile:Tile = new Tile();
-                    m_tile.init(_type, i * 45 + posX, 45 * j + posY);
-                    block.addChild(m_tile);
-                }//combinate the small block to make bigger block;
-            }
-            this.addChild(block);
+    public makeblock(_type:string, width:number, height:number, posX:number, posY:number): void {
+        this.width = width;
+        this.height = height;
+        this.posX = posX;
+        this.posY = posY;
+        this.fire = false;
+        this.type = _type;
+        let block:Tile = new Tile();
+        block.type = _type;
+        block.posX = posX;
+        block.posY = posY;
+        block.width = width;
+        block.height = height;
+        block.fire = false;
+        for (let i = 0 ; i < width; i++) {
+            for (let j = 0; j < height; j++) {
+                let m_tile:Tile = new Tile();
+                m_tile.init(_type, i * 45 + posX, 45 * j + posY);
+                block.addChild(m_tile);
+            }//combinate the small block to make bigger block;
+        }
+        this.addChild(block);
     }
 }
-class Map extends Laya.Sprite{
+class Map extends Laya.Sprite {
     public startline: Tile;
     public finishline: Tile;
     public challenge: Tile;
     
-    constructor(){
+    constructor() {
         super();
         this.startline = new Tile();
         this.finishline = new Tile();
         this.challenge = new Tile();
     }
-    savemap(start: Tile, challenge:Tile, finish: Tile):void{
-        this.startline = start;
-        this.finishline = finish;
-        this.challenge = challenge;
-    }
-}
-class Map extends Laya.Sprite{
-    public startline: Tile;
-    public finishline: Tile;
-    public challenge: Tile;
-    
-    constructor(){
-        super();
-        this.startline = new Tile();
-        this.finishline = new Tile();
-        this.challenge = new Tile();
-    }
-    savemap(start: Tile, challenge:Tile, finish: Tile):void{
+    savemap(start: Tile, challenge:Tile, finish: Tile): void {
         this.startline = start;
         this.finishline = finish;
         this.challenge = challenge;

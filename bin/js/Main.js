@@ -11,16 +11,6 @@ var __extends = (this && this.__extends) || (function () {
 var Game = /** @class */ (function (_super) {
     __extends(Game, _super);
     function Game() {
-<<<<<<< HEAD
-        this.stageW = 800;
-        this.stageH = 600;
-        this.ctrl_rocker_x = 50;
-        this.ctrl_rocker_y = 400;
-        // 初始屏幕适配
-        Laya.init(800, 600, WebGL);
-        this.init_ingame_images();
-        Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
-=======
         var _this = 
         // 初始屏幕适配
         _super.call(this) || this;
@@ -31,26 +21,17 @@ var Game = /** @class */ (function (_super) {
         _this.ctrl_rocker_y = 400;
         Laya.MiniAdpter.init();
         Laya.init(800, 600);
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         // 初始屏幕适配
         Laya.stage.alignH = Laya.Stage.ALIGN_CENTER;
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
         Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
         Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
-<<<<<<< HEAD
-        this.bg = new StartBackGround();
-        Laya.stage.addChild(this.bg);
-        this.bg.Play.on(Laya.Event.CLICK, this, this.clickHandler);
-        this.bg.Help.on(Laya.Event.CLICK, this, this.helpHandler);
-        Laya.timer.frameLoop(1, this, this.gameLoop);
-=======
         Laya.stage.on("mouseup", _this, _this.ctrlRockerUp);
         _this.init_ingame_images();
         _this.init_server_connection();
         // main game loop
         Laya.timer.frameLoop(1, _this, _this.gameLoop);
         return _this;
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
     }
     Game.prototype.init_ingame_images = function () {
         var _this = this;
@@ -88,12 +69,8 @@ var Game = /** @class */ (function (_super) {
     };
     Game.prototype.gameLoop = function () {
         if (this.hero.alive === 1) {
-<<<<<<< HEAD
-            this.ctrlRockerDown();
-=======
             if (this.isHold)
                 this.ctrlRockerDown();
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
             this.hero.right.visible = false;
             this.hero.left.visible = false;
             this.hero.up.visible = false;
@@ -115,20 +92,12 @@ var Game = /** @class */ (function (_super) {
     };
     Game.prototype.clickHandler = function () {
         this.bg.removeSelf();
-<<<<<<< HEAD
-=======
         revival = 0;
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         this.bg2 = new ThunderMode1();
         this.bg2.setmap();
         Laya.stage.addChild(this.bg2);
     };
     Game.prototype.helpHandler = function () {
-<<<<<<< HEAD
-        this.instruction = new Instruction();
-        Laya.stage.addChild(this.instruction);
-    };
-=======
         console.log("help");
         this.instruction = new Instruction();
         Laya.stage.addChild(this.instruction);
@@ -138,7 +107,6 @@ var Game = /** @class */ (function (_super) {
         Laya.stage.addChild(this.scoreboard);
         game.getRanking();
     };
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
     Game.prototype.ctrlRockerUp = function () {
         if (Laya.stage.mouseX <= this.stageW / 2) {
             this.ctrl_rocker.visible = true;
@@ -167,11 +135,7 @@ var Game = /** @class */ (function (_super) {
             else
                 this.ctrl_rocker_move.pos(this.ctrl_back.x + (this.ctrl_back.width / 2 - this.ctrl_rocker.width / 2) * Math.cos(Math.atan2(Laya.stage.mouseY - this.ctrl_back.y, Laya.stage.mouseX - this.ctrl_back.x)), this.ctrl_back.y + (this.ctrl_back.width / 2 - this.ctrl_rocker.width / 2) * Math.sin(Math.atan2(Laya.stage.mouseY - this.ctrl_back.y, Laya.stage.mouseX - this.ctrl_back.x)));
             // move hero
-<<<<<<< HEAD
-            var angle = Math.atan2(Laya.stage.mouseY - game.ctrl_rocker_y, Laya.stage.mouseX - game.ctrl_rocker_x);
-=======
             var angle = Math.atan2(Laya.stage.mouseY - this.ctrl_rocker_y, Laya.stage.mouseX - this.ctrl_rocker_x);
->>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
             this.hero.speedX = 2 * Math.cos(angle);
             this.hero.speedY = 2 * Math.sin(angle);
         }

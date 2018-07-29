@@ -106,21 +106,21 @@ class Game extends Laya.Sprite{
     }
 
     clickHandler(): void {
-       this.bg.removeSelf();
-       revival = 0;
-       this.bg2 = new ThunderMode1();
-       this.bg2.setmap();
-       Laya.stage.addChild(this.bg2);
+        this.bg.removeSelf();
+        revival = 0;
+        this.bg2 = new ThunderMode1();
+        this.bg2.setmap();
+        Laya.stage.addChild(this.bg2);
     }
     helpHandler(): void {
-       console.log("help");
-       this.instruction = new Instruction();
-       Laya.stage.addChild(this.instruction);
+        console.log("help");
+        this.instruction = new Instruction();
+        Laya.stage.addChild(this.instruction);
     }
     rankHandler(): void {
-       this.scoreboard = new Scoreboard();
-       Laya.stage.addChild(this.scoreboard);
-       game.getRanking(); 
+        this.scoreboard = new Scoreboard();
+        Laya.stage.addChild(this.scoreboard);
+        game.getRanking(); 
     }
     ctrlRockerUp(): void {
         if (Laya.stage.mouseX <= this.stageW / 2) {
@@ -178,7 +178,7 @@ class Game extends Laya.Sprite{
     }
     // send POST ranking request to redis server
     sendRanking(name, score): void {
-         this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'json');
+        this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'json');
     }
     // get GET response from redis server
     onHttpRequestCompleteGet(): void {
@@ -190,8 +190,8 @@ class Game extends Laya.Sprite{
         this.scoreboard.Rank4.text = "4:   " + data.result[6] + "    " + data.result[7]; 
         this.scoreboard.Rank5.text = "5:   " + data.result[8] + "    " + data.result[9];
 
-        for(let i = 0 ; i <= data.result.length / 2; i++){
-            if(Number(data.result[i * 2 + 1]) === Number(revival)){
+        for (let i = 0 ; i <= data.result.length / 2; i++) {
+            if (Number(data.result[i * 2 + 1]) === Number(revival)) {
                 this.scoreboard.MyRank.text = "Your Rank:   " + Number(i + 1);
                 break;
             }
