@@ -77,4 +77,3 @@ var Map = /** @class */ (function (_super) {
     };
     return Map;
 }(Laya.Sprite));
-//# sourceMappingURL=Component.js.map

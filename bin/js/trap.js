@@ -19,4 +19,3 @@ var Thunder = /** @class */ (function (_super) {
     };
     return Thunder;
 }(Laya.Sprite));
-//# sourceMappingURL=trap.js.map

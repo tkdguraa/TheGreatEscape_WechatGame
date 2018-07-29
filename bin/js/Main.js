@@ -1,11 +1,24 @@
-var Game = /** @class */ (function () {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var Game = /** @class */ (function (_super) {
+    __extends(Game, _super);
     function Game() {
+        var _this = 
         // 初始屏幕适配
-        this.stageW = 800;
-        this.stageH = 600;
-        this.ctrl_rocker_x = 50;
-        this.ctrl_rocker_y = 400;
-        this.isHold = false;
+        _super.call(this) || this;
+        _this.isHold = false;
+        _this.stageW = 800;
+        _this.stageH = 600;
+        _this.ctrl_rocker_x = 50;
+        _this.ctrl_rocker_y = 400;
         Laya.MiniAdpter.init();
         Laya.init(800, 600);
         // 初始屏幕适配
@@ -13,13 +26,12 @@ var Game = /** @class */ (function () {
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
         Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
         Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
-        Laya.stage.on("mouseup", this, this.ctrlRockerUp);
-        this.init_ingame_images();
-        this.bg = new StartBackGround();
-        Laya.stage.addChild(this.bg);
-        this.bg.Play.on(Laya.Event.CLICK, this, this.clickHandler);
-        this.bg.Help.on(Laya.Event.CLICK, this, this.helpHandler);
-        Laya.timer.frameLoop(1, this, this.gameLoop);
+        Laya.stage.on("mouseup", _this, _this.ctrlRockerUp);
+        _this.init_ingame_images();
+        _this.init_server_connection();
+        // main game loop
+        Laya.timer.frameLoop(1, _this, _this.gameLoop);
+        return _this;
     }
     Game.prototype.init_ingame_images = function () {
         var _this = this;
@@ -41,6 +53,19 @@ var Game = /** @class */ (function () {
         this.ctrl_rocker_move.pivot(17.5, 17.5);
         this.ctrl_rocker_move.visible = false;
         this.ctrl_rocker_move.on(Laya.Event.MOUSE_DOWN, this, function () { _this.isHold = true; });
+        this.bg = new StartBackGround();
+        Laya.stage.addChild(this.bg);
+        this.bg.Play.on(Laya.Event.CLICK, this, this.clickHandler);
+        this.bg.Help.on(Laya.Event.CLICK, this, this.helpHandler);
+        this.bg.Rank.on(Laya.Event.CLICK, this, this.rankHandler);
+    };
+    Game.prototype.init_server_connection = function () {
+        this.hr_get = new Laya.HttpRequest();
+        this.hr_get.once(Laya.Event.ERROR, this, this.onHttpRequestError);
+        this.hr_get.once(Laya.Event.COMPLETE, this, this.onHttpRequestCompleteGet);
+        this.hr_post = new Laya.HttpRequest();
+        this.hr_post.once(Laya.Event.ERROR, this, this.onHttpRequestError);
+        this.hr_post.once(Laya.Event.COMPLETE, this, this.onHttpRequestCompletePost);
     };
     Game.prototype.gameLoop = function () {
         if (this.hero.alive === 1) {
@@ -72,11 +97,17 @@ var Game = /** @class */ (function () {
         Laya.stage.addChild(this.bg2);
     };
     Game.prototype.helpHandler = function () {
+        console.log("help");
         this.instruction = new Instruction();
         Laya.stage.addChild(this.instruction);
     };
+    Game.prototype.rankHandler = function () {
+        this.scoreboard = new Scoreboard();
+        Laya.stage.addChild(this.scoreboard);
+        game.getRanking();
+    };
     Game.prototype.ctrlRockerUp = function () {
-        if (Laya.stage.mouseX <= game.stageW / 2) {
+        if (Laya.stage.mouseX <= this.stageW / 2) {
             this.ctrl_rocker.visible = true;
             this.ctrl_rocker_move.visible = false;
             this.hero.speedX = 0;
@@ -103,7 +134,7 @@ var Game = /** @class */ (function () {
             else
                 this.ctrl_rocker_move.pos(this.ctrl_back.x + (this.ctrl_back.width / 2 - this.ctrl_rocker.width / 2) * Math.cos(Math.atan2(Laya.stage.mouseY - this.ctrl_back.y, Laya.stage.mouseX - this.ctrl_back.x)), this.ctrl_back.y + (this.ctrl_back.width / 2 - this.ctrl_rocker.width / 2) * Math.sin(Math.atan2(Laya.stage.mouseY - this.ctrl_back.y, Laya.stage.mouseX - this.ctrl_back.x)));
             // move hero
-            var angle = Math.atan2(Laya.stage.mouseY - game.ctrl_rocker_y, Laya.stage.mouseX - game.ctrl_rocker_x);
+            var angle = Math.atan2(Laya.stage.mouseY - this.ctrl_rocker_y, Laya.stage.mouseX - this.ctrl_rocker_x);
             this.hero.speedX = 2 * Math.cos(angle);
             this.hero.speedY = 2 * Math.sin(angle);
         }
@@ -114,7 +145,28 @@ var Game = /** @class */ (function () {
             this.hero.speedY = 0;
         }
     };
+    Game.prototype.onHttpRequestError = function (err) {
+        if (err)
+            console.log('err' + err);
+    };
+    // send GET ranking request to redis server
+    Game.prototype.getRanking = function () {
+        this.hr_get.send('http://192.144.144.22:12306/ranking', null, 'get', 'text');
+    };
+    // send POST ranking request to redis server
+    Game.prototype.sendRanking = function (name, score) {
+        this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'text');
+    };
+    // get GET response from redis server
+    Game.prototype.onHttpRequestCompleteGet = function () {
+        var data = this.hr_get.data;
+        console.log(data);
+        console.log(data.length);
+    };
+    // get POST response from redis server
+    Game.prototype.onHttpRequestCompletePost = function (res) {
+        console.log('post complete' + res);
+    };
     return Game;
-}());
+}(Laya.Sprite));
 var game = new Game();
-//# sourceMappingURL=Main.js.map

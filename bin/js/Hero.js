@@ -77,4 +77,3 @@ var Hero = /** @class */ (function (_super) {
     };
     return Hero;
 }(Laya.Sprite));
-//# sourceMappingURL=Hero.js.map

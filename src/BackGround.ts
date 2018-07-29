@@ -1,13 +1,65 @@
 let revival:number = 0;
+let mapnum:number = 0;
+let username:string;
+class InputName extends Laya.Sprite{
+    okbutton: Laya.Button;
+    bg: Laya.Sprite;
+    title: Laya.Text;
+    yourname: Laya.TextInput;
+    constructor() {
+        super();
+        this.bg = new Laya.Sprite();
+        this.okbutton = new Laya.Button();
+        this.title = new Laya.Text();
+        this.yourname = new Laya.TextInput();
+
+        this.title.text = "               You made it! \n Please tell us your name:";
+        this.title.color = "#ffffff";
+        this.title.font = "Impact";
+        this.title.fontSize = 50;
+        this.title.pos(100,0);
+
+        this.yourname.wordWrap = true;
+        this.yourname.fontSize = 30;
+        this.yourname.pos(250, 230);
+        this.yourname.width = 250;
+        this.yourname.height = 50;
+        this.yourname.bgColor = "#c30c30";
+        //游戏完全通关之后 输入名字的输入栏信息。
+
+        this.bg.loadImage("res2/scoreboard.png");
+        this.okbutton.loadImage("res2/ok.png");
+        this.okbutton.pos(520,230);
+        this.okbutton.on(Laya.Event.CLICK,this,this.backtostart);
+
+        this.addChild(this.bg);
+        this.addChild(this.yourname);
+        this.addChild(this.title);
+        this.addChild(this.okbutton);
+    }
+    backtostart(): void{
+           for (let i: number = 0; i < this.numChildren; i++) {
+                let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
+                m_child.removeSelf();
+            }
+            let bg = new Game();
+            username = this.yourname.text;
+            game.sendRanking(username, revival);
+            
+            game.hero.alive = 1;
+            revival = 0;
+            Laya.stage.addChild(bg);
+    }
+}
 class StartBackGround extends Laya.Sprite {
     bgFirst: Laya.Sprite;
     bgSecond: Laya.Sprite;
     Play: Laya.Button;
     Help: Laya.Button;
+    Rank: Laya.Button;
     constructor() {
         super();
         Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
-        console.log("this");
         this.init();
     }
     init(): void {
@@ -29,6 +81,14 @@ class StartBackGround extends Laya.Sprite {
         this.Help.height = 70;
         this.Help.loadImage("res2/Help.png");
         this.addChild(this.Help);
+        
+        this.Rank = new Laya.Button();
+        this.Rank.x = 0;
+        this.Rank.y = 0;
+        this.Rank.width = 90;
+        this.Rank.height =45;
+        this.Rank.loadImage("res2/rank.png");
+        this.addChild(this.Rank);
 
         this.Play = new Laya.Button();
         this.Play.x = 272;
@@ -109,7 +169,43 @@ class StartBackGround extends Laya.Sprite {
     }
     
 }
+class Scoreboard extends Laya.Sprite{
+    public bg: Laya.Sprite;
+    public Back: Laya.Button;
+    public Ranking: Laya.Sprite;
+    public Rank1: Laya.Text;
+    public Rank2: Laya.Text;
+    public Rank3: Laya.Text;
+    public Rank4: Laya.Text;
+    public Rank5: Laya.Text;
 
+    constructor(){
+        super();
+        this.Ranking = new Laya.Sprite();
+        this.Ranking.x = 200;
+        this.Ranking.y = 0;
+        this.Ranking.loadImage("res2/Ranking.png");
+
+        this.Back = new Laya.Button();
+        this.bg = new Laya.Sprite();
+        this.bg.loadImage("res2/scoreboard.png");
+        this.Back = new Laya.Button();
+        this.Back.x = 10;
+        this.Back.y = 510;
+        this.Back.width = 90;
+        this.Back.height = 45;
+        this.Back.loadImage("res2/back.png");
+        this.addChild(this.bg);
+        this.addChild(this.Back);
+        this.addChild(this.Ranking);
+        this.Back.on(Laya.Event.CLICK,this,this.backtoStart);
+    }
+    backtoStart(): void{
+        this.bg.removeSelf();
+        this.Back.removeSelf();
+        Laya.stage.addChild(game.bg);
+    }
+}
 class Instruction extends Laya.Sprite{
     public bg: Laya.Sprite;
     public Back: Laya.Button;
@@ -117,13 +213,13 @@ class Instruction extends Laya.Sprite{
         super();
         this.Back = new Laya.Button();
         this.bg = new Laya.Sprite();
-        this.bg.loadImage("res/instruction.png");
+        this.bg.loadImage("res2/instruction.png");
         this.Back = new Laya.Button();
         this.Back.x = 10;
         this.Back.y = 510;
         this.Back.width = 90;
         this.Back.height = 45;
-        this.Back.loadImage("res/back.png");
+        this.Back.loadImage("res2/back.png");
         this.addChild(this.bg);
         this.addChild(this.Back);
         this.Back.on(Laya.Event.CLICK,this,this.backtoStart);
@@ -176,6 +272,15 @@ class ThunderMode1 extends Laya.Sprite {
     regame(): void {
         if (this.hero.alive === 0){
             revival++;
+            for (let i: number = 0; i < this.stage.numChildren; i++) {
+                    let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
+                    m_child.removeSelf();
+            }
+            for (let i: number = 0; i < this.numChildren; i++) {
+                     let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
+                     m_child.removeSelf();
+            }
+            Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
             let bg = new ThunderMode1();
             bg.setmap();
             this.hero.speedX = 0;
@@ -187,7 +292,6 @@ class ThunderMode1 extends Laya.Sprite {
         }
     }      
     judstate(): void {
-   
             let m_tile = this.finishline;
             if (this.hero.alive === 1) {
                 if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
@@ -195,12 +299,17 @@ class ThunderMode1 extends Laya.Sprite {
                     for (let i: number = 0; i < this.stage.numChildren; i++) {
                         let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
                         m_child.removeSelf();
+                    }
+                    for (let i: number = 0; i < this.numChildren; i++) {
+                        let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
+                        m_child.removeSelf();
                     } 
                     let bg = new BombMode1();
                 
-                    bg.setmap(1);
-                    bg.coursenum = 1;
-                    mapnum = 1;
+                    mapnum ++;
+                    bg.setmap(mapnum);
+                    bg.coursenum = mapnum;
+                    console.log(mapnum);
                     this.hero.speedX = 0;
                     this.hero.speedY = 0;
                     this.timer.clear(this,this.judstate);
@@ -218,7 +327,6 @@ class ThunderMode1 extends Laya.Sprite {
                         let _tile: Tile = this.challenge.getChildAt(j) as Tile;
                         if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
                             break;
-                         console.log(j);
                         cnt++;
                     }
                 } else {
@@ -253,7 +361,6 @@ class ThunderMode1 extends Laya.Sprite {
                  this.rebutton.pos(400, 400);
                  this.rebutton.width = 45;
                  this.rebutton.height = 45;
-                 console.log('asd');
                  this.rebutton.loadImage("res2/regame.png");
                  this.rebutton.on(Laya.Event.CLICK,this,this.regame);
                  Laya.stage.addChild(this.rebutton);
@@ -313,7 +420,7 @@ class ThunderMode1 extends Laya.Sprite {
         }
     }
 }
-let mapnum = 0;
+
 class BombMode1 extends Laya.Sprite {
     private bg: Laya.Sprite;
     private hero: Hero;
@@ -485,7 +592,12 @@ class BombMode1 extends Laya.Sprite {
                     let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
                     m_child.removeSelf();
             }
+            for (let i: number = 0; i < this.numChildren; i++) {
+                     let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
+                     m_child.removeSelf();
+            }
             revival++;
+            Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
             if (mapnum === 0){
                 let bg = new ThunderMode1();
                 bg.setmap();
@@ -528,15 +640,29 @@ class BombMode1 extends Laya.Sprite {
                 if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
                 
                     if(mapnum === 6){
-                        DisplayWords(1);
-                        mapnum = 0;
+                        for (let i: number = 0; i < this.stage.numChildren; i++) {
+                            let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
+                            m_child.removeSelf();
+                        }
+                        for (let i: number = 0; i < this.numChildren; i++) {
+                            let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
+                            m_child.removeSelf();
+                        }
                         this.hero.alive = 0;
+                        this.timer.clear(this,this.judstate);
+                        this.timer.clear(this,this.course);
+                        let bg = new InputName();
+                        Laya.stage.addChild(bg);
                     }
                     else{
                         for (let i: number = 0; i < this.stage.numChildren; i++) {
                             let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
                             m_child.removeSelf();
                         } 
+                          for (let i: number = 0; i < this.numChildren; i++) {
+                            let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
+                            m_child.removeSelf();
+                        }
                         let bg = new BombMode1();
                         mapnum++;
                         bg.setmap(mapnum);
@@ -621,9 +747,6 @@ function DisplayWords(n: number): void {
 
         if(n === 0)
             words = "GameOver";
-        if(n === 1)
-            words = "Finish";
-
         for (let i: number = 0,len: number = words.length; i < len; ++i) {
             letterText = createLetter(words.charAt(i));
             letterText.x = w / len * i + offsetX;

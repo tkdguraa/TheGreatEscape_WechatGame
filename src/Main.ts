@@ -1,8 +1,9 @@
-class Game {
+class Game extends Laya.Sprite{
     public bg: StartBackGround;
     public bg2: ThunderMode1;
     public bg3: BombMode1;
     public instruction: Instruction;
+    public scoreboard: Scoreboard;
     public rebutton: Laya.Button;
 
     hero: Hero;
@@ -20,6 +21,7 @@ class Game {
 
     constructor() {
       // 初始屏幕适配
+        super();
         Laya.MiniAdpter.init();
         Laya.init(800, 600);
 
@@ -32,9 +34,6 @@ class Game {
 
         this.init_ingame_images();
         this.init_server_connection();
-
-        this.sendRanking('user5', '50');
-        this.getRanking();
 
         // main game loop
         Laya.timer.frameLoop(1, this, this.gameLoop);
@@ -67,6 +66,7 @@ class Game {
         Laya.stage.addChild(this.bg);
         this.bg.Play.on(Laya.Event.CLICK,this,this.clickHandler);
         this.bg.Help.on(Laya.Event.CLICK,this,this.helpHandler);
+        this.bg.Rank.on(Laya.Event.CLICK,this,this.rankHandler);
     }
 
     init_server_connection(): void {
@@ -110,9 +110,15 @@ class Game {
        this.bg2.setmap();
        Laya.stage.addChild(this.bg2);
     }
-    helpHandler():void{
+    helpHandler(): void{
+       console.log("help");
        this.instruction = new Instruction();
        Laya.stage.addChild(this.instruction);
+    }
+    rankHandler(): void{
+       this.scoreboard = new Scoreboard();
+       Laya.stage.addChild(this.scoreboard);
+       game.getRanking(); 
     }
     ctrlRockerUp(): void {
         if (Laya.stage.mouseX <= this.stageW / 2) {
@@ -176,6 +182,7 @@ class Game {
     onHttpRequestCompleteGet(): void {
         let data = this.hr_get.data;
         console.log(data);
+        console.log(data.length);
     }
     // get POST response from redis server
     onHttpRequestCompletePost(res): void {

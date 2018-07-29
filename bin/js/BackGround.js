@@ -9,12 +9,57 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 var revival = 0;
+var mapnum = 0;
+var username;
+var InputName = /** @class */ (function (_super) {
+    __extends(InputName, _super);
+    function InputName() {
+        var _this = _super.call(this) || this;
+        _this.bg = new Laya.Sprite();
+        _this.okbutton = new Laya.Button();
+        _this.title = new Laya.Text();
+        _this.yourname = new Laya.TextInput();
+        _this.title.text = "               You made it! \n Please tell us your name:";
+        _this.title.color = "#ffffff";
+        _this.title.font = "Impact";
+        _this.title.fontSize = 50;
+        _this.title.pos(100, 0);
+        _this.yourname.wordWrap = true;
+        _this.yourname.fontSize = 30;
+        _this.yourname.pos(250, 230);
+        _this.yourname.width = 250;
+        _this.yourname.height = 50;
+        _this.yourname.bgColor = "#c30c30";
+        //将 textInput 添加到显示列表。
+        _this.bg.loadImage("res2/scoreboard.png");
+        _this.okbutton.loadImage("res2/ok.png");
+        _this.okbutton.pos(520, 230);
+        _this.okbutton.on(Laya.Event.CLICK, _this, _this.backtostart);
+        _this.addChild(_this.bg);
+        _this.addChild(_this.yourname);
+        _this.addChild(_this.title);
+        _this.addChild(_this.okbutton);
+        return _this;
+    }
+    InputName.prototype.backtostart = function () {
+        for (var i = 0; i < this.numChildren; i++) {
+            var m_child = this.getChildAt(i);
+            m_child.removeSelf();
+        }
+        var bg = new Game();
+        username = this.yourname.text;
+        game.sendRanking(username, revival);
+        game.hero.alive = 1;
+        revival = 0;
+        Laya.stage.addChild(bg);
+    };
+    return InputName;
+}(Laya.Sprite));
 var StartBackGround = /** @class */ (function (_super) {
     __extends(StartBackGround, _super);
     function StartBackGround() {
         var _this = _super.call(this) || this;
         Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
-        console.log("this");
         _this.init();
         return _this;
     }
@@ -34,6 +79,13 @@ var StartBackGround = /** @class */ (function (_super) {
         this.Help.height = 70;
         this.Help.loadImage("res2/Help.png");
         this.addChild(this.Help);
+        this.Rank = new Laya.Button();
+        this.Rank.x = 0;
+        this.Rank.y = 0;
+        this.Rank.width = 90;
+        this.Rank.height = 45;
+        this.Rank.loadImage("res2/rank.png");
+        this.addChild(this.Rank);
         this.Play = new Laya.Button();
         this.Play.x = 272;
         this.Play.y = 350;
@@ -106,19 +158,49 @@ var StartBackGround = /** @class */ (function (_super) {
     };
     return StartBackGround;
 }(Laya.Sprite));
+var Scoreboard = /** @class */ (function (_super) {
+    __extends(Scoreboard, _super);
+    function Scoreboard() {
+        var _this = _super.call(this) || this;
+        _this.Ranking = new Laya.Sprite();
+        _this.Ranking.x = 200;
+        _this.Ranking.y = 0;
+        _this.Ranking.loadImage("res2/Ranking.png");
+        _this.Back = new Laya.Button();
+        _this.bg = new Laya.Sprite();
+        _this.bg.loadImage("res2/scoreboard.png");
+        _this.Back = new Laya.Button();
+        _this.Back.x = 10;
+        _this.Back.y = 510;
+        _this.Back.width = 90;
+        _this.Back.height = 45;
+        _this.Back.loadImage("res2/back.png");
+        _this.addChild(_this.bg);
+        _this.addChild(_this.Back);
+        _this.addChild(_this.Ranking);
+        _this.Back.on(Laya.Event.CLICK, _this, _this.backtoStart);
+        return _this;
+    }
+    Scoreboard.prototype.backtoStart = function () {
+        this.bg.removeSelf();
+        this.Back.removeSelf();
+        Laya.stage.addChild(game.bg);
+    };
+    return Scoreboard;
+}(Laya.Sprite));
 var Instruction = /** @class */ (function (_super) {
     __extends(Instruction, _super);
     function Instruction() {
         var _this = _super.call(this) || this;
         _this.Back = new Laya.Button();
         _this.bg = new Laya.Sprite();
-        _this.bg.loadImage("res/instruction.png");
+        _this.bg.loadImage("res2/instruction.png");
         _this.Back = new Laya.Button();
         _this.Back.x = 10;
         _this.Back.y = 510;
         _this.Back.width = 90;
         _this.Back.height = 45;
-        _this.Back.loadImage("res/back.png");
+        _this.Back.loadImage("res2/back.png");
         _this.addChild(_this.bg);
         _this.addChild(_this.Back);
         _this.Back.on(Laya.Event.CLICK, _this, _this.backtoStart);
@@ -163,6 +245,15 @@ var ThunderMode1 = /** @class */ (function (_super) {
     ThunderMode1.prototype.regame = function () {
         if (this.hero.alive === 0) {
             revival++;
+            for (var i = 0; i < this.stage.numChildren; i++) {
+                var m_child = this.stage.getChildAt(i);
+                m_child.removeSelf();
+            }
+            for (var i = 0; i < this.numChildren; i++) {
+                var m_child = this.getChildAt(i);
+                m_child.removeSelf();
+            }
+            Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
             var bg = new ThunderMode1();
             bg.setmap();
             this.hero.speedX = 0;
@@ -181,10 +272,15 @@ var ThunderMode1 = /** @class */ (function (_super) {
                     var m_child = this.stage.getChildAt(i);
                     m_child.removeSelf();
                 }
+                for (var i = 0; i < this.numChildren; i++) {
+                    var m_child = this.getChildAt(i);
+                    m_child.removeSelf();
+                }
                 var bg = new BombMode1();
-                bg.setmap(1);
-                bg.coursenum = 1;
-                mapnum = 1;
+                mapnum++;
+                bg.setmap(mapnum);
+                bg.coursenum = mapnum;
+                console.log(mapnum);
                 this.hero.speedX = 0;
                 this.hero.speedY = 0;
                 this.timer.clear(this, this.judstate);
@@ -200,7 +296,6 @@ var ThunderMode1 = /** @class */ (function (_super) {
                     var _tile = this.challenge.getChildAt(j);
                     if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
                         break;
-                    console.log(j);
                     cnt++;
                 }
             }
@@ -231,7 +326,6 @@ var ThunderMode1 = /** @class */ (function (_super) {
             this.rebutton.pos(400, 400);
             this.rebutton.width = 45;
             this.rebutton.height = 45;
-            console.log('asd');
             this.rebutton.loadImage("res2/regame.png");
             this.rebutton.on(Laya.Event.CLICK, this, this.regame);
             Laya.stage.addChild(this.rebutton);
@@ -285,7 +379,6 @@ var ThunderMode1 = /** @class */ (function (_super) {
     };
     return ThunderMode1;
 }(Laya.Sprite));
-var mapnum = 0;
 var BombMode1 = /** @class */ (function (_super) {
     __extends(BombMode1, _super);
     function BombMode1() {
@@ -435,7 +528,12 @@ var BombMode1 = /** @class */ (function (_super) {
                 var m_child = this.stage.getChildAt(i);
                 m_child.removeSelf();
             }
+            for (var i = 0; i < this.numChildren; i++) {
+                var m_child = this.getChildAt(i);
+                m_child.removeSelf();
+            }
             revival++;
+            Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
             if (mapnum === 0) {
                 var bg = new ThunderMode1();
                 bg.setmap();
@@ -476,13 +574,27 @@ var BombMode1 = /** @class */ (function (_super) {
         if (this.hero.alive === 1) {
             if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
                 if (mapnum === 6) {
-                    DisplayWords(1);
-                    mapnum = 0;
+                    for (var i = 0; i < this.stage.numChildren; i++) {
+                        var m_child = this.stage.getChildAt(i);
+                        m_child.removeSelf();
+                    }
+                    for (var i = 0; i < this.numChildren; i++) {
+                        var m_child = this.getChildAt(i);
+                        m_child.removeSelf();
+                    }
                     this.hero.alive = 0;
+                    this.timer.clear(this, this.judstate);
+                    this.timer.clear(this, this.course);
+                    var bg = new InputName();
+                    Laya.stage.addChild(bg);
                 }
                 else {
                     for (var i = 0; i < this.stage.numChildren; i++) {
                         var m_child = this.stage.getChildAt(i);
+                        m_child.removeSelf();
+                    }
+                    for (var i = 0; i < this.numChildren; i++) {
+                        var m_child = this.getChildAt(i);
                         m_child.removeSelf();
                     }
                     var bg = new BombMode1();
@@ -562,8 +674,6 @@ function DisplayWords(n) {
     var letterText;
     if (n === 0)
         words = "GameOver";
-    if (n === 1)
-        words = "Finish";
     for (var i = 0, len = words.length; i < len; ++i) {
         letterText = createLetter(words.charAt(i));
         letterText.x = w / len * i + offsetX;
@@ -747,4 +857,3 @@ function DisplayRevival() {
     Revtxt.pos(0, 0);
     Laya.stage.addChild(Revtxt);
 }
-//# sourceMappingURL=BackGround.js.map
