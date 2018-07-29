@@ -6,7 +6,7 @@ class StartBackGround extends Laya.Sprite {
     Help: Laya.Button;
     constructor() {
         super();
-        Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
+        //Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
         console.log("this");
         this.init();
     }
@@ -171,8 +171,19 @@ class ThunderMode1 extends Laya.Sprite {
         this.stage.addChild(game.ctrl_back);
         this.createTrap(20, 3);
         this.stage.addChild(this.thu);
-    }        
+    }  
+    regame(): void {
+          let bg = new ThunderMode1();
+          bg.setmap();
+          this.hero.speedX = 0;
+          this.hero.speedY = 0;
+          this.hero.alive = 1;
+          this.hero.burn.visible = false;
+          this.hero.body.visible = false;
+          Laya.stage.addChild(bg);
+    }      
     judstate(): void {
+   
             let m_tile = this.finishline;
             if (this.hero.alive === 1) {
                 if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
@@ -183,9 +194,9 @@ class ThunderMode1 extends Laya.Sprite {
                     } 
                     let bg = new BombMode1();
                 
-                    bg.setmap(3);
-                    bg.coursenum = 3;
-                    mapnum = 3;
+                    bg.setmap(1);
+                    bg.coursenum = 1;
+                    mapnum = 1;
                     this.hero.speedX = 0;
                     this.hero.speedY = 0;
                     this.timer.clear(this,this.judstate);
@@ -194,6 +205,7 @@ class ThunderMode1 extends Laya.Sprite {
                 }    
             }//若角色到达终点，则删除所有节点与循环，移动到下一个地图
             let cnt:number = 0;
+
             for (let i: number = 1; i < this.stage.numChildren - 2; i++) {
                 let m_tile: Tile = this.stage.getChildAt(i) as Tile;
                 
@@ -202,14 +214,14 @@ class ThunderMode1 extends Laya.Sprite {
                         let _tile: Tile = this.challenge.getChildAt(j) as Tile;
                         if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
                             break;
-
+                         console.log(j);
                         cnt++;
                     }
                 } else {
                     if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && 
                         this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height))
                         break;
-
+                    
                     cnt++;
                 }
             }
@@ -232,6 +244,15 @@ class ThunderMode1 extends Laya.Sprite {
                 
                 if (this.hero.speedY > 0)
                     this.hero.y += 20;
+            }
+            if(this.hero.alive === 0){
+                 this.rebutton.pos(400, 400);
+                 this.rebutton.width = 45;
+                 this.rebutton.height = 45;
+                 console.log('asd');
+                 this.rebutton.loadImage("res2/regame.png");
+                 this.rebutton.on(Laya.Event.CLICK,this,this.regame);
+                 Laya.stage.addChild(this.rebutton);
             }
             if(this.hero.alive === 0){
                  this.timer.clear(this,this.judstate);
@@ -400,10 +421,31 @@ class BombMode1 extends Laya.Sprite {
                  Laya.SoundManager.playSound("res2/sound/bomb.wav",1);
             }//让第n块瓷砖炸弹爆炸
     }
-    judstate(): void{
+    regame(): void {
+           for (let i: number = 0; i < this.stage.numChildren; i++) {
+                let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
+                m_child.removeSelf();
+          }
+          let bg = new ThunderMode1();
+          bg.setmap();
+          mapnum = 1;
+          this.hero.speedX = 0;
+          this.hero.speedY = 0;
+          this.hero.alive = 1;
+          this.hero.burn.visible = false;
+          this.hero.body.visible = false;
+          this.timer.clear(this,this.judstate);
+          this.timer.clear(this,this.course); 
+          Laya.stage.addChild(bg);
+    }
+    judstate(): void {
         if(this.hero.alive === 0){
-            this.timer.clear(this,this.judstate);
-            this.timer.clear(this,this.course);
+           this.rebutton.pos(400, 400);
+           this.rebutton.width = 45;
+           this.rebutton.height = 45;
+           this.rebutton.loadImage("res2/regame.png");
+           this.rebutton.on(Laya.Event.CLICK,this,this.regame);
+           Laya.stage.addChild(this.rebutton);
         }//若死亡，那么停止爆炸
         let m_tile = this.finishline;
             if (this.hero.alive === 1) {
