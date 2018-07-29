@@ -188,7 +188,7 @@ class Scoreboard extends Laya.Sprite{
         this.Rank5 = new Laya.Text();
         this.MyRank = new Laya.Text();
 
-        this.Rank1.color = "#ffffff";
+        this.Rank1.color = "#ffffff";   
         this.Rank1.font = "Impact";
         this.Rank1.fontSize = 50;
         this.Rank1.pos(150,100);

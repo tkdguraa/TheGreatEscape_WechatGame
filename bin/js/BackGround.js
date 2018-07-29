@@ -167,7 +167,7 @@ var Scoreboard = /** @class */ (function (_super) {
         _this.Rank4 = new Laya.Text();
         _this.Rank5 = new Laya.Text();
         _this.MyRank = new Laya.Text();
-        _this.Rank1.color = "#DB7093";
+        _this.Rank1.color = "#ffffff";
         _this.Rank1.font = "Impact";
         _this.Rank1.fontSize = 50;
         _this.Rank1.pos(150, 100);
