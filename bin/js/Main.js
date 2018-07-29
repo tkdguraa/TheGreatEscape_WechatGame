@@ -92,6 +92,7 @@ var Game = /** @class */ (function (_super) {
     };
     Game.prototype.clickHandler = function () {
         this.bg.removeSelf();
+        revival = 0;
         this.bg2 = new ThunderMode1();
         this.bg2.setmap();
         Laya.stage.addChild(this.bg2);
@@ -151,17 +152,26 @@ var Game = /** @class */ (function (_super) {
     };
     // send GET ranking request to redis server
     Game.prototype.getRanking = function () {
-        this.hr_get.send('http://192.144.144.22:12306/ranking', null, 'get', 'text');
+        this.hr_get.send('http://192.144.144.22:12306/ranking', null, 'get', 'json');
     };
     // send POST ranking request to redis server
     Game.prototype.sendRanking = function (name, score) {
-        this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'text');
+        this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'json');
     };
     // get GET response from redis server
     Game.prototype.onHttpRequestCompleteGet = function () {
         var data = this.hr_get.data;
-        console.log(data);
-        console.log(data.length);
+        this.scoreboard.Rank1.text = "1:   " + data.result[0] + "    " + data.result[1];
+        this.scoreboard.Rank2.text = "2:   " + data.result[2] + "    " + data.result[3];
+        this.scoreboard.Rank3.text = "3:   " + data.result[4] + "    " + data.result[5];
+        this.scoreboard.Rank4.text = "4:   " + data.result[6] + "    " + data.result[7];
+        this.scoreboard.Rank5.text = "5:   " + data.result[8] + "    " + data.result[9];
+        for (var i = 0; i <= data.result.length / 2; i++) {
+            if (Number(data.result[i * 2 + 1]) === Number(revival)) {
+                this.scoreboard.MyRank.text = "Your Rank:   " + Number(i + 1);
+                break;
+            }
+        }
     };
     // get POST response from redis server
     Game.prototype.onHttpRequestCompletePost = function (res) {

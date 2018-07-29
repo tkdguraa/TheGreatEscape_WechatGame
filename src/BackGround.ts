@@ -1,4 +1,4 @@
-let revival:number = 0;
+let revival:number = 1;
 let mapnum:number = 0;
 let username:string;
 class InputName extends Laya.Sprite{
@@ -47,10 +47,9 @@ class InputName extends Laya.Sprite{
             game.sendRanking(username, revival);
             
             game.hero.alive = 1;
-            revival = 0;
             Laya.stage.addChild(bg);
     }
-}
+}//完全通关游戏之后输入玩家昵称的界面
 class StartBackGround extends Laya.Sprite {
     bgFirst: Laya.Sprite;
     bgSecond: Laya.Sprite;
@@ -65,7 +64,7 @@ class StartBackGround extends Laya.Sprite {
     init(): void {
         //创造两个背景并连接，轮流播放
         this.bgFirst = new Laya.Sprite();
-        this.bgFirst.loadImage("res2/background.jpg");
+        this.bgFirst.loadImage("res2/background.jpg");//为了实现背景移动效果，夹在两个图片
    
         this.addChild(this.bgFirst);
 
@@ -74,7 +73,7 @@ class StartBackGround extends Laya.Sprite {
         this.bgSecond.pos(-800,0);
         this.addChild(this.bgSecond);
 
-        this.Help = new Laya.Button();
+        this.Help = new Laya.Button();//进入说明界面的按钮
         this.Help.x = 730;
         this.Help.y = 0;
         this.Help.width = 70;
@@ -82,7 +81,7 @@ class StartBackGround extends Laya.Sprite {
         this.Help.loadImage("res2/Help.png");
         this.addChild(this.Help);
         
-        this.Rank = new Laya.Button();
+        this.Rank = new Laya.Button();//进入积分榜界面的按钮
         this.Rank.x = 0;
         this.Rank.y = 0;
         this.Rank.width = 90;
@@ -90,7 +89,7 @@ class StartBackGround extends Laya.Sprite {
         this.Rank.loadImage("res2/rank.png");
         this.addChild(this.Rank);
 
-        this.Play = new Laya.Button();
+        this.Play = new Laya.Button();//计入游戏界面的按钮
         this.Play.x = 272;
         this.Play.y = 350;
         this.Play.width = 250;
@@ -106,7 +105,7 @@ class StartBackGround extends Laya.Sprite {
         this.bgFirst.x = this.bgFirst.x + 1;
         this.bgSecond.x = this.bgSecond.x + 1;
 
-        if (this.bgFirst.x + this.x >= 800)
+        if (this.bgFirst.x + this.x >= 800)//连接两个图片并移动，如果出屏幕则回到原来的地点
             this.bgFirst.x = this.bgFirst.x - 800 * 2;
         if (this.bgSecond.x + this.x >= 800)
             this.bgSecond.x = this.bgSecond.x - 800 * 2;
@@ -168,7 +167,7 @@ class StartBackGround extends Laya.Sprite {
         return letter;
     }
     
-}
+}//游戏的开始界面
 class Scoreboard extends Laya.Sprite{
     public bg: Laya.Sprite;
     public Back: Laya.Button;
@@ -178,9 +177,47 @@ class Scoreboard extends Laya.Sprite{
     public Rank3: Laya.Text;
     public Rank4: Laya.Text;
     public Rank5: Laya.Text;
+    public MyRank: Laya.Text;
 
     constructor(){
         super();
+        this.Rank1 = new Laya.Text();
+        this.Rank2 = new Laya.Text();
+        this.Rank3 = new Laya.Text();
+        this.Rank4 = new Laya.Text();
+        this.Rank5 = new Laya.Text();
+        this.MyRank = new Laya.Text();
+
+        this.Rank1.color = "#ffffff";
+        this.Rank1.font = "Impact";
+        this.Rank1.fontSize = 50;
+        this.Rank1.pos(150,100);
+
+        this.Rank2.color = "#ffffff";
+        this.Rank2.font = "Impact";
+        this.Rank2.fontSize = 50;
+        this.Rank2.pos(150,200);
+
+        this.Rank3.color = "#ffffff";
+        this.Rank3.font = "Impact";
+        this.Rank3.fontSize = 50;
+        this.Rank3.pos(150,300);
+
+        this.Rank4.color = "#ffffff";
+        this.Rank4.font = "Impact";
+        this.Rank4.fontSize = 50;
+        this.Rank4.pos(150,400);
+
+        this.Rank5.color = "#ffffff";
+        this.Rank5.font = "Impact";
+        this.Rank5.fontSize = 50;
+        this.Rank5.pos(150,500);
+
+        this.MyRank.color = "#ffffff";
+        this.MyRank.font = "Impact";
+        this.MyRank.fontSize = 50;
+        this.MyRank.pos(500,100);
+
         this.Ranking = new Laya.Sprite();
         this.Ranking.x = 200;
         this.Ranking.y = 0;
@@ -197,7 +234,14 @@ class Scoreboard extends Laya.Sprite{
         this.Back.loadImage("res2/back.png");
         this.addChild(this.bg);
         this.addChild(this.Back);
+        this.addChild(this.Rank1);
+        this.addChild(this.Rank2);
+        this.addChild(this.Rank3);
+        this.addChild(this.Rank4);
+        this.addChild(this.Rank5);
+        this.addChild(this.MyRank);
         this.addChild(this.Ranking);
+
         this.Back.on(Laya.Event.CLICK,this,this.backtoStart);
     }
     backtoStart(): void{

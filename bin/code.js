@@ -53423,7 +53423,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var revival = 0;
+var revival = 1;
 var mapnum = 0;
 var username;
 var InputName = /** @class */ (function (_super) {
@@ -53445,7 +53445,7 @@ var InputName = /** @class */ (function (_super) {
         _this.yourname.width = 250;
         _this.yourname.height = 50;
         _this.yourname.bgColor = "#c30c30";
-        //将 textInput 添加到显示列表。
+        //游戏完全通关之后 输入名字的输入栏信息。
         _this.bg.loadImage("res2/scoreboard.png");
         _this.okbutton.loadImage("res2/ok.png");
         _this.okbutton.pos(520, 230);
@@ -53468,7 +53468,7 @@ var InputName = /** @class */ (function (_super) {
         Laya.stage.addChild(bg);
     };
     return InputName;
-}(Laya.Sprite));
+}(Laya.Sprite)); //完全通关游戏之后输入玩家昵称的界面
 var StartBackGround = /** @class */ (function (_super) {
     __extends(StartBackGround, _super);
     function StartBackGround() {
@@ -53480,27 +53480,27 @@ var StartBackGround = /** @class */ (function (_super) {
     StartBackGround.prototype.init = function () {
         //创造两个背景并连接，轮流播放
         this.bgFirst = new Laya.Sprite();
-        this.bgFirst.loadImage("res2/background.jpg");
+        this.bgFirst.loadImage("res2/background.jpg"); //为了实现背景移动效果，夹在两个图片
         this.addChild(this.bgFirst);
         this.bgSecond = new Laya.Sprite();
         this.bgSecond.loadImage("res2/background.jpg");
         this.bgSecond.pos(-800, 0);
         this.addChild(this.bgSecond);
-        this.Help = new Laya.Button();
+        this.Help = new Laya.Button(); //进入说明界面的按钮
         this.Help.x = 730;
         this.Help.y = 0;
         this.Help.width = 70;
         this.Help.height = 70;
         this.Help.loadImage("res2/Help.png");
         this.addChild(this.Help);
-        this.Rank = new Laya.Button();
+        this.Rank = new Laya.Button(); //进入积分榜界面的按钮
         this.Rank.x = 0;
         this.Rank.y = 0;
         this.Rank.width = 90;
         this.Rank.height = 45;
         this.Rank.loadImage("res2/rank.png");
         this.addChild(this.Rank);
-        this.Play = new Laya.Button();
+        this.Play = new Laya.Button(); //计入游戏界面的按钮
         this.Play.x = 272;
         this.Play.y = 350;
         this.Play.width = 250;
@@ -53513,7 +53513,7 @@ var StartBackGround = /** @class */ (function (_super) {
     StartBackGround.prototype.onLoop = function () {
         this.bgFirst.x = this.bgFirst.x + 1;
         this.bgSecond.x = this.bgSecond.x + 1;
-        if (this.bgFirst.x + this.x >= 800)
+        if (this.bgFirst.x + this.x >= 800) //连接两个图片并移动，如果出屏幕则回到原来的地点
             this.bgFirst.x = this.bgFirst.x - 800 * 2;
         if (this.bgSecond.x + this.x >= 800)
             this.bgSecond.x = this.bgSecond.x - 800 * 2;
@@ -53571,11 +53571,41 @@ var StartBackGround = /** @class */ (function (_super) {
         return letter;
     };
     return StartBackGround;
-}(Laya.Sprite));
+}(Laya.Sprite)); //游戏的开始界面
 var Scoreboard = /** @class */ (function (_super) {
     __extends(Scoreboard, _super);
     function Scoreboard() {
         var _this = _super.call(this) || this;
+        _this.Rank1 = new Laya.Text();
+        _this.Rank2 = new Laya.Text();
+        _this.Rank3 = new Laya.Text();
+        _this.Rank4 = new Laya.Text();
+        _this.Rank5 = new Laya.Text();
+        _this.MyRank = new Laya.Text();
+        _this.Rank1.color = "#DB7093";
+        _this.Rank1.font = "Impact";
+        _this.Rank1.fontSize = 50;
+        _this.Rank1.pos(150, 100);
+        _this.Rank2.color = "#ffffff";
+        _this.Rank2.font = "Impact";
+        _this.Rank2.fontSize = 50;
+        _this.Rank2.pos(150, 200);
+        _this.Rank3.color = "#ffffff";
+        _this.Rank3.font = "Impact";
+        _this.Rank3.fontSize = 50;
+        _this.Rank3.pos(150, 300);
+        _this.Rank4.color = "#ffffff";
+        _this.Rank4.font = "Impact";
+        _this.Rank4.fontSize = 50;
+        _this.Rank4.pos(150, 400);
+        _this.Rank5.color = "#ffffff";
+        _this.Rank5.font = "Impact";
+        _this.Rank5.fontSize = 50;
+        _this.Rank5.pos(150, 500);
+        _this.MyRank.color = "#ffffff";
+        _this.MyRank.font = "Impact";
+        _this.MyRank.fontSize = 50;
+        _this.MyRank.pos(500, 100);
         _this.Ranking = new Laya.Sprite();
         _this.Ranking.x = 200;
         _this.Ranking.y = 0;
@@ -53591,6 +53621,12 @@ var Scoreboard = /** @class */ (function (_super) {
         _this.Back.loadImage("res2/back.png");
         _this.addChild(_this.bg);
         _this.addChild(_this.Back);
+        _this.addChild(_this.Rank1);
+        _this.addChild(_this.Rank2);
+        _this.addChild(_this.Rank3);
+        _this.addChild(_this.Rank4);
+        _this.addChild(_this.Rank5);
+        _this.addChild(_this.MyRank);
         _this.addChild(_this.Ranking);
         _this.Back.on(Laya.Event.CLICK, _this, _this.backtoStart);
         return _this;
@@ -54548,6 +54584,7 @@ var Game = /** @class */ (function (_super) {
     };
     Game.prototype.clickHandler = function () {
         this.bg.removeSelf();
+        revival = 0;
         this.bg2 = new ThunderMode1();
         this.bg2.setmap();
         Laya.stage.addChild(this.bg2);
@@ -54607,17 +54644,26 @@ var Game = /** @class */ (function (_super) {
     };
     // send GET ranking request to redis server
     Game.prototype.getRanking = function () {
-        this.hr_get.send('http://192.144.144.22:12306/ranking', null, 'get', 'text');
+        this.hr_get.send('http://192.144.144.22:12306/ranking', null, 'get', 'json');
     };
     // send POST ranking request to redis server
     Game.prototype.sendRanking = function (name, score) {
-        this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'text');
+        this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'json');
     };
     // get GET response from redis server
     Game.prototype.onHttpRequestCompleteGet = function () {
         var data = this.hr_get.data;
-        console.log(data);
-        console.log(data.length);
+        this.scoreboard.Rank1.text = "1:   " + data.result[0] + "    " + data.result[1];
+        this.scoreboard.Rank2.text = "2:   " + data.result[2] + "    " + data.result[3];
+        this.scoreboard.Rank3.text = "3:   " + data.result[4] + "    " + data.result[5];
+        this.scoreboard.Rank4.text = "4:   " + data.result[6] + "    " + data.result[7];
+        this.scoreboard.Rank5.text = "5:   " + data.result[8] + "    " + data.result[9];
+        for (var i = 0; i <= data.result.length / 2; i++) {
+            if (Number(data.result[i * 2 + 1]) === Number(revival)) {
+                this.scoreboard.MyRank.text = "Your Rank:   " + Number(i + 1);
+                break;
+            }
+        }
     };
     // get POST response from redis server
     Game.prototype.onHttpRequestCompletePost = function (res) {

@@ -106,6 +106,7 @@ class Game extends Laya.Sprite{
 
     clickHandler(): void {
        this.bg.removeSelf();
+       revival = 0;
        this.bg2 = new ThunderMode1();
        this.bg2.setmap();
        Laya.stage.addChild(this.bg2);
@@ -181,8 +182,19 @@ class Game extends Laya.Sprite{
     // get GET response from redis server
     onHttpRequestCompleteGet(): void {
         let data = this.hr_get.data;
-        console.log(data);
-        console.log(data.length);
+        
+        this.scoreboard.Rank1.text = "1:   " + data.result[0] + "    " + data.result[1]; 
+        this.scoreboard.Rank2.text = "2:   " + data.result[2] + "    " + data.result[3];
+        this.scoreboard.Rank3.text = "3:   " + data.result[4] + "    " + data.result[5]; 
+        this.scoreboard.Rank4.text = "4:   " + data.result[6] + "    " + data.result[7]; 
+        this.scoreboard.Rank5.text = "5:   " + data.result[8] + "    " + data.result[9];
+
+        for(let i = 0 ; i <= data.result.length / 2; i++){
+            if(Number(data.result[i * 2 + 1]) === Number(revival)){
+                this.scoreboard.MyRank.text = "Your Rank:   " + Number(i + 1);
+                break;
+            }
+        }  
     }
     // get POST response from redis server
     onHttpRequestCompletePost(res): void {
