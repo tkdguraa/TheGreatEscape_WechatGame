@@ -15,7 +15,6 @@ class Game {
     ctrl_rocker_y: number = 400;
 
     isHold: boolean = false;
-    
     constructor() {
       // 初始屏幕适配
         Laya.MiniAdpter.init();
@@ -25,6 +24,7 @@ class Game {
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
         Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
         Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
+        Laya.stage.on("mouseup", this, this.ctrlRockerUp)
 
         this.init_ingame_images();
         this.bg = new StartBackGround();
@@ -48,17 +48,20 @@ class Game {
         this.ctrl_rocker.loadImage("res2/control-rocker.png");
         this.ctrl_rocker.pos(this.ctrl_rocker_x, this.ctrl_rocker_y);
         this.ctrl_rocker.pivot(17.5, 17.5);
+        this.ctrl_rocker.on(Laya.Event.MOUSE_DOWN, this, ()=> {this.isHold = true;});
 
         this.ctrl_rocker_move = new Laya.Image();
         this.ctrl_rocker_move.loadImage("res2/control-rocker.png");
         this.ctrl_rocker_move.pos(this.ctrl_rocker_x, this.ctrl_rocker_y);
         this.ctrl_rocker_move.pivot(17.5, 17.5);
         this.ctrl_rocker_move.visible = false;
+        this.ctrl_rocker_move.on(Laya.Event.MOUSE_DOWN, this, ()=> {this.isHold = true;});
     }
 
     gameLoop(): void {
         if (this.hero.alive === 1) { 
-            this.ctrlRockerDown();
+            if (this.isHold)
+                this.ctrlRockerDown();
             this.hero.right.visible = false;
             this.hero.left.visible = false;
             this.hero.up.visible = false;
@@ -112,6 +115,9 @@ class Game {
         if (Laya.stage.mouseX <= game.stageW / 2) {
             this.ctrl_rocker.visible = true;
             this.ctrl_rocker_move.visible = false;
+            this.hero.speedX = 0;
+            this.hero.speedY = 0;
+            this.isHold = false;
         }
     }
     ctrlRockerDown(): void {
@@ -142,8 +148,8 @@ class Game {
 
             // move hero
             let angle = Math.atan2(Laya.stage.mouseY - game.ctrl_rocker_y, Laya.stage.mouseX - game.ctrl_rocker_x);
-            this.hero.speedX = 2*Math.cos(angle);
-            this.hero.speedY = 2*Math.sin(angle);
+            this.hero.speedX = 2 * Math.cos(angle);
+            this.hero.speedY = 2 * Math.sin(angle);
     
         } else {
             this.ctrl_rocker.visible = true;
