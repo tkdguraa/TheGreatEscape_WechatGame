@@ -103,6 +103,7 @@ var Game = /** @class */ (function (_super) {
         Laya.stage.addChild(this.instruction);
     };
     Game.prototype.rankHandler = function () {
+        this.init_server_connection();
         this.scoreboard = new Scoreboard();
         Laya.stage.addChild(this.scoreboard);
         game.getRanking();

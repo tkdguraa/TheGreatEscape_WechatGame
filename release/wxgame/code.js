@@ -53582,7 +53582,7 @@ var Scoreboard = /** @class */ (function (_super) {
         _this.Rank4 = new Laya.Text();
         _this.Rank5 = new Laya.Text();
         _this.MyRank = new Laya.Text();
-        _this.Rank1.color = "#DB7093";
+        _this.Rank1.color = "#ffffff";
         _this.Rank1.font = "Impact";
         _this.Rank1.fontSize = 50;
         _this.Rank1.pos(150, 100);
@@ -53878,11 +53878,12 @@ var BombMode1 = /** @class */ (function (_super) {
         this.Bmap3.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap3.finishline.makeblock('1', 2, 9, 720, 90);
         this.Bmap4 = new Map();
-        for (var i = 0; i < 6; i++)
+        for (var i = 0; i < 6; i++) {
             if (i % 2 === 0)
                 this.Bmap4.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 45 * 4);
             else
                 this.Bmap4.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 45 * 4);
+        }
         this.Bmap4.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap4.finishline.makeblock('1', 2, 9, 630, 90);
         this.Bmap5 = new Map();
@@ -54156,27 +54157,20 @@ function judelectricshock(hero, trap) {
 }
 //炸弹爆炸规律
 function course1(map) {
-    if (map.startcnt / 40 === 1) {
+    if (map.startcnt / 40 === 1)
         map.onfire(0);
-    }
-    if (map.startcnt / 65 === 1) {
+    if (map.startcnt / 65 === 1)
         map.onfire(1);
-    }
-    if (map.startcnt / 90 === 1) {
+    if (map.startcnt / 90 === 1)
         map.onfire(2);
-    }
-    if (map.startcnt / 115 === 1) {
+    if (map.startcnt / 115 === 1)
         map.onfire(3);
-    }
-    if (map.startcnt / 140 === 1) {
+    if (map.startcnt / 140 === 1)
         map.onfire(4);
-    }
-    if (map.startcnt / 165 === 1) {
+    if (map.startcnt / 165 === 1)
         map.onfire(5);
-    }
-    if (map.startcnt / 190 === 1) {
+    if (map.startcnt / 190 === 1)
         map.onfire(6);
-    }
     if (map.startcnt / 215 === 1)
         map.startcnt = 0;
 }
@@ -54216,31 +54210,24 @@ function course3(map) {
         map.onfire(5);
         map.onfire(7);
     }
-    if (map.startcnt / 250 === 1) {
+    if (map.startcnt / 250 === 1)
         map.onfire(6);
-    }
     if (map.startcnt / 300 === 1)
         map.startcnt = 0;
 }
 function course4(map) {
-    if (map.startcnt / 40 === 1) {
+    if (map.startcnt / 40 === 1)
         map.onfire(0);
-    }
-    if (map.startcnt / 50 === 1) {
+    if (map.startcnt / 50 === 1)
         map.onfire(1);
-    }
-    if (map.startcnt / 60 === 1) {
+    if (map.startcnt / 60 === 1)
         map.onfire(2);
-    }
-    if (map.startcnt / 90 === 1) {
+    if (map.startcnt / 90 === 1)
         map.onfire(5);
-    }
-    if (map.startcnt / 100 === 1) {
+    if (map.startcnt / 100 === 1)
         map.onfire(4);
-    }
-    if (map.startcnt / 110 === 1) {
+    if (map.startcnt / 110 === 1)
         map.onfire(3);
-    }
     if (map.startcnt / 170 === 1) {
         map.onfire(0);
         map.onfire(2);
@@ -54286,9 +54273,8 @@ function course6(map) {
         map.onfire(5);
         map.onfire(7);
     }
-    if (map.startcnt / 200 === 1) {
+    if (map.startcnt / 200 === 1)
         map.startcnt = 0;
-    }
 }
 function makeunvisible(hero) {
     hero.right.visible = false;
@@ -54653,6 +54639,7 @@ var Game = /** @class */ (function (_super) {
     // get GET response from redis server
     Game.prototype.onHttpRequestCompleteGet = function () {
         var data = this.hr_get.data;
+        this.init_server_connection();
         this.scoreboard.Rank1.text = "1:   " + data.result[0] + "    " + data.result[1];
         this.scoreboard.Rank2.text = "2:   " + data.result[2] + "    " + data.result[3];
         this.scoreboard.Rank3.text = "3:   " + data.result[4] + "    " + data.result[5];

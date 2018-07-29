@@ -1,7 +1,7 @@
 let revival:number = 1;
 let mapnum:number = 0;
 let username:string;
-class InputName extends Laya.Sprite{
+class InputName extends Laya.Sprite{//输入角色昵称的界面
     okbutton: Laya.Button;
     bg: Laya.Sprite;
     title: Laya.Text;
@@ -250,7 +250,7 @@ class Scoreboard extends Laya.Sprite{
         Laya.stage.addChild(game.bg);
     }
 }
-class Instruction extends Laya.Sprite {
+class Instruction extends Laya.Sprite {//游戏说明界面
     public bg: Laya.Sprite;
     public Back: Laya.Button;
     constructor() {
@@ -275,7 +275,7 @@ class Instruction extends Laya.Sprite {
     }
 }
 
-class ThunderMode1 extends Laya.Sprite {
+class ThunderMode1 extends Laya.Sprite {//闪电模式
     private bg: Laya.Sprite;
     private hero: Hero;
     public startline: Tile;
@@ -312,7 +312,7 @@ class ThunderMode1 extends Laya.Sprite {
         this.createTrap(20, 3);
         this.stage.addChild(this.thu);
     }  
-    regame(): void {
+    regame(): void {//死亡之后重新开始游戏
         if (this.hero.alive === 0) {
             revival++;
             for (let i: number = 0; i < this.stage.numChildren; i++) {
@@ -322,7 +322,7 @@ class ThunderMode1 extends Laya.Sprite {
             for (let i: number = 0; i < this.numChildren; i++) {
                      let m_child: Laya.Sprite = this.getChildAt(i) as Laya.Sprite;
                      m_child.removeSelf();
-            }
+            }//把原来的地图上的子节点都删除，再加载地图
             Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
             let bg = new ThunderMode1();
             bg.setmap();
@@ -334,7 +334,7 @@ class ThunderMode1 extends Laya.Sprite {
             Laya.stage.addChild(bg);
         }
     }      
-    judstate(): void {
+    judstate(): void {//角色状态的判断
             let m_tile = this.finishline;
             if (this.hero.alive === 1) {
                 if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
@@ -378,7 +378,7 @@ class ThunderMode1 extends Laya.Sprite {
                     
                     cnt++;
                 }
-            }
+            }//遍历所有瓷砖，判断角色是不是再瓷砖上，如果不是则判定死亡
             if (cnt === this.stage.numChildren + this.challenge.numChildren - 4 && this.hero.alive === 1) {
                 Laya.SoundManager.playMusic("res/sound/fall.wav",1);
                 DisplayWords(0);
@@ -563,7 +563,7 @@ class BombMode1 extends Laya.Sprite {
             m_tile.fire = false;
         }//让爆炸区恢复正常
     }
-    setmap(n: number): void {
+    setmap(n: number): void {//选择爆破模式第几个地图
         if (n === 1) {
             this.startline = this.Bmap1.startline;
             this.challenge = this.Bmap1.challenge;
@@ -605,7 +605,7 @@ class BombMode1 extends Laya.Sprite {
         this.stage.addChild(game.ctrl_rocker_move);
         this.stage.addChild(game.ctrl_back)
     }   
-    course(): void {
+    course(): void {//选择爆破模式炸弹爆炸的规律
         this.startcnt++;
         if (this.coursenum === 1)
             course1(this);
@@ -629,7 +629,7 @@ class BombMode1 extends Laya.Sprite {
                 Laya.SoundManager.playSound("res2/sound/bomb.wav",1);
         }//让第n块瓷砖炸弹爆炸
     }
-    regame(): void {
+    regame(): void {//重新开始游戏
         if (this.hero.alive === 0) {
             for (let i: number = 0; i < this.stage.numChildren; i++) {
                 let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
@@ -680,7 +680,7 @@ class BombMode1 extends Laya.Sprite {
         let m_tile = this.finishline;
         if (this.hero.alive === 1) {
             if ((this.hero.x + 20 >= m_tile.posX && this.hero.x + 20 <= m_tile.posX + m_tile.width * 45 && this.hero.y + 23 >= m_tile.posY && this.hero.y + 23 <= m_tile.posY + 45 * m_tile.height)) {
-                if (mapnum === 6) {
+                if (mapnum === 6) {//若到达了最后一个地图的终点，则删除所有子节点，跳转到输入昵称的界面
                     for (let i: number = 0; i < this.stage.numChildren; i++) {
                         let m_child: Laya.Sprite = this.stage.getChildAt(i) as Laya.Sprite;
                         m_child.removeSelf();
@@ -710,7 +710,7 @@ class BombMode1 extends Laya.Sprite {
                     bg.coursenum = mapnum;
                     this.timer.clear(this,this.judstate);
                     this.timer.clear(this,this.course);
-                    Laya.stage.addChild(bg);//如果角色到达了终点，则删除所有子节点与循环，进入下一个地图
+                    Laya.stage.addChild(bg);//如果角色到达了终点，且不是最后一个地图，则删除所有子节点与循环，进入下一个地图
                 }
             }    
         }
@@ -776,7 +776,7 @@ class BombMode1 extends Laya.Sprite {
                 
                 if (this.hero.speedY > 0)
                     this.hero.y += 20;
-            }//同上
+            }//同上，遍历每一个瓷砖，判断英雄是否再瓷砖上
         }     
     }
 }

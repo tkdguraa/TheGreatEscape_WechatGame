@@ -463,11 +463,12 @@ var BombMode1 = /** @class */ (function (_super) {
         this.Bmap3.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap3.finishline.makeblock('1', 2, 9, 720, 90);
         this.Bmap4 = new Map();
-        for (var i = 0; i < 6; i++)
+        for (var i = 0; i < 6; i++) {
             if (i % 2 === 0)
                 this.Bmap4.challenge.makeblock('2', 2, 2, 90 + i * 90, 90 + 45 * 4);
             else
                 this.Bmap4.challenge.makeblock('3', 2, 2, 90 + i * 90, 90 + 45 * 4);
+        }
         this.Bmap4.startline.makeblock('5', 2, 9, 0, 90);
         this.Bmap4.finishline.makeblock('1', 2, 9, 630, 90);
         this.Bmap5 = new Map();
