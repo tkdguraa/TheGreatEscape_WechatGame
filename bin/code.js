@@ -53427,7 +53427,7 @@ var StartBackGround = /** @class */ (function (_super) {
     __extends(StartBackGround, _super);
     function StartBackGround() {
         var _this = _super.call(this) || this;
-        Laya.SoundManager.playMusic("res/sound/bgm.mp3", 0);
+        //Laya.SoundManager.playMusic("res/sound/bgm.mp3",0);
         console.log("this");
         _this.init();
         return _this;
@@ -53573,6 +53573,16 @@ var ThunderMode1 = /** @class */ (function (_super) {
         this.createTrap(20, 3);
         this.stage.addChild(this.thu);
     };
+    ThunderMode1.prototype.regame = function () {
+        var bg = new ThunderMode1();
+        bg.setmap();
+        this.hero.speedX = 0;
+        this.hero.speedY = 0;
+        this.hero.alive = 1;
+        this.hero.burn.visible = false;
+        this.hero.body.visible = false;
+        Laya.stage.addChild(bg);
+    };
     ThunderMode1.prototype.judstate = function () {
         var m_tile = this.finishline;
         if (this.hero.alive === 1) {
@@ -53582,9 +53592,9 @@ var ThunderMode1 = /** @class */ (function (_super) {
                     m_child.removeSelf();
                 }
                 var bg = new BombMode1();
-                bg.setmap(3);
-                bg.coursenum = 3;
-                mapnum = 3;
+                bg.setmap(1);
+                bg.coursenum = 1;
+                mapnum = 1;
                 this.hero.speedX = 0;
                 this.hero.speedY = 0;
                 this.timer.clear(this, this.judstate);
@@ -53600,6 +53610,7 @@ var ThunderMode1 = /** @class */ (function (_super) {
                     var _tile = this.challenge.getChildAt(j);
                     if ((this.hero.x + 20 >= _tile.posX && this.hero.x + 20 <= _tile.posX + _tile.width * 45 && this.hero.y + 23 >= _tile.posY && this.hero.y + 23 <= _tile.posY + 45 * _tile.height))
                         break;
+                    console.log(j);
                     cnt++;
                 }
             }
@@ -53625,6 +53636,15 @@ var ThunderMode1 = /** @class */ (function (_super) {
                 this.hero.x += 20;
             if (this.hero.speedY > 0)
                 this.hero.y += 20;
+        }
+        if (this.hero.alive === 0) {
+            this.rebutton.pos(400, 400);
+            this.rebutton.width = 45;
+            this.rebutton.height = 45;
+            console.log('asd');
+            this.rebutton.loadImage("res2/regame.png");
+            this.rebutton.on(Laya.Event.CLICK, this, this.regame);
+            Laya.stage.addChild(this.rebutton);
         }
         if (this.hero.alive === 0) {
             this.timer.clear(this, this.judstate);
@@ -53775,10 +53795,31 @@ var BombMode1 = /** @class */ (function (_super) {
             Laya.SoundManager.playSound("res2/sound/bomb.wav", 1);
         } //让第n块瓷砖炸弹爆炸
     };
+    BombMode1.prototype.regame = function () {
+        for (var i = 0; i < this.stage.numChildren; i++) {
+            var m_child = this.stage.getChildAt(i);
+            m_child.removeSelf();
+        }
+        var bg = new ThunderMode1();
+        bg.setmap();
+        mapnum = 1;
+        this.hero.speedX = 0;
+        this.hero.speedY = 0;
+        this.hero.alive = 1;
+        this.hero.burn.visible = false;
+        this.hero.body.visible = false;
+        this.timer.clear(this, this.judstate);
+        this.timer.clear(this, this.course);
+        Laya.stage.addChild(bg);
+    };
     BombMode1.prototype.judstate = function () {
         if (this.hero.alive === 0) {
-            this.timer.clear(this, this.judstate);
-            this.timer.clear(this, this.course);
+            this.rebutton.pos(400, 400);
+            this.rebutton.width = 45;
+            this.rebutton.height = 45;
+            this.rebutton.loadImage("res2/regame.png");
+            this.rebutton.on(Laya.Event.CLICK, this, this.regame);
+            Laya.stage.addChild(this.rebutton);
         } //若死亡，那么停止爆炸
         var m_tile = this.finishline;
         if (this.hero.alive === 1) {
@@ -53870,7 +53911,7 @@ function DisplayWords(n) {
     if (n === 0)
         words = "GameOver";
     if (n === 1)
-        words = "WIN";
+        words = "Finish";
     for (var i = 0, len = words.length; i < len; ++i) {
         letterText = createLetter(words.charAt(i));
         letterText.x = w / len * i + offsetX;
@@ -54167,6 +54208,7 @@ var Game = /** @class */ (function () {
         this.stageH = 600;
         this.ctrl_rocker_x = 50;
         this.ctrl_rocker_y = 400;
+        this.isHold = false;
         Laya.MiniAdpter.init();
         Laya.init(800, 600);
         // 初始屏幕适配
@@ -54174,6 +54216,7 @@ var Game = /** @class */ (function () {
         Laya.stage.alignV = Laya.Stage.ALIGN_MIDDLE;
         Laya.stage.scaleMode = Laya.Stage.SCALE_EXACTFIT;
         Laya.stage.screenMode = Laya.Stage.SCREEN_HORIZONTAL;
+        Laya.stage.on("mouseup", this, this.ctrlRockerUp);
         this.init_ingame_images();
         this.bg = new StartBackGround();
         Laya.stage.addChild(this.bg);
@@ -54182,6 +54225,7 @@ var Game = /** @class */ (function () {
         Laya.timer.frameLoop(1, this, this.gameLoop);
     }
     Game.prototype.init_ingame_images = function () {
+        var _this = this;
         this.hero = new Hero();
         this.hero.pos(10, 300);
         this.rebutton = new Laya.Button();
@@ -54193,15 +54237,18 @@ var Game = /** @class */ (function () {
         this.ctrl_rocker.loadImage("res2/control-rocker.png");
         this.ctrl_rocker.pos(this.ctrl_rocker_x, this.ctrl_rocker_y);
         this.ctrl_rocker.pivot(17.5, 17.5);
+        this.ctrl_rocker.on(Laya.Event.MOUSE_DOWN, this, function () { _this.isHold = true; });
         this.ctrl_rocker_move = new Laya.Image();
         this.ctrl_rocker_move.loadImage("res2/control-rocker.png");
         this.ctrl_rocker_move.pos(this.ctrl_rocker_x, this.ctrl_rocker_y);
         this.ctrl_rocker_move.pivot(17.5, 17.5);
         this.ctrl_rocker_move.visible = false;
+        this.ctrl_rocker_move.on(Laya.Event.MOUSE_DOWN, this, function () { _this.isHold = true; });
     };
     Game.prototype.gameLoop = function () {
         if (this.hero.alive === 1) {
-            this.ctrlRockerDown();
+            if (this.isHold)
+                this.ctrlRockerDown();
             this.hero.right.visible = false;
             this.hero.left.visible = false;
             this.hero.up.visible = false;
@@ -54220,25 +54267,25 @@ var Game = /** @class */ (function () {
             this.hero.x += this.hero.speedX;
             this.hero.y += this.hero.speedY;
         }
-        if (this.hero.alive === 0) {
-            this.rebutton.pos(400, 400);
-            this.rebutton.width = 45;
-            this.rebutton.height = 45;
-            this.rebutton.loadImage("res2/regame.png");
-            this.rebutton.on(Laya.Event.CLICK, this, this.regame);
-            Laya.stage.addChild(this.rebutton);
-        }
+        //  if(this.hero.alive === 0){
+        //         this.rebutton.pos(400, 400);
+        //         this.rebutton.width = 45;
+        //         this.rebutton.height = 45;
+        //         this.rebutton.loadImage("res2/regame.png");
+        //         this.rebutton.on(Laya.Event.CLICK,this,this.regame);
+        //         Laya.stage.addChild(this.rebutton);
+        //     }
     };
-    Game.prototype.regame = function () {
-        var bg = new ThunderMode1();
-        bg.setmap();
-        this.hero.speedX = 0;
-        this.hero.speedY = 0;
-        this.hero.alive = 1;
-        this.hero.burn.visible = false;
-        this.hero.body.visible = false;
-        Laya.stage.addChild(bg);
-    };
+    // regame(): void {
+    //       let bg = new ThunderMode1();
+    //       bg.setmap();
+    //       this.hero.speedX = 0;
+    //       this.hero.speedY = 0;
+    //       this.hero.alive = 1;
+    //       this.hero.burn.visible = false;
+    //       this.hero.body.visible = false;
+    //       Laya.stage.addChild(bg);
+    // }
     Game.prototype.clickHandler = function () {
         this.bg.removeSelf();
         this.bg2 = new ThunderMode1();
@@ -54253,6 +54300,9 @@ var Game = /** @class */ (function () {
         if (Laya.stage.mouseX <= game.stageW / 2) {
             this.ctrl_rocker.visible = true;
             this.ctrl_rocker_move.visible = false;
+            this.hero.speedX = 0;
+            this.hero.speedY = 0;
+            this.isHold = false;
         }
     };
     Game.prototype.ctrlRockerDown = function () {
