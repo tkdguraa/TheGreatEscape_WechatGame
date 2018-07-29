@@ -25,6 +25,7 @@ var Hero = /** @class */ (function (_super) {
         this.stand = new Laya.Animation();
         this.speedX = 0;
         this.speedY = 0;
+<<<<<<< HEAD
         // this.loadImage("res/Hero.png");
         this.body.loadAtlas("res/atlas/res.atlas", Laya.Handler.create(this, this.onLoaded));
         this.burn.loadAtlas("res/atlas/burn.atlas", Laya.Handler.create(this, this.onLoaded2));
@@ -33,6 +34,15 @@ var Hero = /** @class */ (function (_super) {
         this.up.loadAtlas("res/atlas/goup.atlas", Laya.Handler.create(this, this.onLoaded5));
         this.down.loadAtlas("res/atlas/godown.atlas", Laya.Handler.create(this, this.onLoaded6));
         this.stand.loadAtlas("res/atlas/normal.atlas", Laya.Handler.create(this, this.onLoaded7));
+=======
+        this.body.loadAtlas("res2/atlas/res.atlas", Laya.Handler.create(this, this.onLoaded));
+        this.burn.loadAtlas("res2/atlas/burn.atlas", Laya.Handler.create(this, this.onLoaded2));
+        this.right.loadAtlas("res2/atlas/goright.atlas", Laya.Handler.create(this, this.onLoaded3));
+        this.left.loadAtlas("res2/atlas/goleft.atlas", Laya.Handler.create(this, this.onLoaded4));
+        this.up.loadAtlas("res2/atlas/goup.atlas", Laya.Handler.create(this, this.onLoaded5));
+        this.down.loadAtlas("res2/atlas/godown.atlas", Laya.Handler.create(this, this.onLoaded6));
+        this.stand.loadAtlas("res2/atlas/normal.atlas", Laya.Handler.create(this, this.onLoaded7));
+>>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
         this.right.play();
         this.left.play();
         this.up.play();
@@ -78,4 +88,3 @@ var Hero = /** @class */ (function (_super) {
     };
     return Hero;
 }(Laya.Sprite));
-//# sourceMappingURL=Hero.js.map

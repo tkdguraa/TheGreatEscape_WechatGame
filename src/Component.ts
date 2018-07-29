@@ -23,12 +23,10 @@ class Tile extends Laya.Sprite{
         this.fire = false;
         this.pos(this.x,this.y);
         if(this.type === "2")
-            this.bomb.loadAtlas("res/atlas/boom1.atlas",Laya.Handler.create(this,this.exploison));
+            this.bomb.loadAtlas("res2/atlas/boom1.atlas",Laya.Handler.create(this,this.exploison));
         else if(this.type === "3")
-            this.bomb.loadAtlas("res/atlas/boom2.atlas",Laya.Handler.create(this,this.exploison));
-        else if(this.type === "4")
-            this.bomb.loadAtlas("res/atlas/blackhole.atlas",Laya.Handler.create(this,this.exploison));
-        this.loadImage("res/tile"+this.type+".png");
+            this.bomb.loadAtlas("res2/atlas/boom2.atlas",Laya.Handler.create(this,this.exploison));
+        this.loadImage("res2/tile"+this.type+".png");
         this.bomb.interval = 100;
     }
     exploison():void{
@@ -56,7 +54,23 @@ class Tile extends Laya.Sprite{
                 }//combinate the small block to make bigger block;
             }
             this.addChild(block);
-            //this.stage.addChild(block);
+    }
+}
+class Map extends Laya.Sprite{
+    public startline: Tile;
+    public finishline: Tile;
+    public challenge: Tile;
+    
+    constructor(){
+        super();
+        this.startline = new Tile();
+        this.finishline = new Tile();
+        this.challenge = new Tile();
+    }
+    savemap(start: Tile, challenge:Tile, finish: Tile):void{
+        this.startline = start;
+        this.finishline = finish;
+        this.challenge = challenge;
     }
 }
 class Map extends Laya.Sprite{

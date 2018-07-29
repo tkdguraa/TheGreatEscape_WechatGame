@@ -9,6 +9,7 @@ class Hero extends Laya.Sprite {
     public alive: number;
     public speedX: number;
     public speedY: number;
+
     constructor() {
         super();
         this.init();
@@ -23,14 +24,14 @@ class Hero extends Laya.Sprite {
         this.stand = new Laya.Animation();
         this.speedX = 0;
         this.speedY = 0;
-        // this.loadImage("res/Hero.png");
-        this.body.loadAtlas("res/atlas/res.atlas",Laya.Handler.create(this,this.onLoaded));
-        this.burn.loadAtlas("res/atlas/burn.atlas",Laya.Handler.create(this,this.onLoaded2));
-        this.right.loadAtlas("res/atlas/goright.atlas",Laya.Handler.create(this,this.onLoaded3));
-        this.left.loadAtlas("res/atlas/goleft.atlas",Laya.Handler.create(this,this.onLoaded4));
-        this.up.loadAtlas("res/atlas/goup.atlas",Laya.Handler.create(this,this.onLoaded5));
-        this.down.loadAtlas("res/atlas/godown.atlas",Laya.Handler.create(this,this.onLoaded6));
-        this.stand.loadAtlas("res/atlas/normal.atlas",Laya.Handler.create(this,this.onLoaded7));
+
+        this.body.loadAtlas("res2/atlas/res.atlas",Laya.Handler.create(this,this.onLoaded));
+        this.burn.loadAtlas("res2/atlas/burn.atlas",Laya.Handler.create(this,this.onLoaded2));
+        this.right.loadAtlas("res2/atlas/goright.atlas",Laya.Handler.create(this,this.onLoaded3));
+        this.left.loadAtlas("res2/atlas/goleft.atlas",Laya.Handler.create(this,this.onLoaded4));
+        this.up.loadAtlas("res2/atlas/goup.atlas",Laya.Handler.create(this,this.onLoaded5));
+        this.down.loadAtlas("res2/atlas/godown.atlas",Laya.Handler.create(this,this.onLoaded6));
+        this.stand.loadAtlas("res2/atlas/normal.atlas",Laya.Handler.create(this,this.onLoaded7));
         
         this.right.play();
         this.left.play();
@@ -56,26 +57,25 @@ class Hero extends Laya.Sprite {
         this.burn.interval = 200;
         this.alive = 1;
     }
-  public onLoaded(): void {
+    public onLoaded(): void {
         this.addChild(this.body);
     }
     public onLoaded2(): void {
         this.addChild(this.burn);
-
     }
-       public onLoaded3(): void {
+    public onLoaded3(): void {
         this.addChild(this.right); 
     }
-       public onLoaded4(): void {
+    public onLoaded4(): void {
         this.addChild(this.left);
     }
-       public onLoaded5(): void {    
+    public onLoaded5(): void {    
         this.addChild(this.up);
     }
-       public onLoaded6(): void {
+    public onLoaded6(): void {
         this.addChild(this.down);
     }
-       public onLoaded7(): void {
+    public onLoaded7(): void {
         this.addChild(this.stand);
     }
 } 

@@ -27,12 +27,10 @@ var Tile = /** @class */ (function (_super) {
         this.fire = false;
         this.pos(this.x, this.y);
         if (this.type === "2")
-            this.bomb.loadAtlas("res/atlas/boom1.atlas", Laya.Handler.create(this, this.exploison));
+            this.bomb.loadAtlas("res2/atlas/boom1.atlas", Laya.Handler.create(this, this.exploison));
         else if (this.type === "3")
-            this.bomb.loadAtlas("res/atlas/boom2.atlas", Laya.Handler.create(this, this.exploison));
-        else if (this.type === "4")
-            this.bomb.loadAtlas("res/atlas/blackhole.atlas", Laya.Handler.create(this, this.exploison));
-        this.loadImage("res/tile" + this.type + ".png");
+            this.bomb.loadAtlas("res2/atlas/boom2.atlas", Laya.Handler.create(this, this.exploison));
+        this.loadImage("res2/tile" + this.type + ".png");
         this.bomb.interval = 100;
     };
     Tile.prototype.exploison = function () {
@@ -60,7 +58,6 @@ var Tile = /** @class */ (function (_super) {
             } //combinate the small block to make bigger block;
         }
         this.addChild(block);
-        //this.stage.addChild(block);
     };
     return Tile;
 }(Laya.Sprite));
@@ -80,4 +77,7 @@ var Map = /** @class */ (function (_super) {
     };
     return Map;
 }(Laya.Sprite));
+<<<<<<< HEAD
 //# sourceMappingURL=Component.js.map
+=======
+>>>>>>> 99f1a3b81d7d66b851109cb2aa61cc9f6987a636
