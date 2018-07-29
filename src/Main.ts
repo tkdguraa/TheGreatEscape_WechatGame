@@ -166,11 +166,11 @@ class Game {
     }
     // send GET ranking request to redis server
     getRanking(): void {
-        this.hr_get.send('http://192.144.144.22:12306/ranking', null, 'get', 'text');
+        this.hr_get.send('http://192.144.144.22:12306/ranking', null, 'get', 'json');
     }
     // send POST ranking request to redis server
     sendRanking(name, score): void {
-         this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'text');
+         this.hr_post.send('http://192.144.144.22:12306/ranking', 'name=' + name + '&score=' + score, 'post', 'json');
     }
     // get GET response from redis server
     onHttpRequestCompleteGet(): void {
