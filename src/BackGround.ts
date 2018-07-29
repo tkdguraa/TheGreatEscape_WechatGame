@@ -1,4 +1,3 @@
-
 class StartBackGround extends Laya.Sprite {
     bgFirst: Laya.Sprite;
     bgSecond: Laya.Sprite;

@@ -102,25 +102,7 @@ class Game {
             this.hero.x += this.hero.speedX;
             this.hero.y += this.hero.speedY;
         }
-        //  if(this.hero.alive === 0){
-        //         this.rebutton.pos(400, 400);
-        //         this.rebutton.width = 45;
-        //         this.rebutton.height = 45;
-        //         this.rebutton.loadImage("res2/regame.png");
-        //         this.rebutton.on(Laya.Event.CLICK,this,this.regame);
-        //         Laya.stage.addChild(this.rebutton);
-        //     }
     }
-    // regame(): void {
-    //       let bg = new ThunderMode1();
-    //       bg.setmap();
-    //       this.hero.speedX = 0;
-    //       this.hero.speedY = 0;
-    //       this.hero.alive = 1;
-    //       this.hero.burn.visible = false;
-    //       this.hero.body.visible = false;
-    //       Laya.stage.addChild(bg);
-    // }
 
     clickHandler(): void {
        this.bg.removeSelf();
